@@ -1,5 +1,7 @@
 {
   "name": "saada",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

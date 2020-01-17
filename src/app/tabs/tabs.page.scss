@@ -1,1 +1,12 @@
 
+ion-icon {
+    font-size: 2.5em;
+    font-weight: bold;
+}
+
+
+ion-tab-button[aria-selected=true] {
+    // box-shadow: 0 0px 0 20px rgba(0, 247, 255, 0.055) inset;
+    border: none;
+    border-top: 1px solid #3E56F4!important;
+}
