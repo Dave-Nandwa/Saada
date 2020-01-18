@@ -29,8 +29,14 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-import * as firebase from 'firebase/app';
-// firebase.initializeApp(credentials.firebaseConfig);
+
+
+/* -------------------------------------------------------------------------- */
+/*                               Custom Services                              */
+/* -------------------------------------------------------------------------- */
+import { LocationService } from './services/location.service';
+import { CallNumber } from '@ionic-native/call-number/ngx';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -43,6 +49,8 @@ import * as firebase from 'firebase/app';
     AngularFireDatabaseModule,
     AppRoutingModule],
   providers: [
+    CallNumber,
+    LocationService,
     StatusBar,
     SplashScreen,
     Geolocation,

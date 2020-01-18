@@ -1,9 +1,25 @@
-<ion-header>
+<ion-header transparent no-border>
   <ion-toolbar>
-    <ion-title>offline</ion-title>
+    <ion-title class="ion-text-center">Offline Mode</ion-title>
   </ion-toolbar>
 </ion-header>
 
+
 <ion-content>
+
+
+  <ion-grid fixed>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="3" [class.active]="e.active" *ngFor="let e of emergencies" (click)="toggleClass(e)">
+        <ion-icon class="ion-text-center" [src]="e.icon"></ion-icon>
+     {{ e.name}}
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <button expand="block" class="ion-padding btn">
+    Call Responder
+    <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
+    <ion-ripple-effect></ion-ripple-effect>
+  </button>
 
 </ion-content>

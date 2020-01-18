@@ -2,30 +2,46 @@ import {
   Component,
   OnInit
 } from '@angular/core';
+
+/* ---------------------------------- Misc ---------------------------------- */
+
 import {
   styles
 } from '../../../assets/mapStyles';
 
-//Custom
+/* ---------------------------- Native Providers ---------------------------- */
+
 import {
   Geolocation
 } from '@ionic-native/geolocation/ngx';
 
-//Firebase and GeoFireX
+/* -------------------------- Firebase and GeoFireX ------------------------- */
+
 import * as firebaseApp from 'firebase/app';
 import {
   AngularFirestore
 } from '@angular/fire/firestore';
 import * as geofirex from 'geofirex';
+import {
+  GeoFireQuery
+} from 'geofirex';
+/* ------------------------------- RXJS Libs ------------------------------ */
 
-//RXJS Libs
 import {
   Observable,
   BehaviorSubject
 } from 'rxjs';
 import {
-  switchMap
+  switchMap,
+  shareReplay
 } from 'rxjs/operators';
+
+/* -------------------------------- Services -------------------------------- */
+import {
+  LocationService
+} from './../../services/location.service';
+
+import * as firebase from 'firebase/app';
 
 @Component({
   selector: 'app-map',
@@ -38,46 +54,46 @@ export class MapPage implements OnInit {
 
   lat: number = -1.286389;
   lng: number = 36.817223;
-  markers: any;
-  mapIcon : any = {
+
+  mapIcon: any = {
     url: './assets/mapIcons/pin.svg',
     scaledSize: {
-        width: 40,
-        height: 60
-    }
-}
-carIcon : any = {
-  url: './assets/mapIcons/car2.svg',
-  scaledSize: {
       width: 40,
       height: 60
+    }
   }
-}
+  carIcon: any = {
+    url: './assets/mapIcons/car.svg',
+    scaledSize: {
+      width: 40,
+      height: 60
+    }
+  }
 
-  //Example
-  /*   markers: marker[] = [
-  	  {
-  		  lat: 51.673858,
-  		  lng: 7.815982,
-  		  label: 'A',
-  		  draggable: true
-  	  }
-    ] */
+  zoomLevel: number = 15;
 
-  zoomLevel: number = 12;
+  /* --------------------------- GeoFireX Variables --------------------------- */
 
-  //GeoFireX Variables
   geo = geofirex.init(firebaseApp);
+  geoQuery: GeoFireQuery;
   points: Observable < any > ;
-  radius = new BehaviorSubject(0.5);
+  radius = new BehaviorSubject(1);
+  geoSub: any;
+
+  /* ------------------------------ Utility Vars ------------------------------ */
 
   randomNames: any = ['Christopher', 'Ryan', 'Ethan', 'John', 'Zoey', 'Sarah', 'Michelle', 'Samantha', 'Job', 'Mary'];
   data: any = [];
 
-  constructor(private geolocation: Geolocation, private firestore: AngularFirestore) {}
+  constructor(private geolocation: Geolocation, private afs: AngularFirestore, private lc: LocationService) {}
 
   ngOnInit() {
+    // this.generateResponders();
     this.getLatLng();
+  }
+
+  ngOnDestroy() {
+    this.geoSub.unsubscribe();
   }
 
 
@@ -86,20 +102,31 @@ carIcon : any = {
     console.log(`clicked the marker: ${label || index}`)
   }
 
-  getLatLng() {
-    // const cars = this.firestore.collection('cars');
-    this.geolocation.getCurrentPosition().then((resp) => {
+  displayResponders() {
+    if (this.geoSub) this.geoSub.unsubscribe();
+    const center = this.geo.point(this.lat, this.lng);
+    const field = "position";
+    const responders = firebase.firestore().collection('users').where('onTrip', '==', false);
+    this.geoQuery = this.geo.query(responders)
+    console.log(this.geoQuery);
+    this.points = this.radius.pipe(
+      switchMap(r => {
+        return this.geoQuery.within(center, r, field, {
+          log: true
+        });
+      }),
+      shareReplay(1)
+    );
+
+    this.geoSub = this.points.subscribe(hits => console.log(hits));
+  }
+
+  async getLatLng() {
+    // const cars = this.afs.collection('cars');
+    this.geolocation.getCurrentPosition().then(async (resp) => {
       this.lat = resp.coords.latitude;
       this.lng = resp.coords.longitude;
-
-      const center = this.geo.point(this.lat, this.lng);
-      const field = "pos";
-
-
-      this.points = this.radius.pipe(
-        switchMap(r => {
-          return this.geo.query('users').within(center, r, field);
-        }));
+      this.displayResponders();
 
     }).catch((error) => {
       console.log('Error getting location', error);
@@ -119,27 +146,11 @@ carIcon : any = {
     });
   }
 
-
-  randomGeo(radius) {
-    var y0 = this.lat;
-    var x0 = this.lng;
-    var rd = radius / 111300;
-
-    var u = Math.random();
-    var v = Math.random();
-
-    var w = rd * Math.sqrt(u);
-    var t = 2 * Math.PI * v;
-    var x = w * Math.cos(t);
-    var y = w * Math.sin(t);
-
-    // var xp = x / Math.cos(y0);
-
-    return {
-      'latitude': y + y0,
-      'longitude': x + x0
-    };
+  trackByFn(_, doc) {
+    return doc.id;
   }
+
+
 
 
   // Very Useful Example For Ambulance Status Queries
@@ -153,40 +164,44 @@ carIcon : any = {
   /*                  Data Generation Utility Functions                         */
   /* -------------------------------------------------------------------------- */
 
-  /*   async generateUsers() {
-      await this.randomNames.map(async (n) => {
-        let latLng = await this.randomGeo(2000);
-        this.data.push({
-          name: n,
-          lat:  latLng.latitude, 
-          lng: latLng.longitude
-        });
+/*   async generateResponders() {
+
+    await this.randomNames.map(async (n) => {
+      let latLng = await this.lc.randomGeo(500);
+      this.data.push({
+        name: n,
+        lat: latLng.latitude,
+        lng: latLng.longitude,
+        onTrip: false,
+        emergencyId: ''
       });
-      this.sendToFirestore();
+    });
+    this.sendToFirestore();
+  }
+
+  sendToFirestore() {
+    console.log('Start.')
+    const users = this.afs.collection('users');
+    let counter = 0;
+    const batch = this.afs.firestore.batch();
+    while (counter < this.data.length) {
+      const id = this.afs.createId();
+      const position = this.geo.point(this.data[counter].lat, this.data[counter].lng);
+      let tempRef = this.afs.collection('users').doc(`${id}`).ref;
+      batch.set(tempRef, {
+        name: this.data[counter].name,
+        onTrip: false,
+        emergencyId: '',
+        status: 'Inactive',
+        tels: [],
+        position
+      });
+      counter += 1;
     }
-    
-    sendToFirestore() {
-      console.log('Start.')
-      const users = this.firestore.collection('users');
-      let counter = 0;
-      while (counter < this.data.length) {
-        const id = this.firestore.createId();
-        const position = this.geo.point(this.data[counter].lat, this.data[counter].lng);
-        this.firestore.doc(`users/${id}`).set({ name: this.data[counter].name, position }).then(() => {
-          console.log('Added User.')
-        }).catch((err) => console.error(err));
-        counter += 1;
-      }
-      console.log('Done.')
-    } */
+    batch.commit().then(() => {
+      console.log('Added Users.')
+    }).catch((err) => console.error(err));
+    console.log('Done.')
+  } */
 
-}
-
-
-// just an interface for type safety.
-interface marker {
-  lat: number;
-  lng: number;
-  label ? : string;
-  draggable: boolean;
 }

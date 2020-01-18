@@ -9,23 +9,24 @@
 
 
 <ion-content fullscreen>
-  <agm-map [styles]="mapStyles" [zoomControl]="false" [zoom]="zoomLevel" [latitude]="lat" [longitude]="lng">
+  <agm-map [styles]="mapStyles" [zoom]="zoomLevel" [zoomControl]="false" [latitude]="lat" [longitude]="lng">
 
-    <agm-marker [latitude]="lat" [longitude]="lng" [label]="You" [iconUrl]="mapIcon"></agm-marker>
+    <agm-marker [latitude]="lat" [longitude]="lng" [label]="You" [iconUrl]="mapIcon" ></agm-marker>
 
     <!-- Display Multiple Markers + An Info Window-->
-    <agm-marker *ngFor="let m of points | async" (markerClick)="clickedMarker(m.label, i)"
-      [latitude]="m.pos.geopoint.lat" [longitude]="m.pos.geopoint.lng" [label]="m.name" [iconUrl]="carIcon">
+    <agm-marker *ngFor="let point of points | async; trackBy: trackByFn" [latitude]="point.position.geopoint.latitude"
+      [longitude]="point.position.geopoint.longitude"  [iconUrl]="carIcon">
 
       <agm-info-window>
-        <strong>{{m.queryMetadata}}</strong>
+        {{ point.hitMetadata | json }}
       </agm-info-window>
 
     </agm-marker>
 
 
-    <agm-circle [latitude]="lat" [longitude]="lng" [radius]="5000" [fillColor]="'rgb(79,101,246,0.7)'"
-      [circleDraggable]="false" [editable]="false">
+
+    <agm-circle [latitude]="lat" [longitude]="lng" [radius]="(radius | async) * 1200"
+      [fillColor]="'rgb(79,101,246,0.7)'">
     </agm-circle>
 
 

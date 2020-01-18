@@ -1,64 +1,77 @@
 var prefix = 'assets/eIcons';
 var postfix = '.svg';
+const medical = ["+254719624552"];
+const fire = ["+254719624552"];
+const police = ["+254719624552"];
+const poison = ["+254719624552"];
+const animalControl = ["+254719624552"];
+const general = ["+254719624552"];
+
 export const services = [
     {
         "name": 'Heart Attack',
         "icon": `${prefix}/heart${postfix}`,
-        "phone": [], 
+        "tels": medical,  
         "active":true
     },
     {
         "name": 'Animal Bite',
         "icon": `${prefix}/animal_bite${postfix}`,
-        "phone": [], 
+        "tels": medical,  
         "active":false
     },
     {
         "name": 'Bleeding',
         "icon": `${prefix}/bleeding${postfix}`,
-        "phone": [], 
+        "tels": medical,  
         "active":false
     },
     {
         "name": 'Poison',
         "icon": `${prefix}/poison${postfix}`,
-        "phone": [], 
+        "tels": medical.concat(poison),  
         "active":false
     },
     {
         "name": 'Fire',
         "icon": `${prefix}/fire_truck${postfix}`,
-        "phone": [], 
+        "tels": fire,  
         "active":false
     },
     {
         "name": 'Heat Stroke',
         "icon": `${prefix}/sun${postfix}`,
-        "phone": [], 
+        "tels": medical,  
         "active":false
     },
     {
         "name": 'Accident',
         "icon": `${prefix}/accident${postfix}`,
-        "phone": [], 
+        "tels": medical,  
         "active":false
     },
     {
         "name": 'Allergic Reaction',
         "icon": `${prefix}/drugs${postfix}`,
-        "phone": [], 
+        "tels": medical,  
         "active":false
     },
     {
         "name": 'Shock /\n Trauma',
         "icon": `${prefix}/anaphylactic${postfix}`,
-        "phone": [], 
+        "tels": medical,  
+        "active":false
+    },
+    {
+        "name": 'Crime',
+        "icon": `${prefix}/crime${postfix}`,
+        "tels": police,  
         "active":false
     },
     {
         "name": 'Other',
         "icon": `${prefix}/other${postfix}`,
-        "phone": [], 
+        "tels": general,  
         "active":false
     }
 ]

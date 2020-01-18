@@ -16,7 +16,9 @@ import {
   environment
 } from 'src/environments/environment';
 
-import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import {
+  AndroidPermissions
+} from '@ionic-native/android-permissions/ngx';
 
 @Component({
   selector: 'app-root',
@@ -41,8 +43,9 @@ export class AppComponent {
       this.statusBar.backgroundColorByHexString('#4F65F6');
       this.splashScreen.hide();
       this.checkLocationPermissions();
+      this.checkCallPermission();
     });
-    
+
   }
 
   // Looks worse than it is
@@ -51,28 +54,28 @@ export class AppComponent {
     //Coarse Location Callback
     this.ap.checkPermission(this.ap.PERMISSION.ACCESS_COARSE_LOCATION).then(
       result => {
-        console.log('Has permission?',result.hasPermission);
+        console.log('ACCESS_COARSE_LOCATION permission?', result.hasPermission);
 
 
         //Coarse Fine Location Callback        
         this.ap.checkPermission(this.ap.PERMISSION.ACCESS_FINE_LOCATION).then(
           result => {
-            console.log('Has permission?',result.hasPermission);
+            console.log('ACCESS_FINE_LOCATION permission?', result.hasPermission);
 
             //Extra Location Commands Callback    
             this.ap.checkPermission(this.ap.PERMISSION.ACCESS_LOCATION_EXTRA_COMMANDS).then(
               result => {
-                console.log('Has permission?',result.hasPermission)
+                console.log('ACCESS_LOCATION_EXTRA_COMMANDS permission?', result.hasPermission)
               },
               err => this.ap.requestPermission(this.ap.PERMISSION.ACCESS_LOCATION_EXTRA_COMMANDS));
           },
           err => this.ap.requestPermission(this.ap.PERMISSION.ACCESS_FINE_LOCATION));
 
-          //Background Location Callback
-          this.ap.checkPermission(this.ap.PERMISSION.ACCESS_BACKGROUND_LOCATION).then(
-            result => console.log('Has permission?',result.hasPermission),
-            err => this.ap.requestPermission(this.ap.PERMISSION.ACCESS_BACKGROUND_LOCATION)
-          );
+        //Background Location Callback
+        this.ap.checkPermission(this.ap.PERMISSION.ACCESS_BACKGROUND_LOCATION).then(
+          result => console.log('ACCESS_BACKGROUND_LOCATION permission?', result.hasPermission),
+          err => this.ap.requestPermission(this.ap.PERMISSION.ACCESS_BACKGROUND_LOCATION)
+        );
 
       },
       err => this.ap.requestPermission(this.ap.PERMISSION.ACCESS_COARSE_LOCATION)
@@ -80,6 +83,14 @@ export class AppComponent {
 
   }
 
-  
+  checkCallPermission() {
+    //Extra Location Commands Callback    
+    this.ap.checkPermission(this.ap.PERMISSION.CALL_PHONE).then((res) => {
+      console.log('ACCESS_LOCATION_EXTRA_COMMANDS permission?', res.hasPermission)
+    }).catch(err => this.ap.requestPermission(this.ap.PERMISSION.CALL_PHONE));
+  }
+
+
+
 
 }
