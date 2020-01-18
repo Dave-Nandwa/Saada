@@ -36,12 +36,46 @@
   }
 }
 
+@font-face {
+  font-family: 'Poppins';
+  src: url('./assets/fonts/Poppins/Poppins-Regular.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: 'Poppins Semi Bold';
+  src: url('./assets/fonts/Poppins/Poppins-SemiBold.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: 'Poppins Bold';
+  src: url('./assets/fonts/Poppins/Poppins-Regular.ttf') format("truetype");
+}
+
+
+@font-face {
+  font-family: 'Poppins Black';
+  src: url('./assets/fonts/Poppins/Poppins-Black.ttf') format("truetype");
+}
+
 @include font('Nunito', './assets/fonts/Nunito/Nunito-Regular');
 // @include font('Arvo-Bold', '/htdocs/lib/fonts/Arvo-Bold');
 
-* {
-  font-family: 'Nunito';
-}
+
 ion-back-button {
   --color: #4F65F6 !important;
+}
+
+.toast-success {
+  --background: rgba(100, 194, 158, 0.863);
+  --color: #fff;
+}
+
+.toast-info {
+  --background: rgba(53, 127, 223, 0.781);
+  --color: #fff;
+}
+
+.toast-error {
+  --background: rgba(230, 36, 29, 0.925);
+  --color: #fff;
 }

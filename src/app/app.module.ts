@@ -22,6 +22,7 @@ import {
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { CallNumber } from '@ionic-native/call-number/ngx';
 
 /* -------------------------------------------------------------------------- */
 /*                                 AngularFire                                */
@@ -35,7 +36,10 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 /*                               Custom Services                              */
 /* -------------------------------------------------------------------------- */
 import { LocationService } from './services/location.service';
-import { CallNumber } from '@ionic-native/call-number/ngx';
+import { UserService } from './services/user.service';
+import { UtilitiesService } from './services/utilities.service';
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [AppComponent],
@@ -47,10 +51,13 @@ import { CallNumber } from '@ionic-native/call-number/ngx';
     AngularFireModule.initializeApp(credentials.firebaseConfig),
     AngularFirestoreModule,
     AngularFireDatabaseModule,
-    AppRoutingModule],
+    AppRoutingModule,
+    BrowserAnimationsModule],
   providers: [
     CallNumber,
     LocationService,
+    UserService,
+    UtilitiesService,
     StatusBar,
     SplashScreen,
     Geolocation,

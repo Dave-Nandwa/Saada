@@ -41,7 +41,7 @@ import {
   LocationService
 } from './../../services/location.service';
 
-import * as firebase from 'firebase/app';
+
 
 @Component({
   selector: 'app-map',
@@ -106,7 +106,7 @@ export class MapPage implements OnInit {
     if (this.geoSub) this.geoSub.unsubscribe();
     const center = this.geo.point(this.lat, this.lng);
     const field = "position";
-    const responders = firebase.firestore().collection('users').where('onTrip', '==', false);
+    const responders = firebaseApp.firestore().collection('responders').where('onTrip', '==', false);
     this.geoQuery = this.geo.query(responders)
     console.log(this.geoQuery);
     this.points = this.radius.pipe(
@@ -164,7 +164,7 @@ export class MapPage implements OnInit {
   /*                  Data Generation Utility Functions                         */
   /* -------------------------------------------------------------------------- */
 
-/*   async generateResponders() {
+/*  async generateResponders() {
 
     await this.randomNames.map(async (n) => {
       let latLng = await this.lc.randomGeo(500);
@@ -181,19 +181,19 @@ export class MapPage implements OnInit {
 
   sendToFirestore() {
     console.log('Start.')
-    const users = this.afs.collection('users');
+    const responders = this.afs.collection('responders');
     let counter = 0;
     const batch = this.afs.firestore.batch();
     while (counter < this.data.length) {
       const id = this.afs.createId();
       const position = this.geo.point(this.data[counter].lat, this.data[counter].lng);
-      let tempRef = this.afs.collection('users').doc(`${id}`).ref;
+      let tempRef = this.afs.collection('responders').doc(`${id}`).ref;
       batch.set(tempRef, {
         name: this.data[counter].name,
         onTrip: false,
         emergencyId: '',
         status: 'Inactive',
-        tels: [],
+        tels: ["+254719624552"],
         position
       });
       counter += 1;
@@ -202,6 +202,6 @@ export class MapPage implements OnInit {
       console.log('Added Users.')
     }).catch((err) => console.error(err));
     console.log('Done.')
-  } */
+  }  */
 
 }
