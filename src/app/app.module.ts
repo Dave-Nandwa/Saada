@@ -23,6 +23,7 @@ import {
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { CallNumber } from '@ionic-native/call-number/ngx';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 /* -------------------------------------------------------------------------- */
 /*                                 AngularFire                                */
@@ -54,6 +55,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AppRoutingModule,
     BrowserAnimationsModule],
   providers: [
+    NativeStorage,
     CallNumber,
     LocationService,
     UserService,

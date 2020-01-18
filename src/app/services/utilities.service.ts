@@ -20,7 +20,7 @@ export class UtilitiesService {
   async presentToast(message, cssClass) {
     let toast = await this.toastCtrl.create({
       message: message,
-      duration: 2500,
+      duration: 3000,
       position: 'top',
       animated: true,
       cssClass: cssClass

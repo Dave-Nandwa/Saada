@@ -2,7 +2,7 @@ import {
   Component,
   OnInit
 } from '@angular/core';
-
+import { Router, RouterModule } from '@angular/router';
 /* ----------------------------- Form Variables ----------------------------- */
 
 import {
@@ -22,6 +22,11 @@ import {
   UserService
 } from './../../services/user.service';
 import { UtilitiesService } from './../../services/utilities.service';
+
+/* ---------------------------- Native Providers ---------------------------- */
+
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
+
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.page.html',
@@ -39,7 +44,7 @@ export class LandingPage implements OnInit {
     phone: new FormControl(undefined, [Validators.required])
   });
 
-  constructor(private uServ: UserService, private utils: UtilitiesService) {}
+  constructor(private uServ: UserService, private ns: NativeStorage, private utils: UtilitiesService, private router: Router) {}
 
   ngOnInit() {}
 
@@ -63,6 +68,7 @@ export class LandingPage implements OnInit {
           this.uServ.addUser(form).then(() => {
             this.utils.dismissLoading();
             this.utils.presentToast('Account Created Successfully.', 'toast-success');
+            this.setAuthState(form);
           }).catch((err) => {
             this.utils.dismissLoading();
             console.log(err);
@@ -73,6 +79,16 @@ export class LandingPage implements OnInit {
       }
       return true;
     }
+  }
+
+  setAuthState(data) {
+    this.ns.setItem('authState', {isLoggedIn: true, user: data}).then(() => {
+      this.router.navigate(['tabs/home']);
+      console.log('Stored item!');
+    }).catch((err) => {
+      this.router.navigate(['tabs/home']);
+      console.error('Error storing item', err);
+    });
   }
 
 

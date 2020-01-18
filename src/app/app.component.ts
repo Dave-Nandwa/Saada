@@ -16,6 +16,10 @@ import {
   environment
 } from 'src/environments/environment';
 
+/* -------------------------------------------------------------------------- */
+/*                              Native Providers                              */
+/* -------------------------------------------------------------------------- */
+
 import {
   AndroidPermissions
 } from '@ionic-native/android-permissions/ngx';
@@ -44,6 +48,7 @@ export class AppComponent {
       this.splashScreen.hide();
       this.checkLocationPermissions();
       this.checkCallPermission();
+      this.checkStoragePermission();
     });
 
   }
@@ -84,13 +89,26 @@ export class AppComponent {
   }
 
   checkCallPermission() {
-    //Extra Location Commands Callback    
+    //Call Permissions
     this.ap.checkPermission(this.ap.PERMISSION.CALL_PHONE).then((res) => {
-      console.log('ACCESS_LOCATION_EXTRA_COMMANDS permission?', res.hasPermission)
+      console.log('CALL permission?', res.hasPermission);
+
+      // Contacts Permissions
+      this.ap.checkPermission(this.ap.PERMISSION.READ_CONTACTS).then((res) => {
+        console.log('Contacts permission?', res.hasPermission)
+      }).catch(err => this.ap.requestPermission(this.ap.PERMISSION.READ_CONTACTS));
+
     }).catch(err => this.ap.requestPermission(this.ap.PERMISSION.CALL_PHONE));
   }
-
-
-
+  
+  
+  checkStoragePermission() {
+    this.ap.checkPermission(this.ap.PERMISSION.READ_EXTERNAL_STORAGE).then((res) => {
+      console.log('Read Storage permission?', res.hasPermission)
+    }).catch(err => this.ap.requestPermission(this.ap.PERMISSION.READ_EXTERNAL_STORAGE));
+    this.ap.checkPermission(this.ap.PERMISSION.WRITE_EXTERNAL_STORAGE).then((res) => {
+      console.log('Write Storage permission?', res.hasPermission)
+    }).catch(err => this.ap.requestPermission(this.ap.PERMISSION.WRITE_EXTERNAL_STORAGE));
+  }
 
 }
