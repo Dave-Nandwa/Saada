@@ -8,6 +8,7 @@ import {
 import {
   CallNumber
 } from '@ionic-native/call-number/ngx';
+import { LocalNotificationService } from 'src/app/services/local-notification.service';
 
 @Component({
   selector: 'app-home',
@@ -22,9 +23,11 @@ export class HomePage implements OnInit {
   tried: any = [];
   index: number = 0;
 
-  constructor(private callNumber: CallNumber) {}
+  constructor(private callNumber: CallNumber, private lnServ: LocalNotificationService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.lnServ.enablePSNotif();
+  }
 
   toggleClass(service) {
     /* -------------------------- Set Column to Active -------------------------- */

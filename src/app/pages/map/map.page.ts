@@ -14,6 +14,9 @@ import {
 import {
   Geolocation
 } from '@ionic-native/geolocation/ngx';
+import {
+  CallNumber
+} from '@ionic-native/call-number/ngx';
 
 /* -------------------------- Firebase and GeoFireX ------------------------- */
 
@@ -41,7 +44,12 @@ import {
   LocationService
 } from './../../services/location.service';
 
-
+import {
+  medical,
+  fire,
+  police,
+  services
+} from './../../emergencies';
 
 @Component({
   selector: 'app-map',
@@ -55,6 +63,14 @@ export class MapPage implements OnInit {
   lat: number = -1.286389;
   lng: number = 36.817223;
 
+  // Emergency Services
+  emergencies: any = services;
+  medical: any = medical;
+  police: any = police;
+  fire: any = fire;
+  tried: any = [];
+  index: number = 0;
+
   mapIcon: any = {
     url: './assets/mapIcons/pin.svg',
     scaledSize: {
@@ -65,8 +81,8 @@ export class MapPage implements OnInit {
   carIcon: any = {
     url: './assets/mapIcons/car.svg',
     scaledSize: {
-      width: 40,
-      height: 60
+      width: 25,
+      height: 45
     }
   }
 
@@ -77,15 +93,16 @@ export class MapPage implements OnInit {
   geo = geofirex.init(firebaseApp);
   geoQuery: GeoFireQuery;
   points: Observable < any > ;
-  radius = new BehaviorSubject(1);
+  radius = new BehaviorSubject(3.5);
   geoSub: any;
 
   /* ------------------------------ Utility Vars ------------------------------ */
 
-  randomNames: any = ['Christopher', 'Ryan', 'Ethan', 'John', 'Zoey', 'Sarah', 'Michelle', 'Samantha', 'Job', 'Mary'];
+  randomNames: any = ['Red Cross', "N.W Hospital", "St John's", 'Aga Khan', 'St. John', 'Getrudes', 'M.P Shah', 'Mater Hospital', 'Police', 'Nairobi Hospital', 'Fire Truck'];
   data: any = [];
+  watch: any;
 
-  constructor(private geolocation: Geolocation, private afs: AngularFirestore, private lc: LocationService) {}
+  constructor(private callNumber: CallNumber, private geolocation: Geolocation, private afs: AngularFirestore, private lc: LocationService) {}
 
   ngOnInit() {
     // this.generateResponders();
@@ -94,6 +111,7 @@ export class MapPage implements OnInit {
 
   ngOnDestroy() {
     this.geoSub.unsubscribe();
+    this.watch.unsubscribe();
   }
 
 
@@ -127,7 +145,7 @@ export class MapPage implements OnInit {
       this.lat = resp.coords.latitude;
       this.lng = resp.coords.longitude;
       this.displayResponders();
-
+      this.watchPosition();
     }).catch((error) => {
       console.log('Error getting location', error);
     });
@@ -138,11 +156,9 @@ export class MapPage implements OnInit {
   }
 
   watchPosition() {
-    let watch = this.geolocation.watchPosition();
-    watch.subscribe((data) => {
-      // data can be a set of coordinates, or an error (if an error occurred).
-      // data.coords.latitude
-      // data.coords.longitude
+    this.watch = this.geolocation.watchPosition().subscribe((resp) => {
+      this.lat = resp.coords.latitude;
+      this.lng = resp.coords.longitude;
     });
   }
 
@@ -150,6 +166,51 @@ export class MapPage implements OnInit {
     return doc.id;
   }
 
+  policeCall() {
+    if (this.tried.includes(this.police[this.index])) {
+      this.index = this.index < police.length ? this.index++ : 0;
+      this.police[this.index] = this.police[this.index];
+    } else {
+      this.police[this.index] = this.police[this.index];
+    }
+    this.tried.push(this.police[this.index]);
+    this.callNumber.callNumber(this.police[this.index], true)
+      .then(res => console.log('Launched dialer!', res))
+      .catch(err => console.log('Error launching dialer', err));
+  }
+
+  fireCall() {
+    if (this.tried.includes(this.fire[this.index])) {
+      this.index = this.index < police.length ? this.index++ : 0;
+      this.fire[this.index] = this.fire[this.index];
+    } else {
+      this.fire[this.index] = this.fire[this.index];
+    }
+    this.tried.push(this.fire[this.index]);
+    this.callNumber.callNumber(this.fire[this.index], true)
+      .then(res => console.log('Launched dialer!', res))
+      .catch(err => console.log('Error launching dialer', err));
+  }
+
+
+  medCall() {
+    if (this.tried.includes(this.medical[this.index])) {
+      this.index = this.index < police.length ? this.index++ : 0;
+      this.medical[this.index] = this.medical[this.index];
+    } else {
+      this.medical[this.index] = this.medical[this.index];
+    }
+    this.tried.push(this.medical[this.index]);
+    this.callNumber.callNumber(this.medical[this.index], true)
+      .then(res => console.log('Launched dialer!', res))
+      .catch(err => console.log('Error launching dialer', err));
+  }
+
+  callResponder(p) {
+    this.callNumber.callNumber(p, true)
+    .then(res => console.log('Launched dialer!', res))
+    .catch(err => console.log('Error launching dialer', err));
+  }
 
 
 
@@ -164,10 +225,17 @@ export class MapPage implements OnInit {
   /*                  Data Generation Utility Functions                         */
   /* -------------------------------------------------------------------------- */
 
-/*  async generateResponders() {
+
+/*   randomPhoneNumber(length) {
+
+    return Math.floor(Math.pow(10, length - 1) + Math.random() * 9 * Math.pow(10, length - 1));
+
+  }
+
+  async generateResponders() {
 
     await this.randomNames.map(async (n) => {
-      let latLng = await this.lc.randomGeo(500);
+      let latLng = await this.lc.randomGeo(2000);
       this.data.push({
         name: n,
         lat: latLng.latitude,
@@ -193,7 +261,7 @@ export class MapPage implements OnInit {
         onTrip: false,
         emergencyId: '',
         status: 'Inactive',
-        tels: ["+254719624552"],
+        tels: [`+2547${this.randomPhoneNumber(8)}`],
         position
       });
       counter += 1;
@@ -202,6 +270,6 @@ export class MapPage implements OnInit {
       console.log('Added Users.')
     }).catch((err) => console.error(err));
     console.log('Done.')
-  }  */
+  } */
 
 }

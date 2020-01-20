@@ -1,11 +1,12 @@
 var prefix = 'assets/eIcons';
 var postfix = '.svg';
-const medical = ["+254719624552"];
-const fire = ["+254719624552"];
-const police = ["+254719624552"];
-const poison = ["+254719624552"];
-const animalControl = ["+254719624552"];
-const general = ["+254719624552"];
+
+export const medical = ["+254719624552", "1199", "0721 611555"];
+export const fire = ["0202222181", "999", "0202222182", "0202344599"];
+export const police = ["+254719624552", "999", "112", "911"];
+export const poison = ["1192", "+254202721997"];
+export const animalControl = ["0800597000","08002215566"];
+export const general = ["999", "911", "112", "1199"];
 
 export const services = [
     {

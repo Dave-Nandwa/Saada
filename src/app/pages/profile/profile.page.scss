@@ -1,0 +1,67 @@
+* {
+    font-family: 'Poppins';
+}
+
+ion-header {
+    -webkit-box-shadow: 0px 20px 31px -5px rgba(14, 43, 117, 0.247) !important;
+    box-shadow: 0px 20px 31px -5px rgba(14, 43, 117, 0.247) !important;
+    margin-bottom: 10px !important;
+}
+
+.margins {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.btn {
+    width: 100%;
+    padding: 10px 10px;
+    background: #4F65F6;
+    --background: #4F65F6;
+    --box-shadow: none;
+    border-radius: 6px;
+    font-size: 1em;
+    text-align: center;
+    text-transform: uppercase;
+    --color: #fff !important;
+    color: #fff;
+    outline: none;
+    // margin-bottom:1px;
+    /*    ion-icon {
+        font-size: 1.5em;
+        margin:0;
+        padding:0;
+        display: inline-block;
+    } */
+}
+
+
+
+.logout-btn {
+    width: 100%;
+    padding: 10px 10px;
+    background: rgb(246, 104, 79);
+    --background: rgb(246, 104, 79);
+    --box-shadow: none;
+    border-radius: 6px;
+    font-size: 1em;
+    text-align: center;
+    text-transform: uppercase;
+    --color: #fff !important;
+    color: #fff;
+    outline: none;
+    // margin-bottom:1px;
+    /*    ion-icon {
+        font-size: 1.5em;
+        margin:0;
+        padding:0;
+        display: inline-block;
+    } */
+}
+
+
+ion-item {
+    margin-top: 20px;
+    // border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}

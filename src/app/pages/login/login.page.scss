@@ -93,25 +93,7 @@ ion-img {
     } */
 }
 
-ion-img {
-    object-fit: cover;
-    -webkit-box-shadow: 0px 6px 25px 9px rgba(0, 0, 0, 0.12);
-    -moz-box-shadow: 0px 6px 25px 9px rgba(0, 0, 0, 0.12);
 
-    content: "";
-    background: -webkit-linear-gradient(top,transparent,rgba(0,0,0,.9));
-    background: linear-gradient(to bottom,transparent,rgba(0,0,0,.9));
-    z-index: 2;
-    opacity: 0.4;
-
-    
-}
-
-
-.phoneInput {
-    width:100%!important;
-    margin:0 auto!important;
-}
 
 .sign-up-btn {
     width: 100%;
@@ -134,4 +116,24 @@ ion-img {
         padding:0;
         display: inline-block;
     } */
+}
+
+ion-img {
+    object-fit: cover;
+    -webkit-box-shadow: 0px 6px 25px 9px rgba(0, 0, 0, 0.12);
+    -moz-box-shadow: 0px 6px 25px 9px rgba(0, 0, 0, 0.12);
+
+    content: "";
+    background: -webkit-linear-gradient(top,transparent,rgba(0,0,0,.9));
+    background: linear-gradient(to bottom,transparent,rgba(0,0,0,.9));
+    z-index: 2;
+    opacity: 0.4;
+
+    
+}
+
+
+.phoneInput {
+    width:100%!important;
+    margin:0 auto!important;
 }

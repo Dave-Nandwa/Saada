@@ -28,11 +28,11 @@ import { UtilitiesService } from './../../services/utilities.service';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 @Component({
-  selector: 'app-landing',
-  templateUrl: './landing.page.html',
-  styleUrls: ['./landing.page.scss'],
+  selector: 'app-login',
+  templateUrl: './login.page.html',
+  styleUrls: ['./login.page.scss'],
 })
-export class LandingPage implements OnInit {
+export class LoginPage implements OnInit {
 
   separateDialCode = true;
   SearchCountryField = SearchCountryField;
@@ -56,43 +56,43 @@ export class LandingPage implements OnInit {
     const regName = /^[a-zA-Z]+ [a-zA-Z]+$/;
     const regNumber = /^0[0-9].*$/;
     const form = this.phoneForm.value;
-    if (!regName.test(form.name)) {
-      alert('Please enter your full name (first & last name).');
-      return false;
+    if (regNumber.test(form.phone.number)) {
+      alert('Please enter your Number in this format (eg. 0719634552');
     } else {
-      if (regNumber.test(form.phone.number)) {
-        alert('Please enter your Number in this format (eg. 0719634552');
-      } else {
-        if (form.name.length > 0 && form.phone) {
-          this.utils.presentLoading('Creating Account...');
-          this.uServ.addUser(form).then(() => {
-            this.utils.dismissLoading();
-            this.utils.presentToast('Account Created Successfully.', 'toast-success');
-            this.setAuthState(form);
-          }).catch((err) => {
-            this.utils.dismissLoading();
-            console.log(err);
-            this.utils.presentToast("Ooops! There was a problem creating your account, please try again. If this problem persists please message us.", "toast-error");
-          });
-          console.log(form);
-        };
-      }
-      return true;
+      if (form.phone) {
+        this.utils.presentLoading('Logging you in...');
+        const dataSub = this.uServ.loginUser(form).subscribe((data) => {
+         /*   */
+          console.log(data);
+          if (data.length <= 0) {
+            alert("Ooops! There was a problem logging you in to your account, please check your internet connection and try again. If this problem persists please message us.");
+            return;
+          }
+          this.utils.dismissLoading();
+          this.utils.presentToast('Authentication Successful.', 'toast-success');
+          this.setAuthState(data[0]);
+          dataSub.unsubscribe();
+        }, err => {
+          this.utils.dismissLoading();
+          console.log(err);
+          this.utils.presentToast("Ooops! There was a problem logging you in to your account, please try again. If this problem persists please message us.", "toast-error");
+          dataSub.unsubscribe();
+        });
+      };
     }
   }
 
   setAuthState(data) {
-    this.ns.setItem('authState', {isLoggedIn: true, user: data}).then(() => {
+    this.ns.setItem('authState', {isLoggedIn: true, safetyNet: true, user: data}).then(() => {
       this.router.navigate(['tabs/home']);
-      console.log('Stored item!');
     }).catch((err) => {
       this.router.navigate(['tabs/home']);
       console.error('Error storing item', err);
     });
   }
 
-  logIn() {
-    this.router.navigate(['/login']);
+  signUp() {
+    this.router.navigate(['/landing']);
   }
 
 

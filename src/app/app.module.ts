@@ -3,9 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
 
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
  
@@ -19,11 +19,14 @@ import {
 /* -------------------------------------------------------------------------- */
 /*                              Native Providers                              */
 /* -------------------------------------------------------------------------- */
-
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { CallNumber } from '@ionic-native/call-number/ngx';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 
 /* -------------------------------------------------------------------------- */
 /*                                 AngularFire                                */
@@ -39,8 +42,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { LocationService } from './services/location.service';
 import { UserService } from './services/user.service';
 import { UtilitiesService } from './services/utilities.service';
-
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LocalNotificationService } from './services/local-notification.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -55,6 +57,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AppRoutingModule,
     BrowserAnimationsModule],
   providers: [
+    BackgroundMode,
+    LocalNotifications,
+    LocalNotificationService,
     NativeStorage,
     CallNumber,
     LocationService,

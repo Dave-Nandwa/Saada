@@ -1,9 +1,28 @@
-<ion-header>
+<ion-header transparent no-border>
   <ion-toolbar>
-    <ion-title>profile</ion-title>
+    <ion-title class="ion-text-center">Account</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+
+  <ion-list>
+    <ion-item lines="none">
+      <ion-label>Safety Net :</ion-label>
+      <ion-toggle [(ngModel)]="safetyNet" (ionChange)="changeState($event)"></ion-toggle>
+    </ion-item>
+
+<!--     <ion-item lines="none">
+      <ion-label>Background Mode: </ion-label>
+      <ion-toggle [(ngModel)]="bMode" (ionChange)="changeMode($event)"></ion-toggle>
+    </ion-item> -->
+  </ion-list>
+
+  <button expand="block" class="ion-padding logout-btn margins" (click)="logOut()">
+    LOG OUT
+    <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
+    <ion-ripple-effect></ion-ripple-effect>
+  </button>
+
 
 </ion-content>
