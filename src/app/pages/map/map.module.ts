@@ -10,7 +10,8 @@ import { MapPage } from './map.page';
 
 // Angular Google Maps
 import { AgmCoreModule } from '@agm/core';
-
+import { AgmDirectionModule } from 'agm-direction';   // agm-direction
+ 
 
 @NgModule({
   imports: [
@@ -19,8 +20,9 @@ import { AgmCoreModule } from '@agm/core';
     IonicModule,
     MapPageRoutingModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyCnmJi_-KqIXYRFvvUBlktplp6HZXKiMFQ'
+      apiKey: 'AIzaSyC7i8ihh6Z7YAHPSUJxjZ5U2krePN8-_ks'
     }),
+    AgmDirectionModule,
   ],
   declarations: [MapPage]
 })

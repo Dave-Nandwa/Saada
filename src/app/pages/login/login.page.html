@@ -1,7 +1,7 @@
 <ion-content fullscreen>
 
   <!-- -------------------------------- Image -------------------------------- -->
-  <ion-img src="./assets/form_image.jpg"></ion-img>
+  <ion-img src="./assets/login_page.jpg"></ion-img>
 
   <ion-card class="card">
     <ion-card-header>
@@ -10,17 +10,14 @@
     </ion-card-header>
   
     <ion-card-content class="card-content">
-      <b>Saada</b> believes in a world where your safety and health isn't a maybe. 
-      Our goal is to bring help when you need it and as fast as you need it, as well as keeping
-      your loved ones at peace knowing you're safe.
-      <form #f="ngForm" [formGroup]="phoneForm" class="ion-padding">
+      <b>SpotOnResponse:</b> In a world where anything can happen, trust the best
+      to keep you informed, and keep you safe
+      <form #f="ngForm" [formGroup]="loginForm" class="ion-padding">
         <div class="mb-2">
-          <ngx-intl-tel-input class="phoneInput" [preferredCountries]="preferredCountries"
-            [enableAutoCountrySelect]="false" [enablePlaceholder]="true" [searchCountryFlag]="true"
-            [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
-            [selectedCountryISO]="CountryISO.Kenya" [maxLength]="10" [tooltipField]="TooltipLabel.Name"
-            [phoneValidation]="true" [separateDialCode]="separateDialCode" name="phone" formControlName="phone">
-          </ngx-intl-tel-input>
+          <input class="input" type="email" name="name" placeholder="Email Address" formControlName="email"/>
+        </div>
+        <div class="mb-2">
+          <input class="input" type="password" name="password" placeholder="Password" formControlName="password"/>
         </div>
       </form>
     </ion-card-content>
@@ -33,7 +30,7 @@
     </button>
 
     <button expand="block" class="ion-padding sign-up-btn" (click)="signUp()">
-      Sign Up
+      Create an Account
       <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
       <ion-ripple-effect></ion-ripple-effect>
     </button>

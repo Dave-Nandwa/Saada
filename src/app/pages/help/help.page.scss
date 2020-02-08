@@ -1,0 +1,91 @@
+ion-header {
+    background: rgb(52, 159, 209);
+    --background: rgb(52, 159, 209);
+
+    ion-toolbar {
+        background: rgb(52, 159, 209);
+        --background: rgb(52, 159, 209);
+        color: #fff;
+
+        ion-icon {
+            font-size: 2em;
+        }
+    }
+}
+
+ion-content {
+    background: rgb(52, 159, 209);
+    --background: rgb(52, 159, 209);
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+
+h1 {
+    text-shadow: 0 14px 26px rgba(0, 0, 0, 0.04);
+    font-family: 'Poppins Black', sans-serif;
+    font-size: 2em;
+    width: 100%;
+    margin: 0 auto;
+    color: #fff;
+    margin-top: 5px;
+    letter-spacing: 1.5px;
+}
+
+form {
+    ion-item {
+        margin-bottom: 10px;
+        border-radius: 12px;
+
+        ion-label {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1em;
+        }
+
+        ion-select {
+            text-transform: capitalize !important;
+            border-radius: 12px;
+            padding: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+
+            ion-select-option {
+                text-transform: capitalize !important;
+            }
+        }
+
+        ion-input,
+        ion-textarea {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            color: #6E7494 !important;
+            font-size: 1.2em;
+        }
+    }
+
+    .alert-wrapper {
+        text-transform: capitalize !important;
+    }
+}
+
+button {
+    --background: #ffffff !important;
+    background: #ffffff !important;
+    box-shadow: 0px 13px 10px -7px rgba(0, 0, 0, 0.144);
+    border-radius: 25px;
+    color: #000 !important;
+    padding: 15px 50px;
+    outline: none;
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    font-size: 1.5em;
+    margin-top: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    width: 100% !important
+}

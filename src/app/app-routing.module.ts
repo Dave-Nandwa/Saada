@@ -8,7 +8,8 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
+    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule),
+
   },
   {
     path: 'map',
@@ -29,6 +30,22 @@ const routes: Routes = [
   {
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
+  },
+  {
+    path: 'help',
+    loadChildren: () => import('./pages/help/help.module').then( m => m.HelpPageModule)
+  },
+  {
+    path: 'edit-profile',
+    loadChildren: () => import('./pages/edit-profile/edit-profile.module').then( m => m.EditProfilePageModule)
+  },
+  {
+    path: 'report-history',
+    loadChildren: () => import('./pages/report-history/report-history.module').then( m => m.ReportHistoryPageModule)
+  },
+  {
+    path: 'create-form',
+    loadChildren: () => import('./pages/create-form/create-form.module').then( m => m.CreateFormPageModule)
   }
 ];
 @NgModule({

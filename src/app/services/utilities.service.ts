@@ -3,7 +3,8 @@ import {
 } from '@angular/core';
 import {
   ToastController,
-  LoadingController
+  LoadingController,
+  AlertController
 } from '@ionic/angular';
 
 @Injectable({
@@ -13,8 +14,19 @@ export class UtilitiesService {
 
   loader: any;
   isLoading = false;
-  constructor(private toastCtrl: ToastController, public loadingCtrl: LoadingController) {
+  constructor(private alertCtrl: AlertController, private toastCtrl: ToastController, public loadingCtrl: LoadingController) {
 
+  }
+
+  async presentAlert(header: string, sub: string, msg: string) {
+    const alert = await this.alertCtrl.create({
+      header: header,
+      subHeader: sub,
+      message: msg,
+      buttons: ['OK']
+    });
+
+    await alert.present();
   }
 
   async presentToast(message, cssClass) {
@@ -41,6 +53,18 @@ export class UtilitiesService {
         }
       });
     });
+  }
+
+
+  async handleError(error): Promise < void > {
+    const alert = await this.alertCtrl.create({
+      message: error.message,
+      buttons: [{
+        text: 'Ok',
+        role: 'cancel'
+      }]
+    });
+    await alert.present();
   }
 
   async dismissLoading() {

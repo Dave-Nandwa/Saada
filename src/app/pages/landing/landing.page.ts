@@ -2,7 +2,10 @@ import {
   Component,
   OnInit
 } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import {
+  Router,
+  RouterModule
+} from '@angular/router';
 /* ----------------------------- Form Variables ----------------------------- */
 
 import {
@@ -19,13 +22,21 @@ import {
 /* -------------------------------- Services -------------------------------- */
 
 import {
-  UserService
-} from './../../services/user.service';
-import { UtilitiesService } from './../../services/utilities.service';
-
+  UtilitiesService
+} from './../../services/utilities.service';
+import {
+  AuthService
+} from 'src/app/services/auth.service';
 /* ---------------------------- Native Providers ---------------------------- */
 
-import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import {
+  NativeStorage
+} from '@ionic-native/native-storage/ngx';
+import {
+  Geolocation
+} from '@ionic-native/geolocation/ngx';
+import { UserService } from 'src/app/services/user.service';
+
 
 @Component({
   selector: 'app-landing',
@@ -38,51 +49,116 @@ export class LandingPage implements OnInit {
   SearchCountryField = SearchCountryField;
   TooltipLabel = TooltipLabel;
   CountryISO = CountryISO;
-  preferredCountries: CountryISO[] = [CountryISO.Kenya, CountryISO.Tanzania, CountryISO.Uganda];
-  phoneForm = new FormGroup({
-    name: new FormControl('', [Validators.required]),
-    phone: new FormControl(undefined, [Validators.required])
+  preferredCountries: CountryISO[] = [CountryISO.UnitedStates, CountryISO.Canada];
+  loginForm = new FormGroup({
+    firstName: new FormControl('', [Validators.required]),
+    lastName: new FormControl('', [Validators.required]),
+    email: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required]),
+    phone: new FormControl(undefined, [Validators.required]),
+    cCode: new FormControl(undefined, [Validators.required]),
+    org: new FormControl(undefined, [Validators.required]),
+    division: new FormControl(undefined, [Validators.required]),
   });
 
-  constructor(private uServ: UserService, private ns: NativeStorage, private utils: UtilitiesService, private router: Router) {}
+  lat: any = 0;
+  lng: any = 0;
 
-  ngOnInit() {}
+  organization: any;
+  division: any;
+  organizations: any = [];
+
+  constructor(private uServ: UserService, private authService: AuthService, private geo: Geolocation, private ns: NativeStorage, private utils: UtilitiesService, private router: Router) {}
+
+  ngOnInit() {
+    this.getLatLng();
+    this.getOrgs();
+  }
+
+  async getLatLng() {
+    // const cars = this.afs.collection('cars');
+    this.geo.getCurrentPosition().then(async (resp) => {
+      this.lat = resp.coords.latitude;
+      this.lng = resp.coords.longitude;
+    }).catch((error) => {
+      console.log('Error getting location', error);
+    });
+  }
 
   changePreferredCountries() {
-    this.preferredCountries = [CountryISO.SouthAfrica, CountryISO.UnitedStates, CountryISO.UnitedKingdom];
+    this.preferredCountries = [CountryISO.SouthAfrica, CountryISO.UnitedStates, CountryISO.Canada];
+  }
+
+  onOrganizationChange(): void {
+    let cat = this.loginForm.get('org').value;
+    this.organization = this.organizations.find(obj => {
+      return obj.name === cat
+    });
+    console.log(cat);
+    console.log(this.organization);
+  }
+  
+  onDivChange(): void {
+    let div = this.loginForm.get('division').value;
+    this.division = div;
+    console.log(this.division);
+  }
+
+  getOrgs() {
+    this.uServ.getOrgs().subscribe((res) => {
+      this.organizations = res;
+      console.log(res);
+      console.log(this.organizations);
+    });
   }
 
   submit() {
     const regName = /^[a-zA-Z]+ [a-zA-Z]+$/;
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
     const regNumber = /^0[0-9].*$/;
-    const form = this.phoneForm.value;
-    if (!regName.test(form.name)) {
-      alert('Please enter your full name (first & last name).');
-      return false;
+    const form = this.loginForm.value;
+    if (!emailRegex.test(String(form.email).toLowerCase())) {
+      alert('Please enter a vali] ` email address.');
+      console.log(form);
     } else {
-      if (regNumber.test(form.phone.number)) {
-        alert('Please enter your Number in this format (eg. 0719634552');
-      } else {
-        if (form.name.length > 0 && form.phone) {
-          this.utils.presentLoading('Creating Account...');
-          this.uServ.addUser(form).then(() => {
-            this.utils.dismissLoading();
-            this.utils.presentToast('Account Created Successfully.', 'toast-success');
-            this.setAuthState(form);
-          }).catch((err) => {
-            this.utils.dismissLoading();
-            console.log(err);
-            this.utils.presentToast("Ooops! There was a problem creating your account, please try again. If this problem persists please message us.", "toast-error");
-          });
-          console.log(form);
-        };
-      }
-      return true;
+      if (form.firstName.length > 0 && form.lastName.length > 0 && form.phone && form.email) {
+        form.coords = [this.lat, this.lng];
+        form.fullName = form.firstName + " " + form.lastName;
+        form.organization = this.organization.name;
+        form.division = this.division;
+        if (form.cCode === '') {
+          // Low-Level User
+          form.clearance = 4
+        } else if (form.cCode === '211') {
+          //Project Admin
+          form.clearance = 2
+        } else if (form.cCode === '311') {
+          // Division Admin
+          form.clearance = 3
+        }
+        this.utils.presentLoading('Creating Account...');
+        this.authService.signup(form).then(() => {
+          this.utils.dismissLoading();
+          this.utils.presentToast('Account Created Successfully.', 'toast-success');
+          this.router.navigate(['login']);
+          // this.setUserInfo(form);
+        }).catch((err) => {
+          this.utils.dismissLoading();
+          console.log(err);
+          this.utils.handleError(err);
+        });
+        console.log(form);
+      };
     }
+    return true;
   }
 
-  setAuthState(data) {
-    this.ns.setItem('authState', {isLoggedIn: true, user: data}).then(() => {
+  setUserInfo(data) {
+    this.ns.setItem('userInfo', {
+      isLoggedIn: true,
+      user: data
+    }).then(() => {
       this.router.navigate(['tabs/home']);
       console.log('Stored item!');
     }).catch((err) => {

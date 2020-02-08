@@ -12,12 +12,12 @@ export class AuthGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-      this.checkAuthState();
+      this.checkuserInfo();
       return true;
   }
 
-  checkAuthState() {
-    this.nativeStorage.getItem('authState').then((data) => {
+  checkuserInfo() {
+    this.nativeStorage.getItem('userInfo').then((data) => {
       console.log(data);
       if (data) {
         if (!(data.isLoggedIn === true)) {
@@ -28,7 +28,7 @@ export class AuthGuard implements CanActivate {
       }
     }).catch((err) => {
       if (err.code === 2){
-        this.nativeStorage.setItem('authState', {isLoggedIn: false}).then(() => {
+        this.nativeStorage.setItem('userInfo', {isLoggedIn: false}).then(() => {
           this.router.navigate(['landing']);
           console.log('Stored item!');
           return false;

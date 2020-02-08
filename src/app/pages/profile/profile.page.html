@@ -1,28 +1,71 @@
-<ion-header transparent no-border>
-  <ion-toolbar>
-    <ion-title class="ion-text-center">Account</ion-title>
+<ion-header no-border>
+  <ion-toolbar transparent>
+    <ion-icon class="back_icon" slot="start" src="assets/profile/chevron-back.svg" [routerLink]="['/tabs/map']"></ion-icon>
+    <ion-title slot="start">Profile</ion-title>
+    <!-- <ion-icon class="ion-padding" slot="end" src="assets/navigation/bell.svg"></ion-icon> -->
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
+  <!-- ------------------- If the user has a profile image -------------------- -->
+  <ion-avatar *ngIf="userData?.profileImage === 'None'">
+    <img src="assets/user.svg" />
+  </ion-avatar>
+
+  <ion-avatar *ngIf="userData?.profileImage !== 'None'">
+    <img [src]="userData?.profileImage" />
+  </ion-avatar>
+
+  <h1>{{userData?.fullName}}</h1>
+  <br /><br />
+
+<!--   <ion-chip>
+    <ion-icon src="assets/trivia/coin.svg"></ion-icon>
+    <ion-label>{{userData?.credits}}</ion-label>
+  </ion-chip> -->
+
+
+
   <ion-list>
-    <ion-item lines="none">
-      <ion-label>Safety Net :</ion-label>
-      <ion-toggle [(ngModel)]="safetyNet" (ionChange)="changeState($event)"></ion-toggle>
-    </ion-item>
 
-<!--     <ion-item lines="none">
-      <ion-label>Background Mode: </ion-label>
-      <ion-toggle [(ngModel)]="bMode" (ionChange)="changeMode($event)"></ion-toggle>
-    </ion-item> -->
+    <ion-item-group>
+      <!--      <ion-item-divider>
+        <ion-label>Options</ion-label>
+      </ion-item-divider> -->
+
+      <ion-item lines="none" [routerLink]="['/edit-profile']">
+        <ion-icon slot="start" src="assets/profile/edit.svg"></ion-icon>
+        <ion-label>Edit Profile</ion-label>
+        <ion-icon slot="end" src="assets/profile/next.svg"></ion-icon>
+      </ion-item>
+<!--       <ion-item lines="none" (click)="changeProfilePhoto()">
+        <ion-icon slot="start" src="assets/profile/photo.svg"></ion-icon>
+        <ion-label>Change Profile Photo</ion-label>
+        <ion-icon slot="end" src="assets/profile/next.svg"></ion-icon>
+      </ion-item> -->
+      <ion-item lines="none" [routerLink]="['/create-form']">
+        <ion-icon slot="start" src="assets/profile/reports.svg"></ion-icon>
+        <ion-label>Naked Forms</ion-label>
+        <ion-icon slot="end" src="assets/profile/next.svg"></ion-icon>
+      </ion-item>
+      <ion-item lines="none" (click)="selectFavourites()">
+        <ion-icon slot="start" src="assets/profile/fav.svg"></ion-icon>
+        <ion-label>Quick Access SR's</ion-label>
+        <ion-icon slot="end" src="assets/profile/next.svg"></ion-icon>
+      </ion-item>
+      <ion-item lines="none" [routerLink]="['/help']">
+        <ion-icon slot="start" src="assets/profile/help.svg"></ion-icon>
+        <ion-label>Tech Support</ion-label>
+        <ion-icon slot="end" src="assets/profile/next.svg"></ion-icon>
+      </ion-item>
+      <ion-item lines="none" (click)="logOut()">
+        <ion-icon slot="start" src="assets/profile/logout.svg"></ion-icon>
+        <ion-label>Log Out</ion-label>
+        <ion-icon slot="end" src="assets/profile/next.svg"></ion-icon>
+      </ion-item>
+    </ion-item-group>
+
   </ion-list>
-
-  <button expand="block" class="ion-padding logout-btn margins" (click)="logOut()">
-    LOG OUT
-    <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
-    <ion-ripple-effect></ion-ripple-effect>
-  </button>
-
 
 </ion-content>

@@ -12,8 +12,8 @@ export class LocalNotificationService {
 
     this.localNotifications.schedule({
       id: 1,
-      title: 'Safety Net Enabled',
-      text: 'Tap any volume button 3 times to get help immediately.',
+      title: 'SpotOnResponse',
+      text: "App currently running in the background.",
       actions: 'stop',
       sticky: true
     });

@@ -1,0 +1,41 @@
+<ion-header no-border>
+  <ion-toolbar transparent>
+    <ion-icon class="ion-padding" slot="start" src="assets/navigation/back.svg" [routerLink]="['/tabs/profile']">
+    </ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+
+  <h1>Create a Custom Form</h1>
+
+  <ion-list *ngIf="fields?.length > 0">
+
+    <ion-item-sliding *ngFor="let f of fields">
+      <ion-item>
+        <ion-label>{{f.templateOptions.label}} - {{f.key}}</ion-label>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option color="danger" expandable>Delete</ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+
+  </ion-list>
+
+  <!-- <form class="ion-padding" [formGroup]="form" (ngSubmit)="submit(model)">
+    <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
+    <button type="submit" class="btn btn-default">Submit</button>
+  </form> -->
+  <form [formGroup]="createForm" class="ion-padding">
+    <ion-item>
+      <ion-label>Input Type</ion-label>
+      <ion-select [(ngModel)]="opt" [value]="opt" formControlName="type" (ionChange)="onTypeChange()" placeholder="Select Input">
+        <ion-select-option *ngFor="let opt of inputOptions" [value]="opt">{{opt}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </form>
+  <form class="ion-padding" #myDiv></form>
+  <button  *ngIf="fields?.length > 1" type="submit" (click)="uploadForm()" class="btn btn-default">Upload Form</button>
+
+
+</ion-content>

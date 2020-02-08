@@ -1,3 +1,15 @@
+@function random_pastel() {
+    $r: random(255);
+    $g: random(255);
+    $b: random(255);
+
+    // mix white
+    $r: ($r + 255) / 2;
+    $g: ($g + 255) / 2;
+    $b: ($b + 255) / 2;
+    @return rgb($r, $g, $b);
+}
+
 
 * {
     font-family: 'Nunito';
@@ -13,8 +25,34 @@ agm-map {
     height: 100vh;
 }
 
+#fab-top {
+    margin-top: 50px;
 
-ion-fab {
+    ion-fab-button {
+        --background: #000 !important;
+        color: #fff !important;
+
+        ion-icon {
+            color: #fff !important;
+            padding: 5px;
+        }
+
+        ion-fab-list {
+            ion-fab-button {
+                padding: 25px !important;
+            }
+        }
+    }
+
+    ion-icon {
+        font-size: 2em;
+        color: #fff !important;
+    }
+}
+
+
+
+#fab-bottom {
     margin-bottom: 50px;
 
     ion-icon {

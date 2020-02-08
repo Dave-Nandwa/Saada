@@ -28,6 +28,9 @@ import {
 import {
   BackgroundMode
 } from '@ionic-native/background-mode/ngx';
+import {
+  LocationAccuracy
+} from '@ionic-native/location-accuracy/ngx';
 
 import {
   SplashScreen
@@ -37,7 +40,6 @@ import {
 } from '@ionic-native/status-bar/ngx';
 
 
-
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -45,18 +47,18 @@ import {
 })
 export class AppComponent {
 
-/* ---------------------------- Triple Click Vars --------------------------- */
+  /* ---------------------------- Triple Click Vars --------------------------- */
 
-vminClickInterval: any = 100;
-maxClickInterval: any = 500;
-minPercentThird: any = 85.0;
-maxPercentThird: any = 130.0;
+  vminClickInterval: any = 100;
+  maxClickInterval: any = 500;
+  minPercentThird: any = 85.0;
+  maxPercentThird: any = 130.0;
 
-// Runtime
-hasOne: any = false;
-hasTwo: any = false;
-time: any = [0, 0, 0];
-diff: any = [0, 0];
+  // Runtime
+  hasOne: any = false;
+  hasTwo: any = false;
+  time: any = [0, 0, 0];
+  diff: any = [0, 0];
 
   constructor(
     private platform: Platform,
@@ -64,7 +66,8 @@ diff: any = [0, 0];
     private statusBar: StatusBar,
     private ap: AndroidPermissions,
     private localNotifications: LocalNotifications,
-    public backgroundMode: BackgroundMode
+    public backgroundMode: BackgroundMode,
+    private locationAccuracy: LocationAccuracy
   ) {
     this.initializeApp();
   }
@@ -84,11 +87,12 @@ diff: any = [0, 0];
       this.checkLocationPermissions();
       this.checkCallPermission();
       this.checkStoragePermission();
-      /* ---------------------- Listen for Power Button Press --------------------- */
-      this.addVolumeButtonsListener()
 
       /* -------------------------- Listen for Close App -------------------------- */
       this.onClose();
+
+      /* ---------------------- Request for Location Accuracy --------------------- */
+      this.requestAccuracy();
     });
 
   }
@@ -157,74 +161,28 @@ diff: any = [0, 0];
     });
   }
 
-  addVolumeButtonsListener() {
-    // Default settings
 
-    document.addEventListener("volumedownbutton", (info) => {
-      this.onEvent(info);
-    }, false);
-    document.addEventListener("volumeupbutton", (info) => {
-      this.onEvent(info);
-    }, false);
-  }
-
-  clearRunTime() {
-    this.hasOne = false;
-    this.hasTwo = false;
-    this.time[0] = 0;
-    this.time[1] = 0;
-    this.time[2] = 0;
-    this.diff[0] = 0;
-    this.diff[1] = 0;
-};
 
   onClose() {
     /* ------------------------- Enable Background Mode ------------------------- */
     document.addEventListener("pause", () => {
       this.backgroundMode.enable();
     }, false);
-    
   }
 
-  onEvent(info) {
-    var now = Date.now();
-    
-    // Clear runtime after timeout fot the 2nd click
-    if (this.time[1] && now - this.time[1] >= this.maxClickInterval) {
-        this.clearRunTime();
-    }
-    // Clear runtime after timeout fot the 3rd click
-    if (this.time[0] && this.time[1] && now - this.time[0] >= this.maxClickInterval) {
-        this.clearRunTime();
-    }
-    
-    // Catch the third click
-    if (this.hasTwo) {
-        this.time[2] = Date.now();
-        this.diff[1] = this.time[2] - this.time[1];
-        
-        var deltaPercent = 100.0 * (this.diff[1] /this.diff[0]);
-        
-        if (deltaPercent >= this.minPercentThird && deltaPercent <= this.maxPercentThird) {
-            console.log("Triple Click!");
-        }
-        this.clearRunTime();
-    }
-    
-    // Catch the first click
-    else if (!this.hasOne) {
-        this.hasOne = true;
-        this.time[0] = Date.now();
-    }
-    
-    // Catch the second click
-    else if (this.hasOne) {
-        this.time[1] = Date.now();
-       this.diff[0] = this.time[1] - this.time[0];
-        
-        (this.diff[0] >= this.vminClickInterval &&this.diff[0] <= this.maxClickInterval) ?
-            this.hasTwo = true : this.clearRunTime();
-    } 
+
+  requestAccuracy() {
+    this.locationAccuracy.canRequest().then((canRequest: boolean) => {
+
+      if (canRequest) {
+        // the accuracy option will be ignored by iOS
+        this.locationAccuracy.request(this.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY).then(
+          () => console.log('Request successful'),
+          error => console.log('Error requesting location permissions', error)
+        );
+      }
+
+    }); 
   }
 
 }

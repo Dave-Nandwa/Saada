@@ -10,6 +10,8 @@ import {
   TabsPage
 } from './tabs.page';
 import { AuthGuard } from './../guards/auth.guard';
+import { redirectUnauthorizedTo, canActivate } from '@angular/fire/auth-guard';
+const redirectToLogin = redirectUnauthorizedTo(['login']);
 
 const routes: Routes = [{
     path: 'tabs',
@@ -21,7 +23,7 @@ const routes: Routes = [{
           loadChildren: () =>
             import('../pages/home/home.module').then(m => m.HomePageModule)
         }],
-        canActivate: [AuthGuard]
+        ...canActivate(redirectToLogin)
       },
       {
         path: 'map',
@@ -29,7 +31,8 @@ const routes: Routes = [{
           path: '',
           loadChildren: () =>
             import('../pages/map/map.module').then(m => m.MapPageModule)
-        }]
+        }],
+        ...canActivate(redirectToLogin)
       },
       {
         path: 'offline',
@@ -45,7 +48,8 @@ const routes: Routes = [{
           path: '',
           loadChildren: () =>
             import('../pages/profile/profile.module').then(m => m.ProfilePageModule)
-        }]
+        }],
+        ...canActivate(redirectToLogin)
       },
       {
         path: '',
@@ -56,7 +60,7 @@ const routes: Routes = [{
   },
   {
     path: '',
-    redirectTo: '/tabs/home',
+    redirectTo: '/tabs/map',
     pathMatch: 'full'
   }
 ];

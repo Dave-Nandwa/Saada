@@ -1,13 +1,13 @@
 <ion-header transparent no-border>
   <ion-toolbar>
-    <ion-title class="ion-text-center">What's your Emergency?</ion-title>
+    <ion-title class="ion-text-center">Admin Page</ion-title>
   </ion-toolbar>
 </ion-header>
 
 
-<ion-content>
+<ion-content class="ion-padding">
 
-
+<!-- 
   <ion-grid fixed>
     <ion-row class="ion-justify-content-center">
       <ion-col size="3" [class.active]="e.active" *ngFor="let e of emergencies" (click)="toggleClass(e)">
@@ -15,9 +15,9 @@
      {{ e.name}}
       </ion-col>
     </ion-row>
-  </ion-grid>
-  <button expand="block" class="ion-padding btn" (click)="callResponder()">
-    Call Responder
+  </ion-grid> -->
+  <button expand="block" class="ion-padding btn" (click)="generateReports()">
+    Generate Fake Reports
     <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
     <ion-ripple-effect></ion-ripple-effect>
   </button>

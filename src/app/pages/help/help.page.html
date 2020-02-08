@@ -1,0 +1,28 @@
+<ion-header no-border>
+  <ion-toolbar transparent>
+    <ion-icon class="ion-padding" slot="start" src="assets/navigation/back.svg" [routerLink]="['/tabs/profile']"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+
+  <h1>Tech Support</h1>
+
+  <form #f="ngForm" [formGroup]="submitForm" class="ion-padding">
+    <ion-item lines="none">
+      <ion-label>Name: </ion-label>
+      <ion-input type="text" formControlName="name" placeholder="What's you name?"></ion-input>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label>Email: </ion-label>
+      <ion-input type="email" formControlName="email" placeholder="Email Address"></ion-input>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label>Issue: </ion-label>
+      <ion-textarea placeholder="How can we help? (max 200 characters)" formControlName="issue" maxlength="200">
+      </ion-textarea>
+    </ion-item>
+    <button ion-button (click)="getHelp()">Get Help</button>
+  </form>
+
+</ion-content>

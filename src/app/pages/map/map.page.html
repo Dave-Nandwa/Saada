@@ -12,24 +12,31 @@
 
 
 
-  <agm-map [styles]="mapStyles" [zoom]="zoomLevel" [disableDefaultUI]="true" [zoomControl]="false" [latitude]="lat" [longitude]="lng">
+  <agm-map [styles]="mapStyles" [zoom]="zoomLevel" [disableDefaultUI]="true" [zoomControl]="false" [latitude]="lat"
+    [longitude]="lng">
+
+    <!-- -------------------------- Directions Markup -------------------------- -->
+    <agm-direction *ngIf="origin && destination" [origin]="origin" [destination]="destination" [travelMode]="travelMode">
+    </agm-direction>
+
+    <!-- ----------------------------- User Marker ----------------------------- -->
 
     <agm-marker [latitude]="lat" [longitude]="lng" [label]="You" [iconUrl]="mapIcon"></agm-marker>
 
     <!-- Display Multiple Markers + An Info Window-->
-    <agm-marker *ngFor="let point of points | async; trackBy: trackByFn" [latitude]="point.position.geopoint.latitude"
+    
+      <agm-marker *ngFor="let point of points | async; trackBy: trackByFn" [latitude]="point.position.geopoint.latitude"
       [longitude]="point.position.geopoint.longitude" [iconUrl]="carIcon">
 
       <agm-info-window>
-        <button expand="block" class="ion-padding btn" (click)="callResponder(point.tels[0])">
-          Call {{point.name}}
-          <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
+        <span>{{point.name}}</span>
+        <button expand="block" class="ion-padding btn" (click)="getDirections(point.position.geopoint.latitude, point.position.geopoint.longitude)">
+          Get Directions
           <ion-ripple-effect></ion-ripple-effect>
         </button>
-        <!-- {{ point.hitMetadata | json }} -->
+       <!-- {{ point.hitMetadata | json }} -->
       </agm-info-window>
-
-    </agm-marker>
+    </agm-marker> 
 
 
 
@@ -41,23 +48,31 @@
 
   </agm-map>
 
-    <!-- fab placed to the bottom and start and on the bottom edge of the content overlapping footer with a list to the right -->
-    <ion-fab vertical="bottom" horizontal="end" edge slot="fixed">
-      <ion-fab-button>
-        <ion-icon name="arrow-dropup"></ion-icon>
+  <!-- fab placed to the top and start and on the bottom edge of the content overlapping footer with a list to the right -->
+  <ion-fab *ngIf="this.userData?.favorites?.length !== 0" color="dark" id="fab-top" vertical="top" horizontal="start"
+    edge slot="fixed">
+    <ion-fab-button>
+      <ion-icon src="assets/map/star-black.svg"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="bottom">
+      <ion-fab-button (click)="requestForm(fav)" *ngFor="let fav of userData?.favorites">
+        <ion-icon [src]="'assets/map/'.concat(fav).concat('.svg')"></ion-icon>
       </ion-fab-button>
-      <ion-fab-list side="top">
-        <ion-fab-button (click)="policeCall()">
-          <ion-icon name="police" src="assets/tabIcons/policeman.svg"></ion-icon>
-        </ion-fab-button>
-        <ion-fab-button (click)="fireCall()">
-          <ion-icon name="flame"></ion-icon>
-        </ion-fab-button>
-        <ion-fab-button (click)="medCall()">
-          <ion-icon src="assets/tabIcons/ambulance.svg"></ion-icon>
-        </ion-fab-button>
-      </ion-fab-list>
-    </ion-fab>
+    </ion-fab-list>
+  </ion-fab>
+
+  <ion-fab *ngIf="origin && destination" id="fab-top" vertical="top" horizontal="end" edge slot="fixed">
+    <ion-fab-button (click)="stopDirecting()">
+      <ion-icon src="assets/mapIcons/close.svg"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- fab placed to the bottom and start and on the bottom edge of the content overlapping footer with a list to the right -->
+  <ion-fab id="fab-bottom" vertical="bottom" horizontal="end" edge slot="fixed">
+    <ion-fab-button (click)="presentNakedFormOptions()">
+      <ion-icon src="assets/mapIcons/alert.svg"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
 
 </ion-content>

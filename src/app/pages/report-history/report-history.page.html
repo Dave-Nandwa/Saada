@@ -1,0 +1,49 @@
+<ion-header no-border>
+  <ion-toolbar transparent>
+    <ion-icon class="ion-padding" slot="start" src="assets/navigation/back.svg" [routerLink]="['/tabs/profile']">
+    </ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fulscreen>
+  <h1>Report History</h1>
+  <ion-img *ngIf="noReports" class="ion-padding" src="assets/profile/empty.svg"></ion-img>
+
+  <ion-grid *ngIf="!noReports" class="ion-no-padding">
+    <ion-row class="row-cards">
+      <ion-col>
+        <div class="card gradient-1 ion-padding">
+          <div class="card-number">
+            XXXX XXXX XXXX 1234
+          </div>
+          <div class="card-holder">Card Holder</div>
+          <div class="card-person-name">Name of Person</div>
+          <img src="https://cdn.freebiesupply.com/logos/large/2x/visa-logo-black-and-white.png" class="brand" />
+        </div>
+      </ion-col>
+      <ion-col>
+        <div class="card gradient-2 ion-padding">
+          <div class="card-number">
+            XXXX XXXX XXXX 1234
+          </div>
+          <div class="card-holder">Card Holder</div>
+          <div class="card-person-name">Name of Person</div>
+          <img
+            src="https://brand.mastercard.com/content/dam/mccom/brandcenter/thumbnails/mastercard_vrt_pos_92px_2x.png"
+            class="brand" />
+        </div>
+      </ion-col>
+      <ion-col>
+        <div class="card gradient-3 ion-padding">
+          <div class="card-number">
+            XXXX XXXX XXXX 1234
+          </div>
+          <div class="card-holder">Card Holder</div>
+          <div class="card-person-name">Name of Person</div>
+          <img src="https://brand.mastercard.com/content/dam/mccom/brandcenter/thumbnails/mastercard_vrt_pos_92px_2x.png" class="brand" />
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  
+</ion-content>

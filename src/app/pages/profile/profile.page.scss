@@ -1,67 +1,122 @@
-* {
-    font-family: 'Poppins';
-}
-
 ion-header {
-    -webkit-box-shadow: 0px 20px 31px -5px rgba(14, 43, 117, 0.247) !important;
-    box-shadow: 0px 20px 31px -5px rgba(14, 43, 117, 0.247) !important;
-    margin-bottom: 10px !important;
+    ion-toolbar {
+        font-family: 'Nunito', sans-serif;
+        background: #F3F6FC;
+        --background: #f3f6fc;
+        color: #6E7494 !important;
+        -webkit-box-shadow: -1px 9px 78px -5px rgba(255, 255, 255, 0.5);
+        -moz-box-shadow: -1px 9px 78px -5px rgba(255, 255, 255, 0.5);
+        box-shadow: -1px 9px 78px -5px rgba(255, 255, 255, 0.5);
+
+        ion-title {
+            font-weight: 900;
+            color: #6E7494 !important;
+            left: 10px;
+        }
+
+        ion-icon {
+            color: #6E7494 !important;
+            font-weight: bold;
+            font-size: 1.25em;
+        }
+
+        .back_icon {
+            margin-left: 15px !important;
+        }
+    }
+
 }
 
-.margins {
-    margin-bottom: 10px;
-    margin-top: 10px;
-}
 
-.btn {
-    width: 100%;
-    padding: 10px 10px;
-    background: #4F65F6;
-    --background: #4F65F6;
-    --box-shadow: none;
-    border-radius: 6px;
-    font-size: 1em;
+ion-content {
+
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
     text-align: center;
-    text-transform: uppercase;
-    --color: #fff !important;
-    color: #fff;
-    outline: none;
-    // margin-bottom:1px;
-    /*    ion-icon {
-        font-size: 1.5em;
-        margin:0;
-        padding:0;
-        display: inline-block;
-    } */
-}
+    // background: rgb(227, 235, 250);
+    // --background: rgb(227, 235, 250);
+    background: #EDF3FA;
+    --background: #EDF3FA;
 
+    ion-avatar {
+        margin-top: 20px;
+        margin: 0 auto;
+        text-align: center;
+        margin-top: 10px;
+        border: 6px solid #D7DBF2;
+    }
 
+    h1 {
+        font-family: 'Poppins Black';
+        font-weight: 900;
+        color: #3D536F !important;
+        width: 100%;
+        margin: 0 auto !important;
+        padding: 15px;
+        position: absolute;
+        top: 16% !important;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.5em !important;
+        margin-bottom: 5px;
+        margin-top: 10px;
+    }
 
-.logout-btn {
-    width: 100%;
-    padding: 10px 10px;
-    background: rgb(246, 104, 79);
-    --background: rgb(246, 104, 79);
-    --box-shadow: none;
-    border-radius: 6px;
-    font-size: 1em;
-    text-align: center;
-    text-transform: uppercase;
-    --color: #fff !important;
-    color: #fff;
-    outline: none;
-    // margin-bottom:1px;
-    /*    ion-icon {
-        font-size: 1.5em;
-        margin:0;
-        padding:0;
-        display: inline-block;
-    } */
-}
+    ion-chip {
+        background: #fff;
+        --background: #fff;
+        color: #0054FE;
+        width: auto;
+        margin: 0 auto !important;
+        padding: 15px;
+        position: absolute;
+        top: 22.5% !important;
+        left: 50%;
+        transform: translate(-50%, -50%);
 
+        ion-label {
+            font-family: 'Nunito', sans-serif !important;
+            font-weight: bold;
+        }
+    }
 
-ion-item {
-    margin-top: 20px;
-    // border-top: 1px solid black;
-    border-bottom: 1px solid black;
+    ion-list {
+        background: #fff;
+        --background: #fff;
+        width: 100%;
+        height: auto;
+        padding: 25px;
+        padding-bottom: 50px;
+        border-top-left-radius: 18px;
+        border-top-right-radius: 18px;
+        position: absolute;
+        bottom: 0 !important;
+        -webkit-box-shadow: -1px -13px 78px -5px rgba(255, 255, 255, 0.6);
+        -moz-box-shadow: -1px -13px 78px -5px rgba(255, 255, 255, 0.6);
+        box-shadow: -1px -13px 78px -5px rgba(255, 255, 255, 0.6);
+
+        ion-item {
+            padding-bottom: 10px;
+
+            ion-label {
+                font-family: 'Nunito', sans-serif !important;
+                font-weight: 900;
+                color: #6E7494 !important;
+                vertical-align: middle;
+                margin-top: 10px;
+            }
+
+            ion-avatar {
+                margin-right: 10px;
+            }
+
+            ion-icon {
+                vertical-align: middle;
+                margin-top: 0 auto;
+                font-size: 1.5em;
+            }
+        }
+    }
 }

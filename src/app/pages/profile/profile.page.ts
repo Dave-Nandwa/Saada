@@ -1,3 +1,6 @@
+import {
+  FormService
+} from 'src/app/services/form.service';
 
 import {
   Component,
@@ -22,14 +25,17 @@ import {
 import {
   NativeStorage
 } from '@ionic-native/native-storage/ngx';
-import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import {
+  BackgroundMode
+} from '@ionic-native/background-mode/ngx';
 
-/* ---------------------------------- Rxjs ---------------------------------- */
+/* ---------------------------------- Firebase & Rxjs ---------------------------------- */
 import {
   Observable,
   BehaviorSubject
 } from 'rxjs';
 
+import * as firebase from 'firebase/app';
 
 @Component({
   selector: 'app-profile',
@@ -37,21 +43,56 @@ import {
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit {
-  private safetyNet : boolean = true;
+  private safetyNet: boolean = true;
   private bMode: boolean = false;
-  constructor(public backgroundMode: BackgroundMode, private utils: UtilitiesService, private lcn: LocalNotificationService, private router: Router, private nativeStorage: NativeStorage, private uServ: UserService) {}
+  options: any = [{
+      name: 'checkbox1',
+      type: 'checkbox',
+      label: 'Landslide',
+      value: 'Landslide',
+    },
+    {
+      name: 'checkbox2',
+      type: 'checkbox',
+      label: 'Earthquake',
+      value: 'Earthquake'
+    },
+    {
+      name: 'checkbox3',
+      type: 'checkbox',
+      label: 'Disease Outbreak',
+      value: 'Disease Outbreak'
+    },
+    {
+      name: 'checkbox4',
+      type: 'checkbox',
+      label: 'Forest Fire',
+      value: 'Forest Fire'
+    },
+  ];
+
+  userData: any;
+  userId: any;
+  constructor(private formService: FormService, public backgroundMode: BackgroundMode, private utils: UtilitiesService, private lcn: LocalNotificationService, private router: Router, private nativeStorage: NativeStorage, private uServ: UserService) {}
 
   ngOnInit() {
-    this.initState();
+    this.getUserData();
   }
-  changeState(e) {
-    this.safetyNet = e.detail.checked;
-    if (this.safetyNet === true) {
-      this.enableSafetyNet();
-    } else {
-      this.disableSafetyNet();
-    }
+
+  async getUserData() {
+    this.utils.presentLoading('Please wait...');
+    this.uServ.getUserProfile().then((userProfileSnapshot: any) => {
+      if (userProfileSnapshot.data()) {
+        this.userData = userProfileSnapshot.data();
+        console.log(this.userData);
+      }
+      this.utils.dismissLoading();
+    }).catch((err) => {
+      this.utils.dismissLoading();
+      this.utils.handleError(err);
+    });
   }
+
 
   changeMode(e) {
     this.backgroundMode = e.detail.checked;
@@ -64,92 +105,35 @@ export class ProfilePage implements OnInit {
     }
   }
 
-
-  disableSafetyNet() {
-    this.utils.presentLoading('Disabling Safety Net...');
-    this.nativeStorage.getItem('authState').then((data) => {
-      console.log("BEFORE", data);
-      if (data) {
-        if (data.user.userId) {
-          this.uServ.updateUser(data, {
-            safetyNet: false
-          }).then(() => {
-            this.nativeStorage.setItem('authState', {
-              isLoggedIn: true,
-              safetyNet: false,
-              user: data.user
-            }).then(() => {
-              this.lcn.clearAll();
-              this.utils.dismissLoading();
-              this.utils.presentToast('Safety Net Disabled.', 'toast-error');
-            }).catch((err) => {
-              console.log("There was a problem updating the user's profile", err);
-            });
-          }).catch((err) => {
-            console.log("There was a problem updating the user's profile", err);
-          });
-        } else {
-          console.log('USER ID NOT FOUND IN LOCAL STORAGE.');
-          this.router.navigate(['login']);
-        }
-      }
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
-
-  enableSafetyNet() {
-    this.utils.presentLoading('Enabling Safety Net...');
-    this.nativeStorage.getItem('authState').then((data) => {
-      console.log("BEFORE", data);
-      if (data) {
-        if (data.user.userId) {
-          this.uServ.updateUser(data, {
-            safetyNet: true
-          }).then(() => {
-            this.nativeStorage.setItem('authState', {
-              isLoggedIn: true,
-              safetyNet: true,
-              user: data.user
-            }).then(() => {
-              this.lcn.enablePSNotif();
-              this.utils.dismissLoading();
-              this.utils.presentToast('Safety Net Enabled.', 'toast-success');
-            }).catch((err) => {
-              console.log("There was a problem updating your profile", err);
-            });
-          }).catch((err) => {
-            console.log("There was a problem updating your profile", err);
-          });
-        } else {
-          console.log('USER ID NOT FOUND IN LOCAL STORAGE.');
-          this.router.navigate(['login']);
-        }
-      }
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
-
-  initState() {
-    this.nativeStorage.getItem('authState').then((data) => {
-      console.log("AFTER", data);
-      if (data) {
-        if (data.safetyNet) {
-          this.safetyNet = data.safetyNet;
-        }
-      }
-    }).catch((err) => console.log(err));
-  }
-
   logOut() {
     // this.safeObs.subscribe(isAuth => console.log(isAuth));
-    this.utils.presentLoading('Logging Out...');
-    this.nativeStorage.clear().then(() => {
-      this.lcn.clearAll();
+    this.uServ.logOut();
+    this.router.navigate(['login']);
+  }
+
+
+  selectFavourites() {
+    this.formService.selectFavs(this.options, this.cancelHandler, this.successHandler);
+
+  }
+
+  /* --------------------- Handlers for the function above -------------------- */
+
+  cancelHandler = () => {
+    console.log("Cancelled.");
+  };
+
+  successHandler = (data: any) => {
+    data.map((f, index) => data[index] = (f.toLowerCase().split(' ').join('_')));
+    this.utils.presentLoading('Updating Profile...');
+    this.uServ.updateUser(this.userData.userId, {
+      favorites: data
+    }).then(() => {
       this.utils.dismissLoading();
-      this.router.navigate(['login']);
-      this.utils.presentToast('Logged Out.', 'toast-error')
+      this.utils.presentToast('Saved.', 'toast-success');
+    }).catch((err) => {
+      this.utils.dismissLoading();
+      this.utils.handleError(err);
     });
   }
 

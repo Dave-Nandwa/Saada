@@ -1,0 +1,73 @@
+ion-header {
+    background: #F7FBFE;
+    --background: #F7FBFE;
+
+    ion-toolbar {
+        background: #F7FBFE;
+        --background: #F7FBFE;
+        color: #6E7494;
+
+        ion-icon {
+            font-size: 1.5em;
+        }
+    }
+}
+
+ion-content {
+    background: #F7FBFE;
+    --background: #F7FBFE;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+
+h1 {
+    text-shadow: 0 14px 26px rgba(0, 0, 0, 0.04);
+    font-family: 'Poppins Black', sans-serif;
+    font-size: 2em;
+    width: 100%;
+    margin: 0 auto;
+    color: #6E7494;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    letter-spacing: 1.5px;
+}
+
+.row-cards {
+    flex-wrap: nowrap;
+    padding: 20px;
+    overflow-y: scroll;
+
+    .card {
+        position: relative;
+        border-radius: 10px;
+        height: 135px;
+        width: 235px;
+        color: white;
+
+        .card-number {
+            font-size: 14px;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        .card-holder {
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .card-person-name {
+            font-size: 12px;
+        }
+
+        .brand {
+            position: absolute;
+            bottom: 0;
+            right: 10px;
+            width: 50px;
+        }
+    }
+}

@@ -1,0 +1,70 @@
+<ion-header no-border>
+  <ion-toolbar transparent>
+    <ion-icon class="ion-padding" slot="start" src="assets/navigation/back.svg" [routerLink]="['/tabs/profile']"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+
+  <h1>Edit Profile</h1>
+
+  <form #f="ngForm" [formGroup]="submitForm" class="ion-padding">
+
+    <ion-item lines="none">
+      <ion-label>First Name: </ion-label>
+      <ion-input type="text" [value]="userData?.firstName" placeholder="First Name" formControlName="firstName" maxlength="10">
+      </ion-input>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label>Last Name: </ion-label>
+      <ion-input type="text" [value]="userData?.lastName" placeholder="Last Name" formControlName="lastName" maxlength="10">
+      </ion-input>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label>Email: </ion-label>
+      <ion-input type="email" [value]="userData?.email" formControlName="email" placeholder="dave@gmail.com">
+      </ion-input>
+    </ion-item>
+    
+    <ngx-intl-tel-input class="phoneInput" [preferredCountries]="preferredCountries" [enableAutoCountrySelect]="false"
+      [enablePlaceholder]="true" [searchCountryFlag]="true"
+      [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+      [selectedCountryISO]="CountryISO.UnitedStates" [maxLength]="10" [tooltipField]="TooltipLabel.Name"
+      [phoneValidation]="true" [separateDialCode]="separateDialCode" [value]="userData?.phone.number" name="phone"
+      formControlName="phone" >
+    </ngx-intl-tel-input>
+
+    <ion-item lines="none">
+      <ion-label>Clearance Level: </ion-label>
+      <ion-input disabled type="email" [value]="userData?.clearance" placeholder="0">
+      </ion-input>
+    </ion-item>
+
+
+
+    <ion-item class="mb-2">
+      <ion-label>Organization: </ion-label>
+      <ion-select disabled [value]="userData?.organization" formControlName="org" okText="Select" cancelText="Dismiss"
+        (ionChange)="onOrganizationChange()">
+        <ion-select-option class="input" *ngFor="let o of organizations" [value]="o.name">{{o.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item *ngIf="organization" class="mb-2">
+      <ion-label>Division: </ion-label>
+      <ion-select  [value]="userData?.division" formControlName="div" okText="Select" cancelText="Dismiss"
+        (ionChange)="onDivChange()">
+        <ion-select-option class="input" *ngFor="let d of organization?.divisions" [value]="d">{{d}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+
+    <button ion-button (click)="submitApplication()">Update</button>
+    <ion-button (click)="forgotPassword()" color="danger">
+      Forgot Password
+    </ion-button>
+  </form>
+
+</ion-content>
