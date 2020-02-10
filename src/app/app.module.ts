@@ -97,6 +97,10 @@ import {
   LocalNotificationService
 } from './services/local-notification.service';
 import { FormService } from './services/form.service';
+import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
+import { Camera } from '@ionic-native/camera/ngx';
+import { File} from '@ionic-native/file/ngx';
+import { Crop } from '@ionic-native/crop/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -128,6 +132,10 @@ import { FormService } from './services/form.service';
     AndroidPermissions,
     NativeStorage,
     CallNumber,
+    NativeGeocoder,
+    Camera, 
+    File,
+    Crop,
     /* ----------------------------- Custom Services ---------------------------- */
     LocalNotificationService,
     LocationService,

@@ -27,6 +27,12 @@ import {
 import { AngularFirestore } from '@angular/fire/firestore';
 import { UtilitiesService } from 'src/app/services/utilities.service';
 
+/* ------------------------------ Status Modal ------------------------------ */
+
+import { ModalController } from '@ionic/angular';
+import { StatusPage } from 'src/app/modals/status/status.page';
+
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
@@ -48,7 +54,9 @@ export class HomePage implements OnInit {
 
   geo = geofirex.init(firebaseApp);
 
-  constructor(private callNumber: CallNumber,
+  constructor(
+    public modalController: ModalController,
+    private callNumber: CallNumber,
     private lnServ: LocalNotificationService,
     private lc: LocationService,
     private afs: AngularFirestore, 
@@ -56,6 +64,13 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     this.lnServ.enablePSNotif();
+  }
+
+  async changeStatus() {
+    const modal = await this.modalController.create({
+      component: StatusPage
+    });
+    return await modal.present();
   }
 
   toggleClass(service) {

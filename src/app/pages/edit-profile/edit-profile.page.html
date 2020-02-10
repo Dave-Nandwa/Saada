@@ -1,6 +1,7 @@
 <ion-header no-border>
   <ion-toolbar transparent>
-    <ion-icon class="ion-padding" slot="start" src="assets/navigation/back.svg" [routerLink]="['/tabs/profile']"></ion-icon>
+    <ion-icon class="ion-padding" slot="start" src="assets/navigation/back.svg" [routerLink]="['/tabs/profile']">
+    </ion-icon>
   </ion-toolbar>
 </ion-header>
 
@@ -12,13 +13,15 @@
 
     <ion-item lines="none">
       <ion-label>First Name: </ion-label>
-      <ion-input type="text" [value]="userData?.firstName" placeholder="First Name" formControlName="firstName" maxlength="10">
+      <ion-input type="text" [value]="userData?.firstName" placeholder="First Name" formControlName="firstName"
+        maxlength="10">
       </ion-input>
     </ion-item>
 
     <ion-item lines="none">
       <ion-label>Last Name: </ion-label>
-      <ion-input type="text" [value]="userData?.lastName" placeholder="Last Name" formControlName="lastName" maxlength="10">
+      <ion-input type="text" [value]="userData?.lastName" placeholder="Last Name" formControlName="lastName"
+        maxlength="10">
       </ion-input>
     </ion-item>
 
@@ -27,22 +30,26 @@
       <ion-input type="email" [value]="userData?.email" formControlName="email" placeholder="dave@gmail.com">
       </ion-input>
     </ion-item>
-    
+
     <ngx-intl-tel-input class="phoneInput" [preferredCountries]="preferredCountries" [enableAutoCountrySelect]="false"
       [enablePlaceholder]="true" [searchCountryFlag]="true"
       [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
       [selectedCountryISO]="CountryISO.UnitedStates" [maxLength]="10" [tooltipField]="TooltipLabel.Name"
       [phoneValidation]="true" [separateDialCode]="separateDialCode" [value]="userData?.phone.number" name="phone"
-      formControlName="phone" >
+      formControlName="phone">
     </ngx-intl-tel-input>
 
     <ion-item lines="none">
       <ion-label>Clearance Level: </ion-label>
-      <ion-input disabled type="email" [value]="userData?.clearance" placeholder="0">
+      <ion-input disabled type="number" [value]="userData?.clearance" placeholder="0">
       </ion-input>
     </ion-item>
 
-
+    <ion-item lines="none">
+      <ion-label>Area Of Interest (m): </ion-label>
+      <ion-input type="text" formControlName="aoi" [value]="userData?.areaOfInterest" placeholder="2000">
+      </ion-input>
+    </ion-item>
 
     <ion-item class="mb-2">
       <ion-label>Organization: </ion-label>
@@ -54,9 +61,17 @@
 
     <ion-item *ngIf="organization" class="mb-2">
       <ion-label>Division: </ion-label>
-      <ion-select  [value]="userData?.division" formControlName="div" okText="Select" cancelText="Dismiss"
+      <ion-select [value]="userData?.division" formControlName="div" okText="Select" cancelText="Dismiss"
         (ionChange)="onDivChange()">
         <ion-select-option class="input" *ngFor="let d of organization?.divisions" [value]="d">{{d}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item *ngIf="organization" class="mb-2">
+      <ion-label>Project: </ion-label>
+      <ion-select [value]="userData?.project" formControlName="proj" okText="Select" cancelText="Dismiss"
+        (ionChange)="onProjChange()">
+        <ion-select-option class="input" *ngFor="let p of organization?.projects" [value]="p">{{p}}</ion-select-option>
       </ion-select>
     </ion-item>
 

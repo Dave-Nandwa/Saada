@@ -231,6 +231,15 @@ export class FormService {
     });
   }
 
+  
+  uploadSpotReport(form) {
+    const id = this.afs.createId();
+    form.spotId = id;
+    return this.afs.doc(`spot_reports/${id}`).set(form, {
+      merge: true
+    });
+  }
+
 
 
 }

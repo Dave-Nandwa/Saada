@@ -3,7 +3,8 @@ import {
 } from '@ionic-native/native-storage/ngx';
 import {
   Component,
-  OnInit
+  OnInit,
+  AfterViewInit
 } from '@angular/core';
 
 
@@ -41,9 +42,11 @@ export class EditProfilePage implements OnInit {
     firstName: new FormControl('None', [Validators.required]),
     lastName: new FormControl('None', [Validators.required]),
     email: new FormControl('None', [Validators.required]),
-    phone: new FormControl('None', [Validators.required]),
+    phone: new FormControl(undefined, [Validators.required]),
     org: new FormControl('None', [Validators.required]),
-    div: new FormControl('None', [Validators.required])
+    div: new FormControl('None', [Validators.required]),
+    proj: new FormControl('None', [Validators.required]),
+    aoi: new FormControl('None', [Validators.required]),
   });
  
   userData: any;
@@ -57,14 +60,17 @@ export class EditProfilePage implements OnInit {
 
   organization: any;
   division: any;
+  project: any;
   organizations: any = [];
 
   constructor(private utils: UtilitiesService, private userService: UserService, private router: Router, private nativeStorage: NativeStorage) {}
 
   ngOnInit() {
+    this.utils.presentLoading("Please wait...");
     this.getUserData();
     this.getOrgs();
   }
+
 
 
   onOrganizationChange(): void {
@@ -82,6 +88,11 @@ export class EditProfilePage implements OnInit {
     console.log(this.division);
   }
 
+  onProjChange(): void {
+    let proj = this.submitForm.get('proj').value;
+    this.project = proj;
+  }
+
   getOrgs() {
     this.userService.getOrgs().subscribe((res) => {
       this.organizations = res;
@@ -91,16 +102,14 @@ export class EditProfilePage implements OnInit {
   }
 
   getUserData() {
-    this.utils.presentLoading('Please wait...');
     this.userService.getUserProfile().then((userProfileSnapshot: any) => {
-      console.log(userProfileSnapshot);
       if (userProfileSnapshot.data()) {
         this.userData = userProfileSnapshot.data();
-        this.predefineVals(this.userData);  
+        this.predefineVals(this.userData); 
       }
       this.utils.dismissLoading();
     }).catch((err) => {
-      this.utils.dismissLoading();
+      this.utils.dismissLoading(); 
       console.log(err);
       // this.utils.handleError(err);
     });
@@ -108,10 +117,12 @@ export class EditProfilePage implements OnInit {
 
 
   predefineVals(user) {
+    this.submitForm.controls.phone.setValue(user.phone.number);
+    this.division = this.userData.division;
+    this.project = this.userData.project;
     this.submitForm.setValue({
       name: user.fullName,
       email: user.email,
-      phone: user.phone.number,
     });
   }
 
@@ -120,24 +131,29 @@ export class EditProfilePage implements OnInit {
     let formData = this.submitForm.value;
     try {
       const regName = /^[a-zA-Z]+ [a-zA-Z]+$/;
-      const regNumber = /^0[0-9].*$/;
       const regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-      if (regName.test(formData.name) && regEmail.test(formData.email)) {
-        let data = {
-          fullName: formData.firstName + " " + formData.lastName,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phone: (formData.phone),
-          division: this.division
-        };
-        console.log(this.userData.userId);
+
+      let data = {
+        areaOfInterest: parseInt(formData.aoi),
+        fullName: formData.firstName + " " + formData.lastName,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: (formData.phone),
+        division: this.division,
+        project: this.project
+      };
+
+      if (regName.test(data.fullName) && regEmail.test(formData.email)) {
+        console.log(data);
+        // console.log(this.userData.userId);
         this.userService.updateUser(this.userData.userId, data).then(() => {
           console.log('User Updated');
           this.utils.presentToast('Profile Updated Successfully!', 'toast-success');
           this.router.navigate(['tabs/profile'])
         });
       } else {
+        console.log(data);
         this.utils.presentToast("There was a problem updating your profile because of invalid inputs, please check what you've typed and then try again.", 'toast-error');
       }
     } catch (err) {

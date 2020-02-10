@@ -19,6 +19,10 @@ import {
 import {
   UtilitiesService
 } from 'src/app/services/utilities.service';
+import {
+  UserService
+} from 'src/app/services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-form',
@@ -39,14 +43,38 @@ export class CreateFormPage implements OnInit {
   inputType: any;
   @ViewChild("myDiv", {
     static: true
-  }) divView: ElementRef;
+  }) formView: ElementRef;
 
   inputOptions: any = ["Text", "Checkbox", "Textarea", "Dropdown", "Radio"];
   opt: any;
 
-  constructor(private elRef: ElementRef, private utils: UtilitiesService, private formService: FormService) {}
+  userData: any;
 
-  ngOnInit() {}
+  constructor(
+    private elRef: ElementRef,
+    private utils: UtilitiesService,
+    private formService: FormService,
+    private userService: UserService,
+    private router: Router) {}
+
+  ngOnInit() {
+    this.getUserData();
+  }
+
+  getUserData() {
+    this.utils.presentLoading('Please wait...');
+    this.userService.getUserProfile().then((userProfileSnapshot: any) => {
+      console.log(userProfileSnapshot);
+      if (userProfileSnapshot.data()) {
+        this.userData = userProfileSnapshot.data();
+      }
+      this.utils.dismissLoading();
+    }).catch((err) => {
+      this.utils.dismissLoading();
+      this.utils.handleError(err);
+    });
+  }
+
 
   submit(model) {
     console.log(model);
@@ -63,23 +91,23 @@ export class CreateFormPage implements OnInit {
     switch (c) {
       case "Text":
         this.createInput();
-        this.opt = 'Select Input';
+        this.opt = 'Add Field';
         break;
       case "Checkbox":
         this.createCheckbox();
-        this.opt = 'Select Input';
+        this.opt = 'Add Field';
         break;
       case "Dropdown":
         this.createDropdown();
-        this.opt = 'Select Input';
+        this.opt = 'Add Field';
         break;
       case "Radio":
         this.createRadio();
-        this.opt = 'Select Input';
+        this.opt = 'Add Field';
         break;
       case "Textarea":
         this.createTextarea();
-        this.opt = 'Select Input';
+        this.opt = 'Add Field';
         break;
     }
   }
@@ -93,7 +121,7 @@ export class CreateFormPage implements OnInit {
   /* ------------------------------- Input Text ------------------------------- */
 
   createInput() {
-    this.divView.nativeElement.innerHTML = `
+    this.formView.nativeElement.innerHTML = `
     <ion-item lines="none">
     <ion-label>Label: </ion-label>
     <ion-input type="text" placeholder="Enter Here" name="label" maxlength="10">
@@ -121,15 +149,15 @@ export class CreateFormPage implements OnInit {
         required: true,
       }
     });
-    this.divView.nativeElement.innerHTML = "";
+    this.formView.nativeElement.innerHTML = "";
     this.utils.presentToast('Added Input Successfully', 'toast-success');
   }
 
-  
+
   /* ------------------------------- Textarea ------------------------------- */
 
   createTextarea() {
-    this.divView.nativeElement.innerHTML = `
+    this.formView.nativeElement.innerHTML = `
     <ion-item lines="none">
     <ion-label>Label: </ion-label>
     <ion-input type="text" placeholder="Enter Here" name="label" maxlength="10">
@@ -137,7 +165,7 @@ export class CreateFormPage implements OnInit {
     </ion-item>
     <ion-item lines="none">
     <ion-label>Placeholder: </ion-label>
-    <ion-input type="text" placeholder="Enter Here" name="placeholder" maxlength="10">
+    <ion-input type="text" placeholder="Enter Here" name="placeholder" maxlength="25">
     </ion-input>
     </ion-item>
     <ion-button type="submit" (tap)="addInputToSchema()" class="ion-padding save">Save</ion-button>
@@ -157,7 +185,7 @@ export class CreateFormPage implements OnInit {
         required: true,
       }
     });
-    this.divView.nativeElement.innerHTML = "";
+    this.formView.nativeElement.innerHTML = "";
     this.utils.presentToast('Added Textarea Successfully', 'toast-success');
   }
 
@@ -166,7 +194,7 @@ export class CreateFormPage implements OnInit {
   /* -------------------------------- Checkbox -------------------------------- */
 
   createCheckbox() {
-    this.divView.nativeElement.innerHTML = `
+    this.formView.nativeElement.innerHTML = `
     <ion-item lines="none">
     <ion-label>Label: </ion-label>
     <ion-input type="text" placeholder="Enter Here" name="label" maxlength="15">
@@ -186,14 +214,14 @@ export class CreateFormPage implements OnInit {
         label: label,
       }
     });
-    this.divView.nativeElement.innerHTML = "";
+    this.formView.nativeElement.innerHTML = "";
     this.utils.presentToast('Added Checkbox Successfuly.', 'toast-success');
   }
 
   /* -------------------------------- Dropdown -------------------------------- */
 
   createDropdown() {
-    this.divView.nativeElement.innerHTML = `
+    this.formView.nativeElement.innerHTML = `
     <ion-item lines="none">
     <ion-label>Label: </ion-label>
     <ion-input type="text" placeholder="Enter Here" name="label" maxlength="10">
@@ -218,9 +246,9 @@ export class CreateFormPage implements OnInit {
     let label = ( < HTMLInputElement > document.querySelector('input[name=label]')).value;
     let placeholder = ( < HTMLInputElement > document.querySelector('input[name=placeholder]')).value;
     let numOfOptions = ( < HTMLInputElement > document.querySelector('input[name=num]')).value;
-    this.divView.nativeElement.innerHTML = ``;
+    this.formView.nativeElement.innerHTML = ``;
     for (let i = 0; i < parseInt(numOfOptions); i++) {
-      this.divView.nativeElement.innerHTML += (`
+      this.formView.nativeElement.innerHTML += (`
       <ion-item lines="none">
       <ion-label>Option ${i+1}: </ion-label>
       <ion-input type="text" placeholder="Enter Here" name="label${i+1}" maxlength="10">
@@ -228,7 +256,7 @@ export class CreateFormPage implements OnInit {
       </ion-item>`);
       console.log('Added.')
     }
-    this.divView.nativeElement.innerHTML += (`<ion-button type="submit" class="ion-padding save">Save</ion-button>`);
+    this.formView.nativeElement.innerHTML += (`<ion-button type="submit" class="ion-padding save">Save</ion-button>`);
     this.elRef.nativeElement.querySelector('.save').addEventListener('click', this.addDropdownToSchema.bind(this, label, placeholder, numOfOptions));
   }
 
@@ -262,11 +290,11 @@ export class CreateFormPage implements OnInit {
 
 
 
-  
+
   /* -------------------------------- Radio -------------------------------- */
 
   createRadio() {
-    this.divView.nativeElement.innerHTML = `
+    this.formView.nativeElement.innerHTML = `
     <ion-item lines="none">
     <ion-label>Label: </ion-label>
     <ion-input type="text" placeholder="Enter Radio Label Here" name="label" maxlength="10">
@@ -291,9 +319,9 @@ export class CreateFormPage implements OnInit {
     let label = ( < HTMLInputElement > document.querySelector('input[name=label]')).value;
     let placeholder = ( < HTMLInputElement > document.querySelector('input[name=placeholder]')).value;
     let numOfOptions = ( < HTMLInputElement > document.querySelector('input[name=num]')).value;
-    this.divView.nativeElement.innerHTML = ``;
+    this.formView.nativeElement.innerHTML = ``;
     for (let i = 0; i < parseInt(numOfOptions); i++) {
-      this.divView.nativeElement.innerHTML += (`
+      this.formView.nativeElement.innerHTML += (`
       <ion-item lines="none">
       <ion-label>Option ${i+1}: </ion-label>
       <ion-input type="text" placeholder="Enter Here" name="label${i+1}" maxlength="10">
@@ -301,7 +329,7 @@ export class CreateFormPage implements OnInit {
       </ion-item>`);
       console.log('Added.')
     }
-    this.divView.nativeElement.innerHTML += (`<ion-button type="submit" class="ion-padding save">Save</ion-button>`);
+    this.formView.nativeElement.innerHTML += (`<ion-button type="submit" class="ion-padding save">Save</ion-button>`);
     this.elRef.nativeElement.querySelector('.save').addEventListener('click', this.addRadioToSchema.bind(this, label, placeholder, numOfOptions));
   }
 
@@ -332,14 +360,25 @@ export class CreateFormPage implements OnInit {
 
 
   uploadForm() {
+    var dateTime = new Date().toLocaleString();
     this.formService.uploadNakedForm({
-      nakedForm: JSON.stringify(this.fields)
+      nakedForm: JSON.stringify(this.fields),
+      formName: ( <HTMLInputElement> document.querySelector('input[name=form_name]')).value,
+      createdBy: `${this.userData.fullName} (${this.userData.email})`,
+      createdOn: dateTime,
+      userId: this.userData.userId,
+      organization: this.userData.organization,
+      division: this.userData.division,
+      project: this.userData.project,
+      orgId: this.userData.orgId
     }).then(() => {
       this.utils.presentAlert('Success', '', 'Your Custom Form was uploaded successfully and can now be used by all the users within this project.');
+      this.router.navigate(['tabs/profile']);
     }).catch((err) => {
       this.utils.handleError(err);
     })
   }
+
 
 
 }

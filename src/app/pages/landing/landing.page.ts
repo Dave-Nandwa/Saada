@@ -55,10 +55,11 @@ export class LandingPage implements OnInit {
     lastName: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required]),
-    phone: new FormControl(undefined, [Validators.required]),
-    cCode: new FormControl(undefined, [Validators.required]),
+    phone: new FormControl('', [Validators.required]),
+    cCode: new FormControl('', [Validators.required]),
     org: new FormControl(undefined, [Validators.required]),
     division: new FormControl(undefined, [Validators.required]),
+    project: new FormControl(undefined, [Validators.required]),
   });
 
   lat: any = 0;
@@ -66,6 +67,7 @@ export class LandingPage implements OnInit {
 
   organization: any;
   division: any;
+  project: any;
   organizations: any = [];
 
   constructor(private uServ: UserService, private authService: AuthService, private geo: Geolocation, private ns: NativeStorage, private utils: UtilitiesService, private router: Router) {}
@@ -94,14 +96,17 @@ export class LandingPage implements OnInit {
     this.organization = this.organizations.find(obj => {
       return obj.name === cat
     });
-    console.log(cat);
-    console.log(this.organization);
   }
   
   onDivChange(): void {
     let div = this.loginForm.get('division').value;
     this.division = div;
-    console.log(this.division);
+  
+  }
+
+  onProjChange(): void {
+    let proj = this.loginForm.get('project').value;
+    this.project = proj;
   }
 
   getOrgs() {
@@ -119,13 +124,15 @@ export class LandingPage implements OnInit {
     const regNumber = /^0[0-9].*$/;
     const form = this.loginForm.value;
     if (!emailRegex.test(String(form.email).toLowerCase())) {
-      alert('Please enter a vali] ` email address.');
+      alert('Please enter a valid email address.');
       console.log(form);
     } else {
       if (form.firstName.length > 0 && form.lastName.length > 0 && form.phone && form.email) {
         form.coords = [this.lat, this.lng];
         form.fullName = form.firstName + " " + form.lastName;
         form.organization = this.organization.name;
+        form.orgId = this.organization.orgId;
+        form.project = this.project;
         form.division = this.division;
         if (form.cCode === '') {
           // Low-Level User

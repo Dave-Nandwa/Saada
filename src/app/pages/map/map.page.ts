@@ -21,9 +21,6 @@ import {
 /* -------------------------- Firebase and GeoFireX ------------------------- */
 
 import * as firebaseApp from 'firebase/app';
-import {
-  AngularFirestore
-} from '@angular/fire/firestore';
 import * as geofirex from 'geofirex';
 import {
   GeoFireQuery
@@ -40,9 +37,6 @@ import {
 } from 'rxjs/operators';
 
 /* -------------------------------- Services -------------------------------- */
-import {
-  LocationService
-} from './../../services/location.service';
 
 import {
   medical,
@@ -63,6 +57,11 @@ import {
 import {
   UserService
 } from 'src/app/services/user.service';
+
+/* ------------------------------ SpotReports Modal ------------------------------ */
+
+import { ModalController } from '@ionic/angular';
+import { SpotReportsPage } from 'src/app/modals/spot-reports/spot-reports.page';
 
 
 @Component({
@@ -92,6 +91,7 @@ export class MapPage implements OnInit {
       height: 80
     }
   }
+
   carIcon: any = {
     url: './assets/mapIcons/incident.svg',
     scaledSize: {
@@ -107,7 +107,7 @@ export class MapPage implements OnInit {
   geo = geofirex.init(firebaseApp);
   geoQuery: GeoFireQuery;
   points: Observable < any > ;
-  radius = new BehaviorSubject(3.5);
+  radius = new BehaviorSubject(2000);
   geoSub: any;
 
   /* ------------------------------ Utility Vars ------------------------------ */
@@ -116,11 +116,14 @@ export class MapPage implements OnInit {
   data: any = [];
   watch: any;
 
-/* -------------------------- Directions Variables -------------------------- */
+  /* -------------------------- Directions Variables -------------------------- */
 
   private origin: any;
   private destination: any;
   private travelMode: string = 'DRIVING';
+  public spotReports: any;
+
+  openedWindow : string = ''; // alternative: array of numbers
 
   userData: any;
   constructor(
@@ -129,13 +132,36 @@ export class MapPage implements OnInit {
     private uServ: UserService,
     private callNumber: CallNumber,
     private geolocation: Geolocation,
-    private afs: AngularFirestore,
-    public alertController: AlertController) {}
+    public alertController: AlertController,
+    public modalController: ModalController) {}
 
   ngOnInit() {
     // this.generateResponders();
     this.getLatLng();
     this.getUserData();
+    var closeBtn: any = document.querySelector('[title="Close"]');
+    this.zoomLevel = 12;
+  }
+
+  async openSpotReportsModal() {
+    //Reset Info Window
+    this.openedWindow = 'None';
+    const modal = await this.modalController.create({
+      component: SpotReportsPage,
+      componentProps: {
+        spotReports: this.spotReports
+      }
+    });
+ 
+    modal.onDidDismiss().then((resp: any) => {
+        if (resp.data !== 'None') {
+          this.openWindow(resp.data);
+        } else {
+          console.log('Modal Dismissed.')
+        }
+    });
+
+    return await modal.present();
   }
 
 
@@ -144,7 +170,7 @@ export class MapPage implements OnInit {
     this.uServ.getUserProfile().then((userProfileSnapshot: any) => {
       if (userProfileSnapshot.data()) {
         this.userData = userProfileSnapshot.data();
-        console.log(this.userData);
+        this.radius.next(this.userData.areaOfInterest);
       }
       this.utils.dismissLoading();
     }).catch((err) => {
@@ -154,8 +180,14 @@ export class MapPage implements OnInit {
   }
 
   getDirections(lat, lng) {
-    this.origin = { lat: this.lat, lng: this.lng };
-    this.destination = { lat: lat, lng: lng };
+    this.origin = {
+      lat: this.lat,
+      lng: this.lng
+    };
+    this.destination = {
+      lat: lat,
+      lng: lng
+    };
     var closeBtn: any = document.querySelector('[title="Close"]');
     closeBtn.click();
   }
@@ -180,23 +212,33 @@ export class MapPage implements OnInit {
     console.log(`clicked the marker: ${label || index}`)
   }
 
+  openWindow(id) {
+      this.openedWindow = id; // alternative: push to array of numbers
+  }
+
+  isInfoWindowOpen(id) {
+      return this.openedWindow == id; // alternative: check if id is in array
+  }
+
   displayReports() {
     if (this.geoSub) this.geoSub.unsubscribe();
     const center = this.geo.point(this.lat, this.lng);
     const field = "position";
-    const reports = firebaseApp.firestore().collection('incident_reports').limit(11);
+    const reports = firebaseApp.firestore().collection('spot_reports');
     this.geoQuery = this.geo.query(reports)
     console.log(this.geoQuery);
     this.points = this.radius.pipe(
       switchMap(r => {
+        console.log(r);
         return this.geoQuery.within(center, r, field, {
           log: true
         });
       }),
       shareReplay(1)
     );
-
-    this.geoSub = this.points.subscribe(hits => console.log(hits));
+    this.geoSub = this.points.subscribe(hits => {
+      this.spotReports = hits;
+    });
   }
 
   async getLatLng() {
@@ -206,6 +248,7 @@ export class MapPage implements OnInit {
       this.lng = resp.coords.longitude;
       this.displayReports();
       this.watchPosition();
+      console.log('run');
     }).catch((error) => {
       console.log('Error getting location', error);
     });

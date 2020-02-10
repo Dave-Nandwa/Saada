@@ -50,8 +50,6 @@ ion-col.active {
     width: 100%;
     padding: 15px 20px;
     margin-top: 40px;
-    background: #4F65F6;
-    --background: #4F65F6;
     --box-shadow: none;
     border-radius: 4px;
     font-size: 1.5em;
@@ -66,4 +64,14 @@ ion-col.active {
         padding:0;
         display: inline-block;
     } */
+}
+
+.btn:nth-child(odd) {
+    background: #4F65F6;
+    --background: #4F65F6;
+}
+
+.btn:nth-child(even) {
+    background: rgb(194, 24, 209);
+    --background: rgb(194, 24, 209);
 }

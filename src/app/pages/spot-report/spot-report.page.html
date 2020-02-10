@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button slot="start" ion-button icon-only [routerLink]="['/tabs/home']" class="back-btn">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-button>
+    <ion-title>Create Spot Report</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+
+  <ion-segment (ionChange)="repChanged($event)">
+    <ion-segment-button checked value="SpotReport">
+      <ion-label>Report</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="SpotWatch">
+      <ion-label>Watch</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="Limited">
+      <ion-label>Limited</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="Closed">
+      <ion-label>Closed</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <ion-card class="card">
+    <ion-card-content class="card-content">
+      <div class="mb-2">
+        <input class="input" [value]="title" type="email" name="name" placeholder="Title" />
+      </div>
+      <div class="mb-2">
+        <textarea class="input" name="desc" placeholder="Description"></textarea>
+      </div>
+      <div class="mb-2">
+        <input class="input" type="text" value="Field Observation" name="reason" placeholder="Reason" />
+      </div>
+      <div class="mb-2">
+        <input class="input" type="text" name="disp" placeholder="Disposition" />
+      </div>
+      <ion-item>
+        <ion-label>Type</ion-label>
+        <ion-select (ionChange)="typeChanged($event)" [placeholder]="spotType" [value]="spotType">
+          <ion-select-option value="incident">Incident</ion-select-option>
+          <ion-select-option value="alert">Alert</ion-select-option>
+          <ion-select-option value="other">Other</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>Severity</ion-label>
+        <ion-select (ionChange)="severityChanged($event)" placeholder="Select Severity" [value]="severity">
+          <ion-select-option value="Unknown">Unknown</ion-select-option>
+          <ion-select-option value="Minimal">Minimal</ion-select-option>
+          <ion-select-option value="Significant">Significant</ion-select-option>
+          <ion-select-option value="Extraordinary">Extraordinary</ion-select-option>
+          <ion-select-option value="Other">Other</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+ <button class="btn" (click)="addSpotReport()">Submit</button>
+ <button class="btn-two" [routerLink]="['/tabs/home']">Cancel</button>
+ <ion-fab (click)="uploadMediaModal()" vertical="bottom" horizontal="end" slot="fixed">
+   <ion-fab-button>
+     <ion-icon name="photo"></ion-icon>
+   </ion-fab-button>
+ </ion-fab>
+
+</ion-content>

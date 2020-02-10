@@ -1,13 +1,13 @@
 <ion-header transparent no-border>
   <ion-toolbar>
-    <ion-title class="ion-text-center">Admin Page</ion-title>
+    <ion-title class="ion-text-center">Home</ion-title>
   </ion-toolbar>
 </ion-header>
 
 
 <ion-content class="ion-padding">
 
-<!-- 
+  <!-- 
   <ion-grid fixed>
     <ion-row class="ion-justify-content-center">
       <ion-col size="3" [class.active]="e.active" *ngFor="let e of emergencies" (click)="toggleClass(e)">
@@ -16,10 +16,24 @@
       </ion-col>
     </ion-row>
   </ion-grid> -->
-  <button expand="block" class="ion-padding btn" (click)="generateReports()">
-    Generate Fake Reports
+
+  <button expand="block" class="ion-padding btn" (click)="changeStatus()">
+    My Status
     <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
     <ion-ripple-effect></ion-ripple-effect>
   </button>
+
+  <button expand="block" class="ion-padding btn" [routerLink]="['/spot-report']">
+    Create Spot Report
+    <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
+    <ion-ripple-effect></ion-ripple-effect>
+  </button>
+
+  <button expand="block" class="ion-padding btn" [routerLink]="['/my-forms']">
+    My IOI
+    <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
+    <ion-ripple-effect></ion-ripple-effect>
+  </button>
+
 
 </ion-content>

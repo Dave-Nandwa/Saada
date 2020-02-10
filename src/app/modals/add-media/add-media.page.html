@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>add-media</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <h1>Select a Profile Photo</h1>
+  <ion-card>
+    <img *ngIf="!fileUrl" src="assets/profile/upload.svg" />
+    <img *ngIf="fileUrl" [src]="fileUrl" />
+    <ion-card-content>
+      <ion-button color="medium" size="large" (click)="selectImage()">
+        <ion-icon slot="icon-only" name="camera"></ion-icon>
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+  <!-- <button>Upload</button> -->
+  <button (click)="closeModal()">Back</button>
+</ion-content>

@@ -7,7 +7,7 @@
 
 <ion-content fullscreen>
 
-  <h1>Create a Custom Form</h1>
+  <h1>Create an IOI</h1>
 
   <ion-list *ngIf="fields?.length > 0">
 
@@ -28,7 +28,11 @@
   </form> -->
   <form [formGroup]="createForm" class="ion-padding">
     <ion-item>
-      <ion-label>Input Type</ion-label>
+      <ion-label>Form Name: </ion-label>
+      <ion-input type="text" placeholder="Enter Form Name..." name="form_name"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Add Input Type: </ion-label>
       <ion-select [(ngModel)]="opt" [value]="opt" formControlName="type" (ionChange)="onTypeChange()" placeholder="Select Input">
         <ion-select-option *ngFor="let opt of inputOptions" [value]="opt">{{opt}}</ion-select-option>
       </ion-select>

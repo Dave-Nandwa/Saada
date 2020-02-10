@@ -46,6 +46,22 @@ const routes: Routes = [
   {
     path: 'create-form',
     loadChildren: () => import('./pages/create-form/create-form.module').then( m => m.CreateFormPageModule)
+  },
+  {
+    path: 'spot-report',
+    loadChildren: () => import('./pages/spot-report/spot-report.module').then( m => m.SpotReportPageModule)
+  },
+  {
+    path: 'my-forms',
+    loadChildren: () => import('./pages/my-forms/my-forms.module').then( m => m.MyFormsPageModule)
+  },
+  {
+    path: 'spot-reports',
+    loadChildren: () => import('./modals/spot-reports/spot-reports.module').then( m => m.SpotReportsPageModule)
+  },
+  {
+    path: 'add-media',
+    loadChildren: () => import('./modals/add-media/add-media.module').then( m => m.AddMediaPageModule)
   }
 ];
 @NgModule({

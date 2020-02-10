@@ -40,7 +40,8 @@
           <ion-label>Organization: </ion-label>
           <ion-select value="Select" formControlName="org" okText="Select" cancelText="Dismiss"
             (ionChange)="onOrganizationChange()">
-            <ion-select-option class="input" *ngFor="let o of organizations" [value]="o.name">{{o.name}}</ion-select-option>
+            <ion-select-option class="input" *ngFor="let o of organizations" [value]="o.name">{{o.name}}
+            </ion-select-option>
           </ion-select>
         </ion-item>
 
@@ -48,7 +49,17 @@
           <ion-label>Division: </ion-label>
           <ion-select value="Select" formControlName="division" okText="Select" cancelText="Dismiss"
             (ionChange)="onDivChange()">
-            <ion-select-option class="input" *ngFor="let d of organization?.divisions" [value]="d">{{d}}</ion-select-option>
+            <ion-select-option class="input" *ngFor="let d of organization?.divisions" [value]="d">{{d}}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item *ngIf="division" class="mb-2">
+          <ion-label>Project: </ion-label>
+          <ion-select value="Select" formControlName="project" okText="Select" cancelText="Dismiss"
+            (ionChange)="onProjChange()">
+            <ion-select-option class="input" *ngFor="let p of organization?.projects" [value]="p">{{p}}
+            </ion-select-option>
           </ion-select>
         </ion-item>
 

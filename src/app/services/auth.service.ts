@@ -11,11 +11,18 @@ import {
   first
 } from 'rxjs/operators';
 
+
+import * as firebaseApp from 'firebase/app';
+
+import * as geofirex from 'geofirex';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   public userId: string;
+  public geo = geofirex.init(firebaseApp);
+
   constructor(
     private afAuth: AngularFireAuth,
     private firestore: AngularFirestore
@@ -36,6 +43,7 @@ export class AuthService {
     data: any
   ): Promise < firebase.auth.UserCredential > {
     try {
+      const position = this.geo.point(data.coords[0], data.coords[1]);
       const newUserCredential: firebase.auth.UserCredential = await this.afAuth.auth.createUserWithEmailAndPassword(
         data.email,
         data.password
@@ -51,11 +59,16 @@ export class AuthService {
           email: data.email,
           password: data.password,
           userId: newUserCredential.user.uid,
-          coords: [0,0],
-          position: 0,
+          coords: data.coords,
+          position: position,
           organization: data.organization,
           division: data.division,
-          clearance: data.clearance
+          clearance: data.clearance,
+          project: data.project,
+          orgId: data.orgId,
+          areaOfInterest: 2000,
+          status: 'ok',
+          profileImage: 'None'
         });
       return newUserCredential;
     } catch (error) {

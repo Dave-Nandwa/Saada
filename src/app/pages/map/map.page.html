@@ -16,7 +16,8 @@
     [longitude]="lng">
 
     <!-- -------------------------- Directions Markup -------------------------- -->
-    <agm-direction *ngIf="origin && destination" [origin]="origin" [destination]="destination" [travelMode]="travelMode">
+    <agm-direction *ngIf="origin && destination" [origin]="origin" [destination]="destination"
+      [travelMode]="travelMode">
     </agm-direction>
 
     <!-- ----------------------------- User Marker ----------------------------- -->
@@ -24,24 +25,34 @@
     <agm-marker [latitude]="lat" [longitude]="lng" [label]="You" [iconUrl]="mapIcon"></agm-marker>
 
     <!-- Display Multiple Markers + An Info Window-->
-    
-      <agm-marker *ngFor="let point of points | async; trackBy: trackByFn" [latitude]="point.position.geopoint.latitude"
-      [longitude]="point.position.geopoint.longitude" [iconUrl]="carIcon">
 
-      <agm-info-window>
-        <span>{{point.name}}</span>
-        <button expand="block" class="ion-padding btn" (click)="getDirections(point.position.geopoint.latitude, point.position.geopoint.longitude)">
-          Get Directions
+    <agm-marker *ngFor="let point of points | async; trackBy: trackByFn" [latitude]="point.position.geopoint.latitude"
+      [longitude]="point.position.geopoint.longitude"
+      [iconUrl]="{ url: point.icon, scaledSize: {height: 40, width: 40} }">
+
+      <agm-info-window [isOpen]="isInfoWindowOpen(point.spotId)">
+        <ion-list>
+          <ion-item><ion-label class="ion-text-wrap">Name: {{point.name}}</ion-label></ion-item>
+          <ion-item><ion-label class="ion-text-wrap">Description: {{point.description}}</ion-label></ion-item>
+          <ion-item><ion-label class="ion-text-wrap">Status: {{point.status}}</ion-label></ion-item>
+          <ion-item><ion-label class="ion-text-wrap">Need: {{point.reason}}</ion-label></ion-item>
+          <ion-item><ion-label class="ion-text-wrap">Category: Unknown</ion-label></ion-item>
+          <ion-item><ion-label class="ion-text-wrap">Media File: <a href="#">{{point.mediaFile}}</a></ion-label></ion-item>
+          <ion-item><ion-label class="ion-text-wrap">Updated at: {{point.when}}</ion-label></ion-item>
+          <ion-item><ion-label class="ion-text-wrap">By: {{point.createdBy}}</ion-label></ion-item>
+        </ion-list>
+        <button expand="block" class="ion-padding btn"
+          (click)="getDirections(point.position.geopoint.latitude, point.position.geopoint.longitude)">
+          Navigate to
           <ion-ripple-effect></ion-ripple-effect>
         </button>
-       <!-- {{ point.hitMetadata | json }} -->
+        <!-- {{ point.hitMetadata | json }} -->
       </agm-info-window>
-    </agm-marker> 
+    </agm-marker>
 
 
 
-    <agm-circle [latitude]="lat" [longitude]="lng" [radius]="(radius | async) * 1200"
-      [fillColor]="'rgb(79,101,246,0.7)'">
+    <agm-circle [latitude]="lat" [longitude]="lng" [radius]="(radius | async)" [fillColor]="'rgb(79,101,246,0.7)'">
     </agm-circle>
 
 
@@ -69,7 +80,7 @@
 
   <!-- fab placed to the bottom and start and on the bottom edge of the content overlapping footer with a list to the right -->
   <ion-fab id="fab-bottom" vertical="bottom" horizontal="end" edge slot="fixed">
-    <ion-fab-button (click)="presentNakedFormOptions()">
+    <ion-fab-button (click)="openSpotReportsModal()">
       <ion-icon src="assets/mapIcons/alert.svg"></ion-icon>
     </ion-fab-button>
   </ion-fab>

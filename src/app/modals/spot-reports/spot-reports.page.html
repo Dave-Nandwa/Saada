@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Spot Reports Around You</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+
+  <ion-list class="ion-padding">
+    <ion-list-header>
+      <ion-label>Latest:</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let sr of spotReports">
+      <ion-icon slot="start" [src]="sr.icon"></ion-icon>
+      <ion-label>
+        <h2 class="ion-text-wrap">Name: {{sr.name}}</h2>
+        <h3>Status: {{sr.status}}</h3>
+        <p>Description: {{sr.description}}</p>
+        <ion-button (click)="viewMap(sr.spotId)">
+          View on Map
+        </ion-button>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

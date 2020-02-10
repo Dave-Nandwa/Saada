@@ -75,7 +75,7 @@ export class LoginPage implements OnInit {
           this.utils.dismissLoading();
           this.utils.presentToast('Authentication Successful.', 'toast-success');
           let user = firebase.auth().currentUser
-          this.router.navigate(['tabs/map']);
+          this.router.navigate(['tabs/home']);
           // this.setuserInfo(data[0]);
         }).catch((error) => {
           // Handle Errors here.
@@ -114,9 +114,9 @@ export class LoginPage implements OnInit {
       safetyNet: true,
       user: data
     }).then(() => {
-      this.router.navigate(['tabs/map']);
+      this.router.navigate(['tabs/home']);
     }).catch((err) => {
-      this.router.navigate(['tabs/map']);
+      this.router.navigate(['tabs/home']);
       console.error('Error storing item', err);
     });
   }
