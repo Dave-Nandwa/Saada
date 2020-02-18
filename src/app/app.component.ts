@@ -25,9 +25,7 @@ import {
   LocalNotifications
 } from '@ionic-native/local-notifications/ngx';
 
-import {
-  BackgroundMode
-} from '@ionic-native/background-mode/ngx';
+
 import {
   LocationAccuracy
 } from '@ionic-native/location-accuracy/ngx';
@@ -66,7 +64,6 @@ export class AppComponent {
     private statusBar: StatusBar,
     private ap: AndroidPermissions,
     private localNotifications: LocalNotifications,
-    public backgroundMode: BackgroundMode,
     private locationAccuracy: LocationAccuracy
   ) {
     this.initializeApp();
@@ -87,9 +84,6 @@ export class AppComponent {
       this.checkLocationPermissions();
       this.checkCallPermission();
       this.checkStoragePermission();
-
-      /* -------------------------- Listen for Close App -------------------------- */
-      this.onClose();
 
       /* ---------------------- Request for Location Accuracy --------------------- */
       this.requestAccuracy();
@@ -161,14 +155,6 @@ export class AppComponent {
     });
   }
 
-
-
-  onClose() {
-    /* ------------------------- Enable Background Mode ------------------------- */
-    document.addEventListener("pause", () => {
-      this.backgroundMode.enable();
-    }, false);
-  }
 
 
   requestAccuracy() {

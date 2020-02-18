@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button color="warning" slot="start" [routerLink]="['/tabs/profile']">
+      <ion-icon slot="icon-only" src="assets/profile/chevron-back.svg"></ion-icon>
+    </ion-button>
+    <ion-title>Configure</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <button class="btn" (click)="addIoiModal()">Manage IOI Types</button>
+  <button class="btn" (click)="addIoiStatusModal()">Manage Status</button>
+  <!-- <button class="btn" (click)="addIncidentWhat()">Add IOI What Field</button> -->
+  <button class="btn" *ngIf="userData?.clearance > 4" (click)="addProject()">Create New Project</button>
+  <button class="btn" *ngIf="userData?.clearance > 4" (click)="changeButtons()">Enable Home Buttons</button>
+  <button class="btn" *ngIf="userData?.clearance > 4" (click)="changeHomeLabels()">Label Home Buttons</button>
+</ion-content>

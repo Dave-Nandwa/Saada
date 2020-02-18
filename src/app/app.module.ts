@@ -56,11 +56,23 @@ import {
   LocalNotifications
 } from '@ionic-native/local-notifications/ngx';
 import {
-  BackgroundMode
-} from '@ionic-native/background-mode/ngx';
-import {
   LocationAccuracy
 } from '@ionic-native/location-accuracy/ngx';
+import {
+  Crop
+} from '@ionic-native/crop/ngx';
+import {
+  NativeGeocoder
+} from '@ionic-native/native-geocoder/ngx';
+import {
+  Camera
+} from '@ionic-native/camera/ngx';
+import {
+  File
+} from '@ionic-native/file/ngx';
+import {
+  InAppBrowser
+} from '@ionic-native/in-app-browser/ngx';
 
 /* -------------------------------------------------------------------------- */
 /*                                 AngularFire                                */
@@ -80,6 +92,9 @@ import {
 import {
   AngularFireAuthGuard
 } from '@angular/fire/auth-guard';
+import {
+  AngularFireStorageModule
+} from '@angular/fire/storage';
 
 /* -------------------------------------------------------------------------- */
 /*                               Custom Services                              */
@@ -87,6 +102,11 @@ import {
 import {
   LocationService
 } from './services/location.service';
+import {
+  ConnectivityService
+} from './services/connectivity.service';
+
+
 import {
   UserService
 } from './services/user.service';
@@ -96,14 +116,41 @@ import {
 import {
   LocalNotificationService
 } from './services/local-notification.service';
-import { FormService } from './services/form.service';
-import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
-import { Camera } from '@ionic-native/camera/ngx';
-import { File} from '@ionic-native/file/ngx';
-import { Crop } from '@ionic-native/crop/ngx';
+import {
+  FormService
+} from './services/form.service';
+import {
+  HereService
+} from './services/here.service';
+
+import {
+  FileChooser
+} from '@ionic-native/file-chooser/ngx';
+import {
+  FilePath
+} from '@ionic-native/file-path/ngx';
+
+import {
+  KeyvaluePipe
+} from './pipes/keyvalue.pipe';
+
+import {
+  HttpClientModule
+} from '@angular/common/http';
+
+
+
+/* -------------------- Location Select Service and Modal ------------------- */
+
+import {
+  GoogleMapsService
+} from './services/google-maps.service';
+import { Network } from '@ionic-native/network/ngx';
+import { AdminService } from './services/admin.service';
+
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, KeyvaluePipe],
   entryComponents: [],
   imports: [
     BrowserModule,
@@ -114,17 +161,17 @@ import { Crop } from '@ionic-native/crop/ngx';
     AngularFireModule.initializeApp(credentials.firebaseConfig),
     AngularFirestoreModule,
     AngularFireDatabaseModule,
+    AngularFireStorageModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    HttpClientModule
   ],
   providers: [
-
     /* ------------------------------ Angular fire ------------------------------ */
     AngularFireAuthGuard,
     AngularFireAuth,
     /* ---------------------------- Native Providers ---------------------------- */
     LocationAccuracy,
-    BackgroundMode,
     LocalNotifications,
     StatusBar,
     SplashScreen,
@@ -133,15 +180,23 @@ import { Crop } from '@ionic-native/crop/ngx';
     NativeStorage,
     CallNumber,
     NativeGeocoder,
-    Camera, 
+    Camera,
     File,
+    FileChooser,
+    FilePath,
     Crop,
+    InAppBrowser,
+    Network,
     /* ----------------------------- Custom Services ---------------------------- */
     LocalNotificationService,
     LocationService,
     UserService,
     UtilitiesService,
     FormService,
+    HereService,
+    ConnectivityService,
+    GoogleMapsService,
+    AdminService,
     {
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy

@@ -1,26 +1,45 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Spot Reports Around You</ion-title>
+    <ion-title>IOIs Around You</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen>
-
-  <ion-list class="ion-padding">
+<ion-content class="ion-padding" fullscreen>
+  <button (click)="closeModal()" class="btn">Back</button>
+  <ion-list transparent class="ion-padding">
     <ion-list-header>
-      <ion-label>Latest:</ion-label>
+      <ion-label>IOIs:</ion-label>
     </ion-list-header>
-    <ion-item *ngFor="let sr of spotReports">
-      <ion-icon slot="start" [src]="sr.icon"></ion-icon>
+    <ion-item lines="none" *ngFor="let sr of spotReports">
+      <ion-icon slot="start" [src]="sr?.icon"></ion-icon>
       <ion-label>
-        <h2 class="ion-text-wrap">Name: {{sr.name}}</h2>
-        <h3>Status: {{sr.status}}</h3>
-        <p>Description: {{sr.description}}</p>
-        <ion-button (click)="viewMap(sr.spotId)">
+        <h2 class="ion-text-wrap">Name: <b>{{sr?.name}}</b></h2>
+        <h3>Status: {{sr?.status}}</h3>
+        <p>Description: {{sr?.description}}</p>
+        <ion-button (click)="viewMap(sr?.spotId)">
           View on Map
         </ion-button>
       </ion-label>
     </ion-item>
+  </ion-list>
+
+  <!-- ---------------------------------- - ---------------------------------- -->
+
+  <ion-list *ngIf="nakedReports.length > 0" transparent class="ion-padding">
+    <ion-list-header>
+      <ion-label>IOIs:</ion-label>
+    </ion-list-header>
+    <ion-item lines="none" *ngFor="let nr of nakedReports">
+      <ion-icon slot="start" src="assets/map/report.svg"></ion-icon>
+      <ion-label>
+        <h2 class="ion-text-wrap">IOI: <b>{{nr?.formName}}</b></h2>
+        <h3>When: {{nr?.when}}</h3>
+        <p>By: {{nr?.author}}</p>
+        <ion-button (click)="viewMap(nr?.reportId)">
+          View on Map
+        </ion-button>
+      </ion-label>
+    </ion-item> 
   </ion-list>
 
 </ion-content>

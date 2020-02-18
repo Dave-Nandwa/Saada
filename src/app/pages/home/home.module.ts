@@ -8,6 +8,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 import { StatusPageModule } from 'src/app/modals/status/status.module';
+import { FillInIoiPageModule } from 'src/app/modals/fill-in-ioi/fill-in-ioi.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { StatusPageModule } from 'src/app/modals/status/status.module';
     FormsModule,
     IonicModule,
     HomePageRoutingModule,
-    StatusPageModule
+    StatusPageModule,
+    FillInIoiPageModule
   ],
   declarations: [HomePage]
 })

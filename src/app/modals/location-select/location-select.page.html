@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-buttons left>
+    <ion-button (click)="close()">Cancel</ion-button>
+  </ion-buttons>
+  <ion-buttons right>
+    <ion-button [disabled]="saveDisabled" ion-button (click)="save()">Save</ion-button>
+  </ion-buttons>
+  <!-- 
+  <ion-toolbar>
+    <ion-searchbar [(ngModel)]="query" (ionInput)="searchPlace()"></ion-searchbar>
+  </ion-toolbar>
+
+  <ion-list>
+    <ion-item *ngFor="let place of places" (touchstart)="selectPlace(place)">{{place.description}}</ion-item>
+  </ion-list> -->
+
+</ion-header>
+
+<ion-content>
+
+  <agm-map (mapClick)="placeMarker($event)" [styles]="mapStyles" [zoom]="zoomLevel" [disableDefaultUI]="true"
+    [zoomControl]="false" [latitude]="lat" [longitude]="lng">
+    <agm-marker [latitude]="lat" [longitude]="lng" [label]="You" [iconUrl]="mapIcon"></agm-marker>
+  </agm-map>
+
+</ion-content>

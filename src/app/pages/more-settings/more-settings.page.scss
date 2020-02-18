@@ -1,0 +1,62 @@
+$alert-input-placeholder-color: #000;
+.btn {
+    width: 100%;
+    padding: 2.5px 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    background: rgb(4, 7, 27);
+    --background: rgb(4, 7, 27);
+    --box-shadow: none;
+    border-radius: 4px;
+    font-size: 1.5em;
+    --color: #fff !important;
+    color: #fff;
+    outline: none;
+}
+
+
+form {
+    ion-item {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+
+        ion-label {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1em;
+        }
+
+        ion-select {
+            text-transform: capitalize !important;
+            border-radius: 12px;
+            padding: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            color: #000 !important;
+
+            ion-select-option {
+                text-transform: capitalize !important;
+            }
+        }
+
+        ion-input,
+        ion-textarea {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            color: #000 !important;
+            font-size: 1em;
+        }
+    }
+
+    .alert-wrapper {
+        text-transform: capitalize !important;
+    }
+}
+
+input {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    color: #000 !important;
+    font-size: 1em;
+}

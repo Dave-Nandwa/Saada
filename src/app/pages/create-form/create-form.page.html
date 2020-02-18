@@ -9,37 +9,117 @@
 
   <h1>Create an IOI</h1>
 
+  <!--   <ion-segment (ionChange)="segmentChanged($event)">
+    <ion-segment-button checked value="form">
+      <ion-label>Form</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="location">
+      <ion-label>Location</ion-label>
+    </ion-segment-button>
+  </ion-segment> -->
+
+  <!-- ---------------------------- Location Tab ----------------------------- -->
+
+  <!--   
+  <div *ngIf="segment === 'location'">
+    <ion-list>
+      <ion-item>
+        <ion-label>Address:</ion-label>
+        <ion-input type="text" [(ngModel)]="physicalAddr.Address" placeholder="Fill In..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>State:</ion-label>
+        <ion-input type="text" [(ngModel)]="physicalAddr.State" placeholder="Fill In..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>City:</ion-label>
+        <ion-input type="text" [(ngModel)]="physicalAddr.City" placeholder="Fill In..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>District:</ion-label>
+        <ion-input type="text" [(ngModel)]="physicalAddr.District" placeholder="Fill In..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Zip:</ion-label>
+        <ion-input type="text" [(ngModel)]="physicalAddr.postalCode" placeholder="Fill In..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Latitude:</ion-label>
+        <ion-input type="text" [(ngModel)]="physicalAddr.Lat" placeholder="Fill In..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Longitude:</ion-label>
+        <ion-input type="text" [(ngModel)]="physicalAddr.Lng" placeholder="Fill In..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <button ion-button (click)="launchLocationPage()">Manual Select</button>
+      </ion-item>
+    </ion-list>
+  </div>
+ -->
+  <!-- ----------------------------- Form Tab ----------------------------- -->
+
+  <!-- <div class="hide" [class.show]="segment === 'form'"> -->
   <ion-list *ngIf="fields?.length > 0">
 
-    <ion-item-sliding *ngFor="let f of fields">
-      <ion-item>
-        <ion-label>{{f.templateOptions.label}} - {{f.key}}</ion-label>
-      </ion-item>
-      <ion-item-options side="end">
-        <ion-item-option color="danger" expandable>Delete</ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding>
+    <ion-reorder-group (ionItemReorder)="onRenderItems($event)" disabled="true">
+      <ion-item-sliding *ngFor="let f of fields">
+        <ion-item>
+          <ion-label>{{f.templateOptions.label}} - {{f.type}}</ion-label>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="danger" expandable>Delete</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-reorder-group>
 
   </ion-list>
 
   <!-- <form class="ion-padding" [formGroup]="form" (ngSubmit)="submit(model)">
-    <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
-    <button type="submit" class="btn btn-default">Submit</button>
-  </form> -->
+      <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form> -->
   <form [formGroup]="createForm" class="ion-padding">
+
+    <!--       <ion-item>
+        <ion-label>Select Previous Name:</ion-label>
+        <ion-select (ionChange)="nameChanged($event)" placeholder="Select">
+          <ion-select-option *ngFor="let inc of previousForms" [value]="inc?.formName">{{inc?.formName}}
+          </ion-select-option>
+          <ion-select-option value="other">Unknown</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>What: </ion-label>
+        <ion-select (ionChange)="whatChanged($event)" placeholder="Select">
+          <ion-select-option *ngFor="let inc of previousForms" [value]="inc?.formName">{{inc?.formName}}
+          </ion-select-option>
+          <ion-select-option value="other">Unknown</ion-select-option>
+        </ion-select>
+      </ion-item> -->
+
     <ion-item>
       <ion-label>Form Name: </ion-label>
       <ion-input type="text" placeholder="Enter Form Name..." name="form_name"></ion-input>
     </ion-item>
+    <!--     <ion-item>
+      <ion-label>Create as SIOI: </ion-label>
+      <ion-checkbox (ionChange)="toggleCheckbox()"></ion-checkbox>
+    </ion-item> -->
     <ion-item>
       <ion-label>Add Input Type: </ion-label>
-      <ion-select [(ngModel)]="opt" [value]="opt" formControlName="type" (ionChange)="onTypeChange()" placeholder="Select Input">
+      <ion-select [compareWith]="compareWith" [(ngModel)]="opt" [value]="opt" formControlName="type"
+        (ionChange)="onTypeChange()" placeholder="Select Input">
         <ion-select-option *ngFor="let opt of inputOptions" [value]="opt">{{opt}}</ion-select-option>
       </ion-select>
     </ion-item>
   </form>
   <form class="ion-padding" #myDiv></form>
-  <button  *ngIf="fields?.length > 1" type="submit" (click)="uploadForm()" class="btn btn-default">Upload Form</button>
+  <button *ngIf="fields?.length > 1" type="submit" (click)="uploadForm()" class="btn btn-default">Upload Form</button>
+
+  <!-- </div> -->
+
 
 
 </ion-content>

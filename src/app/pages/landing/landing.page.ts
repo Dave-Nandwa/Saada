@@ -35,7 +35,9 @@ import {
 import {
   Geolocation
 } from '@ionic-native/geolocation/ngx';
-import { UserService } from 'src/app/services/user.service';
+import {
+  UserService
+} from 'src/app/services/user.service';
 
 
 @Component({
@@ -68,6 +70,7 @@ export class LandingPage implements OnInit {
   organization: any;
   division: any;
   project: any;
+  projects: any = [];
   organizations: any = [];
 
   constructor(private uServ: UserService, private authService: AuthService, private geo: Geolocation, private ns: NativeStorage, private utils: UtilitiesService, private router: Router) {}
@@ -93,27 +96,59 @@ export class LandingPage implements OnInit {
 
   onOrganizationChange(): void {
     let cat = this.loginForm.get('org').value;
+    let ind = 0;
     this.organization = this.organizations.find(obj => {
       return obj.name === cat
     });
+    // Very VERY Hackish but it works for mapped projects under organzizations!
+/*     Object.keys(this.organization).map((key, index) => {
+      if (typeof(this.organization[key]) === 'object') {
+        ind = index === 0 ? 1 : index-1;
+        this.projects.push(this.organization['projects'][`project${ind}`]);
+      }
+    });  */
+    this.utils.presentLoading('');
+    this.uServ.getProjects(this.organization.orgId).subscribe((data)=> {
+      this.projects = data;
+      this.utils.dismissLoading();
+    }, err => {
+      this.utils.handleError(err);
+    });
   }
-  
+
+  flattenObject(ob, prefix) {
+    const toReturn = {};
+    prefix = prefix ? prefix + '.' : '';
+
+    for (let i in ob) {
+      if (!ob.hasOwnProperty(i)) continue;
+
+      if (typeof ob[i] === 'object' && ob[i] !== null) {
+        // Recursion on deeper objects
+        Object.assign(toReturn, this.flattenObject(ob[i], prefix + i));
+      } else {
+        toReturn[prefix + i] = ob[i];
+      }
+    }
+    return toReturn;
+  }
+ 
   onDivChange(): void {
     let div = this.loginForm.get('division').value;
     this.division = div;
-  
+
   }
 
   onProjChange(): void {
     let proj = this.loginForm.get('project').value;
     this.project = proj;
+    console.log(this.project);
   }
 
   getOrgs() {
-    this.uServ.getOrgs().subscribe((res) => {
+    let orgSub = this.uServ.getOrgs().subscribe((res) => {
       this.organizations = res;
-      console.log(res);
-      console.log(this.organizations);
+      orgSub.unsubscribe();
     });
   }
 
@@ -132,17 +167,24 @@ export class LandingPage implements OnInit {
         form.fullName = form.firstName + " " + form.lastName;
         form.organization = this.organization.name;
         form.orgId = this.organization.orgId;
-        form.project = this.project;
+        form.project = this.project.name;
+        form.projectId = this.project.projectId;
         form.division = this.division;
         if (form.cCode === '') {
           // Low-Level User
-          form.clearance = 4
+          form.clearance = 1
         } else if (form.cCode === '211') {
-          //Project Admin
+          // Division Admin
           form.clearance = 2
         } else if (form.cCode === '311') {
-          // Division Admin
+          //Project Admin
           form.clearance = 3
+        } else if (form.cCode === '411') {
+          //Org Admin
+          form.clearance = 4
+        } else if (form.cCode === '511') {
+          //James and Ernie
+          form.clearance = 5
         }
         this.utils.presentLoading('Creating Account...');
         this.authService.signup(form).then(() => {

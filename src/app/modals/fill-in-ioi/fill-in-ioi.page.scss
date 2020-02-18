@@ -1,0 +1,106 @@
+ion-header {
+    background: #EDF3FA;
+    --background: #EDF3FA;
+
+    ion-toolbar {
+        background: rgb(3, 4, 5);
+        --background: rgb(3, 4, 5);
+        color: #fff;
+
+        ion-icon {
+            font-size: 2em;
+        }
+    }
+}
+
+ion-content {
+    background: #EDF3FA;
+    --background: #EDF3FA;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    text-align: center;
+
+
+}
+
+.btn {
+    width: 100%;
+    padding: 8px 16px;
+    margin-top: 40px;
+    --box-shadow: none;
+    border-radius: 4px;
+    font-size: 1.5em;
+    text-transform: uppercase;
+    --color: #fff !important;
+    color: #fff;
+    outline: none;
+    background: rgb(19, 175, 123);
+    --background: rgb(19, 175, 123);
+    margin-bottom: 10px;
+}
+
+form {
+    ion-item {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+
+        ion-label {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1em;
+        }
+
+        ion-select {
+            text-transform: capitalize !important;
+            border-radius: 12px;
+            padding: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            color: #000 !important;
+
+            ion-select-option {
+                text-transform: capitalize !important;
+            }
+        }
+
+        ion-input,
+        ion-textarea {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            color: #000 !important;
+            font-size: 1em;
+        }
+    }
+
+    .alert-wrapper {
+        text-transform: capitalize !important;
+    }
+}
+
+.btn-danger {
+    width: 100%;
+    padding: 8px 16px;
+    margin-top: 10px;
+    --box-shadow: none;
+    border-radius: 4px;
+    font-size: 1.5em;
+    text-transform: uppercase;
+    --color: #fff !important;
+    color: #fff;
+    outline: none;
+    background: rgb(175, 42, 19);
+    --background: rgb(175, 42, 19);
+    margin-bottom: 20px;
+}
+
+ 
+.show {
+    visibility: visible!important;
+}
+
+.hide {
+    visibility: hidden;
+}

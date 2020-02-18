@@ -45,20 +45,43 @@
       </ion-input>
     </ion-item>
 
+    
+    <ion-item lines="none">
+      <ion-label>Your Status: </ion-label>
+      <ion-input disabled type="text" [value]="userData?.status" placeholder="N/A">
+      </ion-input>
+    </ion-item>
+
+    
+    <ion-item lines="none">
+      <ion-label>Status Notes: </ion-label>
+      <ion-input disabled type="text" [value]="userData?.statusNotes" placeholder="N/A">
+      </ion-input>
+    </ion-item>
+
+
     <ion-item lines="none">
       <ion-label>Area Of Interest (m): </ion-label>
       <ion-input type="text" formControlName="aoi" [value]="userData?.areaOfInterest" placeholder="2000">
       </ion-input>
     </ion-item>
 
-    <ion-item class="mb-2">
+    <ion-item *ngIf="userData?.clearance === 1 || userData?.clearance === 2 || userData?.clearance === 3" class="mb-2">
       <ion-label>Organization: </ion-label>
       <ion-select disabled [value]="userData?.organization" formControlName="org" okText="Select" cancelText="Dismiss"
         (ionChange)="onOrganizationChange()">
-        <ion-select-option class="input" *ngFor="let o of organizations" [value]="o.name">{{o.name}}</ion-select-option>
+        <ion-select-option class="input" [value]="userData?.organization">{{userData?.organization}}</ion-select-option>
       </ion-select>
     </ion-item>
 
+    <ion-item *ngIf="userData?.clearance > 3" class="mb-2">
+      <ion-label>Organization: </ion-label>
+      <ion-select [value]="userData?.organization" formControlName="org" okText="Select" cancelText="Dismiss"
+        (ionChange)="onOrganizationChange()">
+        <ion-select-option class="input" *ngFor="let o of organizations" [value]="o?.name">{{userData?.organization}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    
     <ion-item *ngIf="organization" class="mb-2">
       <ion-label>Division: </ion-label>
       <ion-select [value]="userData?.division" formControlName="div" okText="Select" cancelText="Dismiss"
@@ -67,19 +90,13 @@
       </ion-select>
     </ion-item>
 
-    <ion-item *ngIf="organization" class="mb-2">
+    <ion-item *ngIf="organization && projects" class="mb-2">
       <ion-label>Project: </ion-label>
-      <ion-select [value]="userData?.project" formControlName="proj" okText="Select" cancelText="Dismiss"
+      <ion-select [value]="userData?.project" [placeholder]="userData?.project" formControlName="proj" okText="Select" cancelText="Dismiss"
         (ionChange)="onProjChange()">
-        <ion-select-option class="input" *ngFor="let p of organization?.projects" [value]="p">{{p}}</ion-select-option>
+        <ion-select-option class="input" *ngFor="let p of projects" [value]="p.name">{{p.name}}</ion-select-option>
       </ion-select>
     </ion-item>
-
-
-    <button ion-button (click)="submitApplication()">Update</button>
-    <ion-button (click)="forgotPassword()" color="danger">
-      Forgot Password
-    </ion-button>
   </form>
 
 </ion-content>

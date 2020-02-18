@@ -226,10 +226,26 @@ export class FormService {
 
   uploadNakedForm(form) {
     const id = this.afs.createId();
+    form.formId = id;
     return this.afs.doc(`naked_forms/${id}`).set(form, {
       merge: true
     });
   }
+
+  updateNakedForm(formData, id) {
+    return this.afs.doc(`naked_forms/${id}`).set(formData, {
+      merge: true
+    });
+  }
+  
+  uploadNakedFormReport(form) {
+    const id = this.afs.createId();
+    form.reportId = id;
+    return this.afs.doc(`naked_form_reports/${id}`).set(form, {
+      merge: true
+    });
+  }
+
 
   
   uploadSpotReport(form) {
@@ -238,6 +254,102 @@ export class FormService {
     return this.afs.doc(`spot_reports/${id}`).set(form, {
       merge: true
     });
+  }
+
+  uploadIncidentType(data) {
+    const id = this.afs.createId();
+    data.incidentId = id;
+    return this.afs.doc(`incident_types/${id}`).set(data, {
+      merge: true
+    });
+  }
+
+  uploadSRStatus(data) {
+    const id = this.afs.createId();
+    data.statusId = id;
+    return this.afs.doc(`incident_statuses/${id}`).set(data, {
+      merge: true
+    });
+  }
+
+  uploadSRWhat(data) {
+    const id = this.afs.createId();
+    data.statusId = id;
+    return this.afs.doc(`incident_whats/${id}`).set(data, {
+      merge: true
+    });
+  }
+
+  
+  addProject(orgId, data) {
+    const id = this.afs.createId();
+    data.projectId = id;
+    return this.afs.doc(`organizations/${orgId}/projects/${id}`).set(data, {
+      merge: true
+    });
+  }
+
+  updateProject(orgId, projectId, data) {
+    return this.afs.doc(`organizations/${orgId}/projects/${projectId}`).set(data, {
+      merge: true
+    });
+  }
+
+  getAllForms(project) {
+    const query = this.afs.collection(`naked_forms`, ref => ref.where('project','==', project));
+    if (query) {
+      const querySub = query.valueChanges();
+      return querySub;
+    }
+  }
+
+  getForms(project) {
+    const query = this.afs.collection(`naked_forms`, ref => ref.where('project','==', project));
+    if (query) {
+      const querySub = query.valueChanges();
+      return querySub;
+    }
+  }
+
+  getIncidentTypes(org) {
+    const query = this.afs.collection(`incident_types`, ref => ref.where('organization','==', org));
+    if (query) {
+      const querySub = query.valueChanges();
+      return querySub;
+    }
+  }
+
+  getSRStatuses(org) {
+    const query = this.afs.collection(`incident_statuses`, ref => ref.where('organization','==', org));
+    if (query) {
+      const querySub = query.valueChanges();
+      return querySub;
+    }
+  }
+
+  getPreviousForms(org) {
+    const query = this.afs.collection(`naked_form_reports`, ref => ref.where('organization','==', org));
+    if (query) {
+      const querySub = query.valueChanges();
+      return querySub;
+    }
+  }
+
+
+  getNakedReports(project) {
+    const query = this.afs.collection(`naked_form_reports`, ref => ref.where('project','==', project));
+    if (query) {
+      const querySub = query.valueChanges();
+      return querySub;
+    }
+  }
+
+  getUserNakedReports(uid) {
+    const query = this.afs.collection(`naked_form_reports`, ref => ref.where('userId','==', uid));
+    if (query) {
+      const querySub = query.valueChanges();
+      return querySub;
+    }
   }
 
 

@@ -28,7 +28,9 @@ import {
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import { AuthService } from './auth.service';
+import {
+  AuthService
+} from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -52,10 +54,33 @@ export class UserService {
   }
 
 
-  
-
   getOrgs() {
     const query = this.afs.collection(`organizations`);
+    if (query) {
+      const querySub = query.valueChanges();
+      return querySub;
+    }
+  }
+
+  getOrg(orgId) {
+    const query = this.afs.doc(`organizations/${orgId}`);
+    if (query) {
+      const querySub = query.valueChanges();
+      return querySub;
+    }
+  }
+
+  getProjects(orgId) {
+    const query = this.afs.collection(`organizations/${orgId}/projects`);
+    if (query) {
+      const querySub = query.valueChanges();
+      return querySub;
+    }
+  }
+
+  
+  getProject(orgId, projId) {
+    const query = this.afs.doc(`organizations/${orgId}/projects/${projId}`);
     if (query) {
       const querySub = query.valueChanges();
       return querySub;
@@ -107,7 +132,7 @@ export class UserService {
     });
   }
 
-  async getUserProfile(): Promise<firebase.firestore.DocumentSnapshot> {
+  async getUserProfile(): Promise < firebase.firestore.DocumentSnapshot > {
     const user: firebase.User = await this.authService.getUser();
     this.currentUser = user;
     this.userProfile = firebase.firestore().doc(`users/${user.uid}`);
@@ -119,6 +144,57 @@ export class UserService {
       let id = this.afs.createId();
       h.docId = id;
       return this.afs.doc(`help_requests/${id}`).set(h);
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+
+  async addFolder(data, uid, id) {
+    try {
+      id = id === '' ? this.afs.createId() : id;
+      data.docId = id;
+      return this.afs.doc(`users/${uid}/my_plans/${id}`).set(data, {
+        merge: true
+      });
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  async addFile(data, uid, docId) {
+    console.log(data);
+    try {
+      return this.afs.doc(`users/${uid}/my_plans/${docId}`).set(data, {
+        merge: true
+      });
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  getUserPlans(uid) {
+    try {
+      let labels = firebase.firestore().collection(`users/${uid}/my_plans`);
+      return labels.get();
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  getHomeLabels() {
+    try {
+      let labels = firebase.firestore().doc(`home_labels/labels`);
+      return labels.get();
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  getStatusLabels() {
+    try {
+      let labels = firebase.firestore().doc(`status_labels/labels`);
+      return labels.get();
     } catch (err) {
       throw new Error(err);
     }

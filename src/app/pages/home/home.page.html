@@ -6,7 +6,9 @@
 
 
 <ion-content class="ion-padding">
-
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <!-- 
   <ion-grid fixed>
     <ion-row class="ion-justify-content-center">
@@ -16,24 +18,36 @@
       </ion-col>
     </ion-row>
   </ion-grid> -->
+  <div *ngIf="org">
+    <button expand="block" *ngIf="homeLabels?.myStatusEnabled === true" class="ion-padding btn" (click)="changeStatus()">
+      {{homeLabels?.myStatus}}
+      <ion-ripple-effect></ion-ripple-effect>
+    </button>
 
-  <button expand="block" class="ion-padding btn" (click)="changeStatus()">
-    My Status
-    <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
-    <ion-ripple-effect></ion-ripple-effect>
-  </button>
+    <!--   <button expand="block" *ngIf="homeLabels?.siteStatusEnabled === true" class="ion-padding btn" [routerLink]="['/site-status']">
+        {{org.homeL.siteStat}}
+      <ion-ripple-effect></ion-ripple-effect>
+    </button> -->
 
-  <button expand="block" class="ion-padding btn" [routerLink]="['/spot-report']">
-    Create Spot Report
-    <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
-    <ion-ripple-effect></ion-ripple-effect>
-  </button>
+    <button expand="block" *ngIf="homeLabels?.createIoiEnabled === true" class="ion-padding btn" (click)="presentNakedFormOptions()">
+      {{homeLabels?.createIoi}}
+      <ion-ripple-effect></ion-ripple-effect>
+    </button>
 
-  <button expand="block" class="ion-padding btn" [routerLink]="['/my-forms']">
-    My IOI
-    <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
-    <ion-ripple-effect></ion-ripple-effect>
-  </button>
+    <button expand="block" *ngIf="homeLabels?.myIoiEnabled === true" class="ion-padding btn" [routerLink]="['/my-forms']">
+      {{homeLabels?.myIoi}}
+      <ion-ripple-effect></ion-ripple-effect>
+    </button>
+
+    <button *ngIf="homeLabels?.myPlansEnabled === true" expand="block" class="ion-padding btn"
+      [routerLink]="['/my-plans', userData.userId]" routerDirection="forward">
+      {{homeLabels?.myPlans}}
+      <ion-ripple-effect></ion-ripple-effect>
+    </button>
+  </div>
+  <ion-img *ngIf="!org" class="ion-padding" src="assets/no_data.svg"></ion-img>
+
+ 
 
 
 </ion-content>

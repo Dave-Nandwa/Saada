@@ -65,9 +65,13 @@ export class AuthService {
           division: data.division,
           clearance: data.clearance,
           project: data.project,
+          projectId: data.projectId,
           orgId: data.orgId,
           areaOfInterest: 2000,
-          status: 'ok',
+          status: 'No Status',
+          statusNotes: 'N/A',
+          lat: 0,
+          lng: 0,
           profileImage: 'None'
         });
       return newUserCredential;

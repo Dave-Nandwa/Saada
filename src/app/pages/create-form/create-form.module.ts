@@ -5,11 +5,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {FormlyModule} from '@ngx-formly/core';
 import { FormlyIonicModule } from '@ngx-formly/ionic';
 
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 
 import { CreateFormPageRoutingModule } from './create-form-routing.module';
 
 import { CreateFormPage } from './create-form.page';
+import { LocationSelectPageModule } from './../../modals/location-select/location-select.module';
+
 
 @NgModule({
   imports: [
@@ -19,7 +21,8 @@ import { CreateFormPage } from './create-form.page';
     CreateFormPageRoutingModule,
     ReactiveFormsModule,
     FormlyModule.forRoot(),
-    FormlyIonicModule
+    FormlyIonicModule,
+    LocationSelectPageModule
   ],
   declarations: [CreateFormPage]
 })

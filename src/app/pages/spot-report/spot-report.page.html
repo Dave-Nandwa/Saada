@@ -1,9 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-button slot="start" ion-button icon-only [routerLink]="['/tabs/home']" class="back-btn">
-      <ion-icon name="arrow-back"></ion-icon>
+    <ion-button color="warning" slot="start" [routerLink]="['/tabs/home']">
+      <ion-icon slot="icon-only" src="assets/profile/chevron-back.svg"></ion-icon>
     </ion-button>
-    <ion-title>Create Spot Report</ion-title>
+    <ion-title>Create IOI</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -42,12 +42,25 @@
       <ion-item>
         <ion-label>Type</ion-label>
         <ion-select (ionChange)="typeChanged($event)" [placeholder]="spotType" [value]="spotType">
-          <ion-select-option value="incident">Incident</ion-select-option>
-          <ion-select-option value="alert">Alert</ion-select-option>
+          <ion-select-option *ngFor="let inc of incidentTypes" [value]="inc?.name">{{inc?.name}}</ion-select-option>
           <ion-select-option value="other">Other</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item>
+        <ion-label>Status</ion-label>
+        <ion-select (ionChange)="statusChanged($event)" placeholder="Select" value="Select">
+          <ion-select-option *ngFor="let inc of incidentStatuses" [value]="inc?.name">{{inc?.name}}</ion-select-option>
+          <ion-select-option value="other">Unknown</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>What</ion-label>
+        <ion-select (ionChange)="whatChanged($event)" placeholder="Select">
+          <ion-select-option *ngFor="let inc of incidentWhats" [value]="inc?.formName">{{inc?.formName}}</ion-select-option>
+          <ion-select-option value="other">Unknown</ion-select-option>
+        </ion-select>
+      </ion-item>
+<!--       <ion-item>
         <ion-label>Severity</ion-label>
         <ion-select (ionChange)="severityChanged($event)" placeholder="Select Severity" [value]="severity">
           <ion-select-option value="Unknown">Unknown</ion-select-option>
@@ -56,14 +69,14 @@
           <ion-select-option value="Extraordinary">Extraordinary</ion-select-option>
           <ion-select-option value="Other">Other</ion-select-option>
         </ion-select>
-      </ion-item>
+      </ion-item> -->
     </ion-card-content>
   </ion-card>
  <button class="btn" (click)="addSpotReport()">Submit</button>
  <button class="btn-two" [routerLink]="['/tabs/home']">Cancel</button>
- <ion-fab (click)="uploadMediaModal()" vertical="bottom" horizontal="end" slot="fixed">
-   <ion-fab-button>
-     <ion-icon name="photo"></ion-icon>
+ <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+   <ion-fab-button (click)="uploadMediaModal()">
+     <ion-icon src="assets/profile/upload_icon.svg"></ion-icon>
    </ion-fab-button>
  </ion-fab>
 

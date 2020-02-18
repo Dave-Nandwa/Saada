@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button color="warning" slot="start" [routerLink]="['/tabs/home']">
+      <ion-icon slot="icon-only" src="assets/profile/chevron-back.svg"></ion-icon>
+    </ion-button>
+    <ion-title>My Plans</ion-title>
+    <ion-button *ngIf="userData?.clearance > 2" color="primary" slot="end" (click)="addFolderName()">
+      <ion-icon slot="icon-only" icon="add"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-img *ngIf="items.length === 0" class="ion-padding" src="assets/no_data.svg"></ion-img>
+
+  <div *ngIf="items.length > 0">
+    <ion-card (click)="expandItem(item)" *ngFor="let item of items">
+      <ion-card-header>
+        <ion-card-title>{{item?.folderName}}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <app-accordion expandHeight="800px" [expanded]="item.expanded">
+          <ion-list>
+            <button class="btn" *ngIf="userData?.clearance >= 2" (click)="chooseFileType(item?.docId)">Add Files</button>
+            <ion-item *ngFor="let f of item?.files">
+              <ion-label>
+                <!-- <a *ngIf="f?.type === 'url'" [class.pink]="f.opened > 1" (click)="openIab(item?.docId, f)">{{f?.filename}}</a> -->
+                <a *ngIf="f?.type !== 'url'" [class.pink]="f.opened > 1" [href]="f?.url" download>File - {{f?.filename}}</a>
+                <a *ngIf="f?.type === 'url'" [class.pink]="f.opened > 1" (click)="createLinkForURL(item?.docId, f)">Url - {{f?.filename}}</a>
+                <button class="removeBtn">Remove</button>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </app-accordion>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

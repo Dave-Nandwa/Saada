@@ -1,20 +1,24 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>add-media</ion-title>
+    <ion-title>Add Media</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <h1>Select a Profile Photo</h1>
-  <ion-card>
+  <h1>Upload a Media File</h1>
+  <ion-card (click)="selectFile()">
     <img *ngIf="!fileUrl" src="assets/profile/upload.svg" />
     <img *ngIf="fileUrl" [src]="fileUrl" />
     <ion-card-content>
-      <ion-button color="medium" size="large" (click)="selectImage()">
+      <ion-button color="medium" size="large">
         <ion-icon slot="icon-only" name="camera"></ion-icon>
       </ion-button>
     </ion-card-content>
   </ion-card>
+  <ion-item>
+    <ion-label>Additional Notes: </ion-label>
+    <ion-textarea type="text" name="notes" placeholder="Media Notes (optional)"></ion-textarea>
+  </ion-item>
   <!-- <button>Upload</button> -->
   <button (click)="closeModal()">Back</button>
 </ion-content>

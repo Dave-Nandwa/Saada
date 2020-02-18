@@ -25,9 +25,6 @@ import {
 import {
   NativeStorage
 } from '@ionic-native/native-storage/ngx';
-import {
-  BackgroundMode
-} from '@ionic-native/background-mode/ngx';
 
 /* ---------------------------------- Firebase & Rxjs ---------------------------------- */
 import {
@@ -73,10 +70,15 @@ export class ProfilePage implements OnInit {
 
   userData: any;
   userId: any;
-  constructor(private formService: FormService, public backgroundMode: BackgroundMode, private utils: UtilitiesService, private lcn: LocalNotificationService, private router: Router, private nativeStorage: NativeStorage, private uServ: UserService) {}
+  constructor(private formService: FormService, private utils: UtilitiesService, private lcn: LocalNotificationService, private router: Router, private nativeStorage: NativeStorage, private uServ: UserService) {}
 
   ngOnInit() {
     this.getUserData();
+  }
+
+  async doRefresh(event) {
+    await this.getUserData();
+    event.target.complete();
   }
 
   async getUserData() {
@@ -93,17 +95,6 @@ export class ProfilePage implements OnInit {
     });
   }
 
-
-  changeMode(e) {
-    this.backgroundMode = e.detail.checked;
-    if (this.bMode === true) {
-      this.backgroundMode.enable();
-      this.utils.presentToast('Background Mode Enabled.', 'toast-success');
-    } else {
-      this.backgroundMode.disable();
-      this.utils.presentToast('Background Mode Disabled.', 'toast-error');
-    }
-  }
 
   logOut() {
     // this.safeObs.subscribe(isAuth => console.log(isAuth));

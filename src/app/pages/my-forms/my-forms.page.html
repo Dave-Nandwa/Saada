@@ -1,9 +1,33 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>my-forms</ion-title>
+    <ion-button color="warning" slot="start" (click)="back()">
+      <ion-icon slot="icon-only" src="assets/profile/chevron-back.svg"></ion-icon>
+    </ion-button>
+    <ion-title>My IOI</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-img *ngIf="forms.length === 0" class="ion-padding" src="assets/no_data.svg"></ion-img>
 
+  <div *ngIf="forms.length > 0">
+    <ion-card *ngFor="let f of forms">
+      <div class="frame" style="background-image: url('../assets/papers.jpg')"></div>
+      <ion-card-header>
+        <ion-card-subtitle>Updated On: {{f.when}}</ion-card-subtitle>
+        <ion-card-title>Form Name: {{f.formName}}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label>Set as SIOI:</ion-label>
+          <ion-toggle [(ngModel)]="isPublic" [checked]="f?.public" ></ion-toggle>
+        </ion-item>
+        <button class="btn" (click)="openCreateModal(f.formId)">Select IOI</button>
+        <button class="btn" (click)="openEditModal(f.formId)" *ngIf="f?.userId === userData?.userId">Edit Form</button>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

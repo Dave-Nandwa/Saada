@@ -13,13 +13,18 @@ export class SpotReportsPage implements OnInit {
   ) { }
 
   spotReports;
-
+  nakedReports;
   ngOnInit() {
     console.log(this.spotReports)
+    console.log(this.nakedReports);
   }
 
   viewMap(userId) {
     this.modalCtrl.dismiss(userId);
+  }
+
+  closeModal() {
+    this.modalCtrl.dismiss('');
   }
 
 }

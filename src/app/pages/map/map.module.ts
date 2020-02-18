@@ -12,6 +12,7 @@ import { MapPage } from './map.page';
 import { AgmCoreModule } from '@agm/core';
 import { AgmDirectionModule } from 'agm-direction';   // agm-direction
 import { SpotReportsPageModule } from 'src/app/modals/spot-reports/spot-reports.module';
+import { FillInIoiPageModule } from 'src/app/modals/fill-in-ioi/fill-in-ioi.module';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { SpotReportsPageModule } from 'src/app/modals/spot-reports/spot-reports.
       apiKey: 'AIzaSyC7i8ihh6Z7YAHPSUJxjZ5U2krePN8-_ks'
     }),
     AgmDirectionModule,
-    SpotReportsPageModule 
+    SpotReportsPageModule,
+    FillInIoiPageModule
   ],
   declarations: [MapPage],
   schemas: [

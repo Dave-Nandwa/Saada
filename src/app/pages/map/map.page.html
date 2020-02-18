@@ -20,27 +20,159 @@
       [travelMode]="travelMode">
     </agm-direction>
 
-    <!-- ----------------------------- User Marker ----------------------------- -->
+    <!-- ----------------------------- User Markers ----------------------------- -->
 
     <agm-marker [latitude]="lat" [longitude]="lng" [label]="You" [iconUrl]="mapIcon"></agm-marker>
 
-    <!-- Display Multiple Markers + An Info Window-->
+    <!-- Display User Markers + An Info Window-->
+    <agm-marker *ngFor="let user of users; trackBy: trackByFn" [latitude]="user.position.geopoint.latitude"
+      [longitude]="user.position.geopoint.longitude"
+      [iconUrl]="{ url: 'assets/map/user_pin.svg', scaledSize: {height: 40, width: 40} }">
 
+      <agm-info-window [isOpen]="isInfoWindowOpen(user.spotId)">
+        <ion-list>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Name:</b> {{user?.fullName}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Email:</b> {{user.email}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Status:</b> {{user.status}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Status Note:</b> {{user.statusNotes}}</ion-label>
+          </ion-item>
+        </ion-list>
+        <button expand="block" class="ion-padding btn"
+          (click)="getDirections(user.position.geopoint.latitude, user.position.geopoint.longitude)">
+          Navigate to
+          <ion-ripple-effect></ion-ripple-effect>
+        </button>
+      </agm-info-window>
+    </agm-marker>
+
+    <!-- Display IOI Markers + An Info Window-->
     <agm-marker *ngFor="let point of points | async; trackBy: trackByFn" [latitude]="point.position.geopoint.latitude"
       [longitude]="point.position.geopoint.longitude"
       [iconUrl]="{ url: point.icon, scaledSize: {height: 40, width: 40} }">
 
       <agm-info-window [isOpen]="isInfoWindowOpen(point.spotId)">
         <ion-list>
-          <ion-item><ion-label class="ion-text-wrap">Name: {{point.name}}</ion-label></ion-item>
-          <ion-item><ion-label class="ion-text-wrap">Description: {{point.description}}</ion-label></ion-item>
-          <ion-item><ion-label class="ion-text-wrap">Status: {{point.status}}</ion-label></ion-item>
-          <ion-item><ion-label class="ion-text-wrap">Need: {{point.reason}}</ion-label></ion-item>
-          <ion-item><ion-label class="ion-text-wrap">Category: Unknown</ion-label></ion-item>
-          <ion-item><ion-label class="ion-text-wrap">Media File: <a href="#">{{point.mediaFile}}</a></ion-label></ion-item>
-          <ion-item><ion-label class="ion-text-wrap">Updated at: {{point.when}}</ion-label></ion-item>
-          <ion-item><ion-label class="ion-text-wrap">By: {{point.createdBy}}</ion-label></ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Name:</b> {{point.name}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Description:</b> {{point.description}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Status:</b> {{point.status}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Need:</b> {{point.reason}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Category:</b> Unknown</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label *ngIf="point?.mediaFile !== 'None'" class="ion-text-wrap"><b>Media File: </b> 
+              <a href="{{point?.mediaFile}}" (click)="displayMediaFile(point?.mediaFile)" download><u>Open</u></a>
+            </ion-label>
+            <ion-label *ngIf="point?.mediaFile === 'None'" class="ion-text-wrap"><b>Media File: </b> None</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Media Notes:</b> {{point.mediaNotes}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Updated on:</b> {{point.when}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>By:</b> {{point.createdBy}}</ion-label>
+          </ion-item>
         </ion-list>
+        <button expand="block" class="ion-padding btn"
+          (click)="getDirections(point.position.geopoint.latitude, point.position.geopoint.longitude)">
+          Navigate to
+          <ion-ripple-effect></ion-ripple-effect>
+        </button>
+        <!-- {{ point.hitMetadata | json }} -->
+      </agm-info-window>
+    </agm-marker>
+
+    <!-- Display Naked Report Markers + An Info Window-->
+    <agm-marker *ngFor="let point of nakedReports | async; trackBy: trackByFn"
+      [latitude]="point.position.geopoint.latitude" [longitude]="point.position.geopoint.longitude"
+      [iconUrl]="{ url: 'assets/map/report.svg', scaledSize: {height: 40, width: 40} }">
+
+      <agm-info-window [isOpen]="isInfoWindowOpen(point.reportId)">
+        <ion-segment (ionChange)="segmentChanged($event)">
+          <ion-segment-button value="report" checked>
+            <ion-label>Report</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="location">
+            <ion-label>Location</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="additional">
+            <ion-label>More</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+
+        <!-- -------------------------- Naked Report Data -------------------------- -->
+
+        <ion-list *ngIf="formTab === 'report'">
+          <!-- Naked Form Report -->
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Name:</b> {{point.formName}}</ion-label>
+          </ion-item>
+          <ion-item-divider>
+            <ion-label>Required</ion-label>
+          </ion-item-divider>
+          <ion-item *ngFor="let field of point?.formData | keyvalue">
+            <ion-label class="ion-text-wrap"><b>{{field.key}}</b>: {{field.value}}</ion-label>
+          </ion-item>
+        </ion-list>
+
+        <!-- --------------------- Naked Report Location Info ---------------------- -->
+        <ion-list *ngIf="formTab === 'location'">
+          <!-- Naked Form Report -->
+          <ion-item-divider>
+            <ion-label>Location Information: </ion-label>
+          </ion-item-divider>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Address:</b> {{point.address}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>State:</b> {{point.city}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Zip:</b> {{point.zip}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Lat/Lng:</b> {{point.latLng}}</ion-label>
+          </ion-item>
+        </ion-list>
+        <!-- --------------------- Naked Report Additional Info ---------------------- -->
+        <ion-list *ngIf="formTab === 'additional'">
+          <!-- Naked Form Report -->
+          <ion-item-divider>
+            <ion-label>Additional Information: </ion-label>
+          </ion-item-divider>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Created By:</b> {{point.author}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Project:</b> {{point.project}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Division:</b> {{point.division}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-wrap"><b>Last Updated:</b> {{point.when}}</ion-label>
+          </ion-item>
+        </ion-list>
+
+        <!-- ---------------------------- Navigate BTN ----------------------------- -->
+
         <button expand="block" class="ion-padding btn"
           (click)="getDirections(point.position.geopoint.latitude, point.position.geopoint.longitude)">
           Navigate to
@@ -52,24 +184,24 @@
 
 
 
+
     <agm-circle [latitude]="lat" [longitude]="lng" [radius]="(radius | async)" [fillColor]="'rgb(79,101,246,0.7)'">
     </agm-circle>
 
 
 
   </agm-map>
+  <!--   <ion-backdrop (ionChange)="bdChange($event)" tappable="true" [visible]="showMedia">
+    <img [src]="mediaUrl" alt="">
+  </ion-backdrop> -->
+
 
   <!-- fab placed to the top and start and on the bottom edge of the content overlapping footer with a list to the right -->
-  <ion-fab *ngIf="this.userData?.favorites?.length !== 0" color="dark" id="fab-top" vertical="top" horizontal="start"
-    edge slot="fixed">
+  <ion-fab (click)="presentNakedFormOptions()" color="dark" id="fab-top" vertical="top" horizontal="start" edge
+    slot="fixed">
     <ion-fab-button>
       <ion-icon src="assets/map/star-black.svg"></ion-icon>
     </ion-fab-button>
-    <ion-fab-list side="bottom">
-      <ion-fab-button (click)="requestForm(fav)" *ngFor="let fav of userData?.favorites">
-        <ion-icon [src]="'assets/map/'.concat(fav).concat('.svg')"></ion-icon>
-      </ion-fab-button>
-    </ion-fab-list>
   </ion-fab>
 
   <ion-fab *ngIf="origin && destination" id="fab-top" vertical="top" horizontal="end" edge slot="fixed">
@@ -79,7 +211,7 @@
   </ion-fab>
 
   <!-- fab placed to the bottom and start and on the bottom edge of the content overlapping footer with a list to the right -->
-  <ion-fab id="fab-bottom" vertical="bottom" horizontal="end" edge slot="fixed">
+  <ion-fab *ngIf="spotReports" id="fab-bottom" vertical="bottom" horizontal="end" edge slot="fixed">
     <ion-fab-button (click)="openSpotReportsModal()">
       <ion-icon src="assets/mapIcons/alert.svg"></ion-icon>
     </ion-fab-button>

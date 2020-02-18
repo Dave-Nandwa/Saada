@@ -1,14 +1,18 @@
 <ion-header no-border>
   <ion-toolbar transparent>
     <ion-icon class="back_icon" slot="start" src="assets/profile/chevron-back.svg" [routerLink]="['/tabs/map']"></ion-icon>
-    <ion-title slot="start">Profile</ion-title>
+    <ion-title slot="start">Settings</ion-title>
     <!-- <ion-icon class="ion-padding" slot="end" src="assets/navigation/bell.svg"></ion-icon> -->
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
-  <!-- ------------------- If the user has a profile image -------------------- -->
+  <div *ngIf="userData">
+     <!-- ------------------- If the user has a profile image -------------------- -->
   <ion-avatar *ngIf="userData?.profileImage === 'None'">
     <img src="assets/user.svg" />
   </ion-avatar>
@@ -18,6 +22,7 @@
   </ion-avatar>
 
   <h1>{{userData?.fullName}}</h1>
+  <h4>Status: {{userData?.status}}</h4>
   <br /><br />
 
 <!--   <ion-chip>
@@ -36,27 +41,27 @@
 
       <ion-item lines="none" [routerLink]="['/edit-profile']">
         <ion-icon slot="start" src="assets/profile/edit.svg"></ion-icon>
-        <ion-label>Edit Profile</ion-label>
+        <ion-label>Edit Account</ion-label>
         <ion-icon slot="end" src="assets/profile/next.svg"></ion-icon>
       </ion-item>
-<!--       <ion-item lines="none" (click)="changeProfilePhoto()">
+      <ion-item lines="none" [routerLink]="['/report-history']">
         <ion-icon slot="start" src="assets/profile/photo.svg"></ion-icon>
-        <ion-label>Change Profile Photo</ion-label>
+        <ion-label>Download Reports</ion-label>
         <ion-icon slot="end" src="assets/profile/next.svg"></ion-icon>
-      </ion-item> -->
-      <ion-item lines="none" [routerLink]="['/create-form']">
+      </ion-item>
+      <ion-item lines="none" *ngIf="userData?.clearance > 4" [routerLink]="['/create-form']">
         <ion-icon slot="start" src="assets/profile/reports.svg"></ion-icon>
-        <ion-label>Create an IOI</ion-label>
+        <ion-label>Build a Form</ion-label>
         <ion-icon slot="end" src="assets/profile/next.svg"></ion-icon>
       </ion-item>
-      <ion-item lines="none" (click)="selectFavourites()">
+      <ion-item lines="none" *ngIf="userData?.clearance >= 2" [routerLink]="['/my-forms']">
         <ion-icon slot="start" src="assets/profile/fav.svg"></ion-icon>
-        <ion-label>Quick Access SR's</ion-label>
+        <ion-label>My IOI</ion-label>
         <ion-icon slot="end" src="assets/profile/next.svg"></ion-icon>
       </ion-item>
-      <ion-item lines="none" [routerLink]="['/help']">
+      <ion-item lines="none" *ngIf="userData?.clearance >= 2" [routerLink]="['/more-settings']">
         <ion-icon slot="start" src="assets/profile/help.svg"></ion-icon>
-        <ion-label>Tech Support</ion-label>
+        <ion-label>Configure</ion-label>
         <ion-icon slot="end" src="assets/profile/next.svg"></ion-icon>
       </ion-item>
       <ion-item lines="none" (click)="logOut()">
@@ -67,5 +72,8 @@
     </ion-item-group>
 
   </ion-list>
+
+  </div>
+  <ion-img *ngIf="!userData"class="ion-padding" src="assets/profile/empty.svg"></ion-img>
 
 </ion-content>

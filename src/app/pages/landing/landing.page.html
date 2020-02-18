@@ -58,7 +58,7 @@
           <ion-label>Project: </ion-label>
           <ion-select value="Select" formControlName="project" okText="Select" cancelText="Dismiss"
             (ionChange)="onProjChange()">
-            <ion-select-option class="input" *ngFor="let p of organization?.projects" [value]="p">{{p}}
+            <ion-select-option class="input" *ngFor="let p of projects; index as i" [value]="p">{{p?.name}}
             </ion-select-option>
           </ion-select>
         </ion-item>

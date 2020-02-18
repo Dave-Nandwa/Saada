@@ -1,0 +1,124 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Create: {{selectedForm.formName}} </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-segment (ionChange)="segmentChanged($event)">
+    <ion-segment-button checked value="required">
+      <ion-label>Required</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="form">
+      <ion-label>{{selectedForm.formName}}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="location">
+      <ion-label>Location</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+
+
+  <div *ngIf="segment === 'form'">
+    <form class="ion-padding" [formGroup]="form" (ngSubmit)="submit()">
+      <formly-form [form]="form" [fields]="fields" [model]="formModel"></formly-form>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+    <button class="ion-padding" (click)="closeModal()" class="btn-danger">Cancel</button>
+  </div>
+
+
+
+  <div *ngIf="segment === 'required'">
+
+    <ion-item>
+      <ion-label>What: </ion-label>
+      <ion-select (ionChange)="whatChanged($event)" placeholder="Select">
+        <ion-select-option *ngFor="let inc of incidentTypes" [value]="inc?.name">{{inc?.name}}
+        </ion-select-option>
+        <ion-select-option value="other">Unknown</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Select Previous Name: </ion-label>
+      <ion-select (ionChange)="nameChanged($event)" placeholder="Select Name">
+        <ion-select-option *ngFor="let inc of previousForms" [value]="inc?.reportName">{{inc?.reportName}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Name:</ion-label>
+      <ion-input type="text" placeholder="Enter Here" [(ngModel)]="repName"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Status:</ion-label>
+      <ion-select (ionChange)="statusChanged($event)" placeholder="Select">
+        <ion-select-option *ngFor="let inc of incidentStatuses" [value]="inc?.name">{{inc?.name}}
+        </ion-select-option>
+        <ion-select-option value="other">Unknown</ion-select-option>
+      </ion-select>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label>SIOI (Internal, not shared.):</ion-label>
+      <ion-checkbox (ionChange)="toggleCheckbox()"></ion-checkbox>
+    </ion-item>
+
+  </div>
+
+
+  <div *ngIf="segment === 'location'">
+    <ion-list>
+      <ion-item>
+        <ion-label>Select Previous Location:</ion-label>
+        <ion-select (ionChange)="nameChanged($event)" placeholder="Select IOI">
+          <ion-select-option *ngFor="let inc of previousForms" [value]="inc?.reportName">{{inc?.reportName}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>Address: </ion-label>
+        <ion-input type="text" placeholder="Address" [value]="physicalAddr?.Address"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Address 2: </ion-label>
+        <ion-input type="text" placeholder="N/A"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>City: </ion-label>
+        <ion-input type="text" placeholder="N/A" [value]="physicalAddr?.City"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>State: </ion-label>
+        <ion-input type="text" placeholder="State" [value]="physicalAddr?.State"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Zip: </ion-label>
+        <ion-input type="text" placeholder="N/A" [value]="physicalAddr?.postalCode"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Latitude: </ion-label>
+        <ion-input type="text" placeholder="N/A" [value]="lat"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Longitude: </ion-label>
+        <ion-input type="text" placeholder="N/A" [value]="lng"></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-button (click)="locationSelectModal()" expand="block" fill="clear" shape="round">
+      Select on Map
+    </ion-button>
+  </div>
+
+
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="uploadMediaModal()">
+      <ion-icon src="assets/profile/upload_icon.svg"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

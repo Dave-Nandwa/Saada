@@ -11,39 +11,21 @@
 
   <ion-grid *ngIf="!noReports" class="ion-no-padding">
     <ion-row class="row-cards">
-      <ion-col>
-        <div class="card gradient-1 ion-padding">
-          <div class="card-number">
-            XXXX XXXX XXXX 1234
-          </div>
-          <div class="card-holder">Card Holder</div>
-          <div class="card-person-name">Name of Person</div>
-          <img src="https://cdn.freebiesupply.com/logos/large/2x/visa-logo-black-and-white.png" class="brand" />
-        </div>
-      </ion-col>
-      <ion-col>
+      <ion-col *ngFor="let r of reports">
         <div class="card gradient-2 ion-padding">
           <div class="card-number">
-            XXXX XXXX XXXX 1234
+            {{r.formName}}
           </div>
-          <div class="card-holder">Card Holder</div>
-          <div class="card-person-name">Name of Person</div>
-          <img
-            src="https://brand.mastercard.com/content/dam/mccom/brandcenter/thumbnails/mastercard_vrt_pos_92px_2x.png"
-            class="brand" />
-        </div>
-      </ion-col>
-      <ion-col>
-        <div class="card gradient-3 ion-padding">
-          <div class="card-number">
-            XXXX XXXX XXXX 1234
-          </div>
-          <div class="card-holder">Card Holder</div>
-          <div class="card-person-name">Name of Person</div>
-          <img src="https://brand.mastercard.com/content/dam/mccom/brandcenter/thumbnails/mastercard_vrt_pos_92px_2x.png" class="brand" />
+          <div class="card-holder">Created on: {{r.when}}</div>
+          <div class="card-person-name">Report ID: {{r.reportId}}</div>
         </div>
       </ion-col>
     </ion-row>
   </ion-grid>
-  
+  <ion-item>
+    <ion-label>Save as: </ion-label>
+    <ion-input type="text" placeholder="Enter File Name" [(ngModel)]="filename"></ion-input>
+  </ion-item>
+  <button (click)="presentAlertRadio()" class="btn ion-padding">Download Reports (CSV)</button>
+
 </ion-content>

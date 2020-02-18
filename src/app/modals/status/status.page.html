@@ -9,59 +9,41 @@
 
 <ion-content class="ion-padding">
 
-  <ion-segment (ionChange)="segmentChanged($event)">
-    <ion-segment-button checked value="personal">
-      <ion-label>My Status</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="site">
-      <ion-label>Site Status</ion-label>
-    </ion-segment-button>
-  </ion-segment>
 
 
 
 
-  <ion-list *ngIf="segment === 'personal'">
+
+  <ion-list>
     <ion-radio-group (ionChange)="radioChange($event)">
       <ion-list-header>
         <ion-label>Personal Status:</ion-label>
       </ion-list-header>
 
       <ion-item>
-        <ion-label>I'm Okay!</ion-label>
-        <ion-radio color="success" slot="start" value="Ok" checked></ion-radio>
+        <ion-label>{{statusLabels?.ok}}</ion-label>
+        <ion-radio color="success" slot="start" [value]="statusLabels?.ok"></ion-radio>
       </ion-item>
 
       <ion-item>
-        <ion-label>No Status</ion-label>
-        <ion-radio slot="start" value="No status" checked></ion-radio>
+        <ion-label>{{statusLabels?.noStatus}}</ion-label>
+        <ion-radio slot="start" [value]="statusLabels?.noStatus" checked></ion-radio>
       </ion-item>
 
       <ion-item>
-        <ion-label>Limited</ion-label>
-        <ion-radio color="warning" slot="start" value="Limited"></ion-radio>
+        <ion-label>{{statusLabels?.limited}}</ion-label>
+        <ion-radio color="warning" slot="start" [value]="statusLabels?.limited"></ion-radio>
       </ion-item>
 
       <ion-item>
-        <ion-label>Not available</ion-label>
-        <ion-radio color="danger" slot="start" value="Not Available"></ion-radio>
+        <ion-label>{{statusLabels?.closed}}</ion-label>
+        <ion-radio color="danger" slot="start" [value]="statusLabels?.closed"></ion-radio>
       </ion-item>
     </ion-radio-group>
   </ion-list>
 
-  <ion-list *ngIf="segment === 'site'">
-    <ion-list-header>
-      <ion-label>My Sites</ion-label>
-    </ion-list-header>
-    <ion-item>
-      <ion-label>Site One</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>Site Two</ion-label>
-    </ion-item>
-  </ion-list>
 
-  <ion-button color="success" (click)="savePersonalStatus()" expand="full">
+  <ion-button color="success" (click)="addNotes()" expand="full">
     Save Status
   </ion-button>
 

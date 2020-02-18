@@ -1,0 +1,40 @@
+.btn {
+    width: 100%;
+    padding: 2.5px 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    background: #4F65F6;
+    --background: #4F65F6;
+    --box-shadow: none;
+    border-radius: 4px;
+    font-size: 1.5em;
+    --color: #fff !important;
+    color: #fff;
+    outline: none;
+}
+
+.pink {
+    --color: rgb(175, 45, 147)!important;
+    color: rgb(175, 45, 147);
+}
+
+a:active {
+    --color: rgb(175, 45, 147)!important;
+    color: rgb(175, 45, 147);
+}
+
+.removeBtn {
+    width: 100%;
+    padding: 2.5px 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    background: rgb(246, 112, 79);
+    --background: rgb(246, 112, 79);
+    --box-shadow: none;
+    border-radius: 4px;
+    font-size: 1.5em;
+    text-transform: uppercase;
+    --color: #fff !important;
+    color: #fff;
+    outline: none;
+}

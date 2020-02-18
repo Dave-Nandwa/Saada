@@ -33,6 +33,7 @@ import * as geofirex from 'geofirex';
 import {
   AddMediaPage
 } from 'src/app/modals/add-media/add-media.page';
+import { HereService } from 'src/app/services/here.service';
 
 
 @Component({
@@ -42,18 +43,27 @@ import {
 })
 export class SpotReportPage implements OnInit {
 
-  severity: any = 'Unknown';
+  //Dynamic Fields From DB
+  severity: any  = 'Unknown';
   spotType: any = 'Incident';
+  status: any = 'Unknown';
+  what: any = 'Unknown';
   report: any = 'SpotReport';
+
+
   title: any = '';
 
   mediaFile: any = 'None';
+  mediaNotes: any = 'None';
 
   lat: any;
   lng: any;
 
   watch: any;
   userData: any;
+  incidentTypes: any;
+  incidentStatuses: any;
+  incidentWhats: any;
 
   physicalAddr: any = {
     postalCode: '',
@@ -64,6 +74,8 @@ export class SpotReportPage implements OnInit {
     administrativeArea: '',
     countryCode: ''
   };
+
+  geocodedData: any;
   geo = geofirex.init(firebaseApp);
 
   options: NativeGeocoderOptions = {
@@ -78,7 +90,8 @@ export class SpotReportPage implements OnInit {
     private userService: UserService,
     private formService: FormService,
     private router: Router,
-    private modalController: ModalController) {}
+    private modalController: ModalController,
+    private here: HereService) {}
 
 
   ngOnInit() {
@@ -95,11 +108,35 @@ export class SpotReportPage implements OnInit {
     modal.onDidDismiss().then((resp: any) => {
       if (resp.data.mediaFile.length > 0) {
         this.mediaFile = resp.data.mediaFile;
+        this.mediaNotes = resp.data.notes
       } else {
         console.log('Modal Dismissed.')
       }
     });
 
+    return await modal.present();
+  }
+
+  getIncidentTypes() {
+    let dSub = this.formService.getIncidentTypes(this.userData.organization).subscribe((data) => {
+      this.incidentTypes = data;
+      dSub.unsubscribe();
+    });
+  }
+
+  getIncidentStatuses() {
+    let dSub = this.formService.getSRStatuses(this.userData.organization).subscribe((data) => {
+      this.incidentStatuses = data;
+      dSub.unsubscribe();
+    });
+  }
+
+  getIncidentWhats() {
+    let dSub = this.formService.getIncidentTypes(this.userData.organization).subscribe((data) => {
+      this.incidentWhats = data;
+      console.log(data);
+      dSub.unsubscribe();
+    });
   }
 
   getUserData() {
@@ -108,7 +145,9 @@ export class SpotReportPage implements OnInit {
       if (userProfileSnapshot.data()) {
         this.userData = userProfileSnapshot.data();
         this.title = `${this.report} - ${this.userData.project} - ${this.userData.fullName}`;
-        console.log(this.title);
+        this.getIncidentTypes();
+        this.getIncidentStatuses();
+        this.getIncidentWhats();
       }
       this.utils.dismissLoading();
     }).catch((err) => {
@@ -129,7 +168,14 @@ export class SpotReportPage implements OnInit {
   typeChanged(ev: any) {
     this.spotType = ev.detail.value;
   }
+  
+  statusChanged(ev: any) {
+    this.status = ev.detail.value;
+  }
 
+  whatChanged(ev: any) {
+    this.what = ev.detail.value;
+  }
 
   repChanged(ev: any) {
     this.report = ev.detail.value;
@@ -159,17 +205,47 @@ export class SpotReportPage implements OnInit {
   }
 
   async getLatLng() {
+    console.log('Ran');
     // const cars = this.afs.collection('cars');
     this.geolocation.getCurrentPosition().then(async (resp) => {
       //Store Latitude and Longitude
       this.lat = resp.coords.latitude;
       this.lng = resp.coords.longitude;
+      console.log(resp);
       //Chain Observable to User's location
       this.watchPosition();
-      this.getPhysicalAddress();
+      this.getPhysicalAddressHERE();
     }).catch((error) => {
       console.log('Error getting location', error);
     });
+  }
+
+    /* ------------------------------ HERE API Service ------------------------------ */
+  // This is if the user is using the app on the web
+  getPhysicalAddressHERE() {
+    if (this.lat && this.lng) {
+      console.log(JSON.stringify(this.lat) + "," +JSON.stringify(this.lng))
+      let geoSub = this.here.revGeo(JSON.stringify(this.lat) + "," +JSON.stringify(this.lng)).subscribe((res: any) => {
+        if ((res.Response.View[0].Result.length > 0)) {
+          this.geocodedData = res.Response.View[0].Result;
+          let pa = res.Response.View[0].Result[0].Location.Address;
+          this.physicalAddr = {
+            Address: pa.Label,
+            City: pa.City,
+            State: pa.State,
+            District: pa.District,
+            Country:  pa.AdditionalData[0].value,
+            Lat: this.lat,
+            Lng: this.lng,
+            postalCode: 'N/A'
+          }
+          console.log(res.Response.View[0].Result);
+        } else {
+          console.log('HERE api returned no results.');
+        }
+        geoSub.unsubscribe();
+      });
+    }
   }
 
   getPhysicalAddress() {
@@ -181,10 +257,39 @@ export class SpotReportPage implements OnInit {
         if (error === 'cordova_not_available') {
           //Reverse Geocode using another method, user is on the web not app.
           console.log('Reverse Geocode using another method, user is on the web not app.');
+          this.getPhysicalAddressHereAPI();
         } else {
           this.utils.handleError(error);
         }
       });
+  }
+
+  
+  /* ------------------------------ HERE API Service ------------------------------ */
+  // This is if the user is using the app on the web
+  getPhysicalAddressHereAPI() {
+    if (this.lat && this.lng) {
+      console.log(JSON.stringify(this.lat) + "," +JSON.stringify(this.lng))
+      let geoSub = this.here.revGeo(JSON.stringify(this.lat) + "," +JSON.stringify(this.lng)).subscribe((res: any) => {
+        if ((res.Response.View[0].Result.length > 0)) {
+          this.geocodedData = res.Response.View[0].Result;
+          let pa = res.Response.View[0].Result[0].Location.Address;
+          this.physicalAddr = {
+            Address: pa.Label,
+            City: pa.City,
+            State: pa.State,
+            District: pa.District,
+            Country:  pa.AdditionalData[0].value,
+            //Needs to be ammended
+            postalCode: 'N/A'
+          }
+          console.log(res.Response.View[0].Result);
+        } else {
+          console.log('HERE api returned no results.');
+        }
+        geoSub.unsubscribe();
+      });
+    }
   }
 
   watchPosition() {
@@ -200,11 +305,12 @@ export class SpotReportPage implements OnInit {
       var dateTime = new Date().toLocaleString();
       let spotReport: any = {
         name: this.title,
-        what: this.spotType,
+        type: this.spotType,
+        what: this.what,
         description: ( < HTMLTextAreaElement > document.querySelector('textarea[name=desc]')).value ? ( < HTMLTextAreaElement > document.querySelector('textarea[name=desc]')).value : 'N/A',
         reason: ( < HTMLInputElement > document.querySelector('input[name=reason]')).value ? ( < HTMLInputElement > document.querySelector('input[name=reason]')).value : 'N/A',
         disposition: ( < HTMLInputElement > document.querySelector('input[name=disp]')).value ? ( < HTMLInputElement > document.querySelector('input[name=disp]')).value : 'N/A',
-        status: this.severity,
+        status: this.status,
         organization: this.userData.organization,
         division: this.userData.division,
         userId: this.userData.userId,
@@ -212,15 +318,22 @@ export class SpotReportPage implements OnInit {
         latLng: `${this.lat} / ${this.lng}`,
         when: dateTime,
         //Location Details
-        zip: this.physicalAddr.postalCode ? this.physicalAddr.zip : 'N/A',
-        city: this.physicalAddr.administrativeArea ? this.physicalAddr.administrativeArea : 'N/A',
-        address: (this.physicalAddr.locality && this.physicalAddr.thoroughfare) ? `${this.physicalAddr.locality}, ${this.physicalAddr.subLocality}, ${this.physicalAddr.thoroughfare}, ${this.physicalAddr.countryCode}` : 'N/A',
+        // zip: this.physicalAddr.postalCode ? this.physicalAddr.zip : 'N/A',
+        // city: this.physicalAddr.administrativeArea ? this.physicalAddr.administrativeArea : 'N/A',
+        // address: (this.physicalAddr.locality && this.physicalAddr.thoroughfare) ? `${this.physicalAddr.locality}, ${this.physicalAddr.subLocality}, ${this.physicalAddr.thoroughfare}, ${this.physicalAddr.countryCode}` : 'N/A',
+        address: this.physicalAddr.Address,
+        zip: this.physicalAddr.postalCode,
+        city: this.physicalAddr.City,
+        state: this.physicalAddr.State,
+        district: this.physicalAddr.District,
+        country: this.physicalAddr.Country,
         position: position,
-        mediaFile: this.mediaFile
+        mediaFile: this.mediaFile,
+        mediaNotes: this.mediaNotes
       };
       await this.evalIcon(spotReport);
       this.formService.uploadSpotReport(spotReport).then(() => {
-        this.utils.presentAlert('Success!', '', 'Spot Report Submitted Successfully.');
+        this.utils.presentAlert('Success!', '', 'IOI Submitted Successfully.');
         this.router.navigate(['/tabs/map']);
       }).catch((err) => {
         this.utils.handleError(err);
@@ -258,23 +371,5 @@ export class SpotReportPage implements OnInit {
       spotReport.icon = 'assets/map/general.svg';
     }
   }
-
-  //Return Comma separated address
-  generateAddress(addressObj) {
-    let obj = [];
-    let address = "";
-    for (let key in addressObj) {
-      obj.push(addressObj[key]);
-    }
-    obj.reverse();
-    for (let val in obj) {
-      if (obj[val].length)
-        address += obj[val] + ', ';
-    }
-    return address.slice(0, -2);
-  }
-
-
-
 
 }

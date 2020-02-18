@@ -48,9 +48,10 @@ export class EditProfilePage implements OnInit {
     proj: new FormControl('None', [Validators.required]),
     aoi: new FormControl('None', [Validators.required]),
   });
- 
+
   userData: any;
   userId: any;
+  projects: any = [];
 
   separateDialCode = true;
   SearchCountryField = SearchCountryField;
@@ -68,20 +69,18 @@ export class EditProfilePage implements OnInit {
   ngOnInit() {
     this.utils.presentLoading("Please wait...");
     this.getUserData();
-    this.getOrgs();
   }
 
 
 
   onOrganizationChange(): void {
+    let ind = 0;
     let cat = this.submitForm.get('org').value;
     this.organization = this.organizations.find(obj => {
       return obj.name === cat
     });
-    console.log(cat);
-    console.log(this.organization);
   }
-  
+
   onDivChange(): void {
     let div = this.submitForm.get('division').value;
     this.division = div;
@@ -90,26 +89,44 @@ export class EditProfilePage implements OnInit {
 
   onProjChange(): void {
     let proj = this.submitForm.get('proj').value;
-    this.project = proj;
+    // this.project = proj;
+    this.project = this.projects.find(obj => {
+      return obj.name === proj
+    });
   }
 
   getOrgs() {
-    this.userService.getOrgs().subscribe((res) => {
+    let orgSub = this.userService.getOrgs().subscribe((res) => {
       this.organizations = res;
-      console.log(res);
-      console.log(this.organizations);
+      this.organization = this.organizations.find(obj => {
+        return obj.orgId === this.userData.orgId
+      });
+
+      this.utils.presentLoading('');
+      this.userService.getProjects(this.organization.orgId).subscribe((data)=> {
+        this.projects = data;
+        this.utils.dismissLoading();
+      }, err => {
+        this.utils.handleError(err);
+        this.utils.dismissLoading();
+      });
+
+      orgSub.unsubscribe();
     });
   }
+
+  
 
   getUserData() {
     this.userService.getUserProfile().then((userProfileSnapshot: any) => {
       if (userProfileSnapshot.data()) {
         this.userData = userProfileSnapshot.data();
-        this.predefineVals(this.userData); 
+        this.getOrgs();
+        this.predefineVals(this.userData);
       }
       this.utils.dismissLoading();
     }).catch((err) => {
-      this.utils.dismissLoading(); 
+      this.utils.dismissLoading();
       console.log(err);
       // this.utils.handleError(err);
     });
@@ -141,7 +158,8 @@ export class EditProfilePage implements OnInit {
         email: formData.email,
         phone: (formData.phone),
         division: this.division,
-        project: this.project
+        project: this.project.name,
+        projectId: this.project.projectId
       };
 
       if (regName.test(data.fullName) && regEmail.test(formData.email)) {
@@ -163,7 +181,7 @@ export class EditProfilePage implements OnInit {
   }
 
   forgotPassword() {
-    let err: any  = {};
+    let err: any = {};
     err.message = 'Feature in Development';
     this.utils.handleError(err);
   }
