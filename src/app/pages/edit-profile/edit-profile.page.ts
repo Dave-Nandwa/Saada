@@ -47,6 +47,7 @@ export class EditProfilePage implements OnInit {
     div: new FormControl('None', [Validators.required]),
     proj: new FormControl('None', [Validators.required]),
     aoi: new FormControl('None', [Validators.required]),
+    code: new FormControl('None', [Validators.required])
   });
 
   userData: any;
@@ -59,19 +60,113 @@ export class EditProfilePage implements OnInit {
   CountryISO = CountryISO;
   preferredCountries: CountryISO[] = [CountryISO.UnitedStates, CountryISO.Canada];
 
-  organization: any;
-  division: any;
-  project: any;
+  organization: any = 'N/A';
+  division: string = 'N/A';
+  project: any = 'N/A';
   organizations: any = [];
+
+  sponsorObject: any = {};
+  sponsorCodes: any = [];
+  userSponsorCodes: any = [];
+  clearanceLevel: any = 1;
 
   constructor(private utils: UtilitiesService, private userService: UserService, private router: Router, private nativeStorage: NativeStorage) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewDidEnter() {
     this.utils.presentLoading("Please wait...");
     this.getUserData();
   }
 
+  async doRefresh(event) {
+    await this.getUserData();
+    event.target.complete();
+  }
 
+  async getSponsorCodes() {
+    let sponserSub = this.userService.getSponsorCodes().subscribe((res) => {
+      this.sponsorCodes = res;
+      sponserSub.unsubscribe();
+    });
+  }
+
+  async populateFields(sc) {
+    if (sc.length > 0) {
+      this.sponsorObject = this.sponsorCodes.find(obj => {
+        return obj.sponsorCode === sc
+      });
+      if (this.sponsorObject) {
+        this.organization = this.organizations.find(obj => {
+          return obj.name === this.sponsorObject.organization
+        });
+        // Get Projects then continue
+        this.utils.presentLoading('Please wait...');
+        this.userService.getProjects(this.organization.orgId).subscribe((data) => {
+          this.projects = data;
+          this.division = this.sponsorObject.division;
+          this.project = this.projects.find(obj => {
+            return obj.name === this.sponsorObject.project
+          });
+          console.log(this.projects);
+          this.clearanceLevel = this.sponsorObject.clearanceLevel;
+          console.log(this.sponsorObject, this.project);
+          // ( < HTMLInputElement > document.querySelector('input[name=sponsorCode]')).disabled = true;
+          this.utils.presentToast('Sponsor Code Validated Successfully', 'toast-success');
+
+          //Add Sponsor Code to User Doc
+          this.userSponsorCodes.push(sc);
+          this.utils.dismissLoading();
+        }, err => {
+          this.utils.handleError(err);
+          this.utils.dismissLoading();
+          return true;
+        });
+      } else {
+        this.utils.presentToast('Invalid Sponsor Code!', 'toast-error');
+        return false;
+      }
+    } else {
+      let sponsorCode = ( < HTMLInputElement > document.querySelector('input[name=sponsorCode]')).value.substr(0, 10);
+
+      this.sponsorObject = this.sponsorCodes.find(obj => {
+        return obj.sponsorCode === sponsorCode
+      });
+      if (this.sponsorObject) {
+        this.organization = this.organizations.find(obj => {
+          return obj.name === this.sponsorObject.organization
+        });
+        // Get Projects then continue
+        this.utils.presentLoading('Please wait...');
+        this.userService.getProjects(this.organization.orgId).subscribe((data) => {
+          this.projects = data;
+          this.division = this.sponsorObject.division;
+          this.project = this.projects.find(obj => {
+            return obj.name === this.sponsorObject.project
+          });
+          this.clearanceLevel = this.sponsorObject.clearanceLevel;
+          console.log(this.sponsorObject, this.project);
+          // ( < HTMLInputElement > document.querySelector('input[name=sponsorCode]')).disabled = true;
+          //Add Sponsor Code to User Doc
+          this.userSponsorCodes.push(sponsorCode);
+          this.utils.presentToast('Sponsor Code Validated Successfully', 'toast-success');
+          this.utils.dismissLoading();
+        }, err => {
+          this.utils.handleError(err);
+          this.utils.dismissLoading();
+        });
+      } else {
+        this.utils.presentToast('Invalid Sponsor Code!', 'toast-error');
+      }
+    }
+  }
+
+
+  onCodeChange(): void {
+    let ind = 0;
+    let code = this.submitForm.get('code').value;
+    this.populateFields(code)
+  }
 
   onOrganizationChange(): void {
     let ind = 0;
@@ -82,7 +177,7 @@ export class EditProfilePage implements OnInit {
   }
 
   onDivChange(): void {
-    let div = this.submitForm.get('division').value;
+    let div = this.submitForm.get('div').value;
     this.division = div;
     console.log(this.division);
   }
@@ -103,8 +198,9 @@ export class EditProfilePage implements OnInit {
       });
 
       this.utils.presentLoading('');
-      this.userService.getProjects(this.organization.orgId).subscribe((data)=> {
+      this.userService.getProjects(this.organization.orgId).subscribe((data) => {
         this.projects = data;
+        this.predefineVals(this.userData);
         this.utils.dismissLoading();
       }, err => {
         this.utils.handleError(err);
@@ -115,14 +211,15 @@ export class EditProfilePage implements OnInit {
     });
   }
 
-  
+
 
   getUserData() {
     this.userService.getUserProfile().then((userProfileSnapshot: any) => {
       if (userProfileSnapshot.data()) {
         this.userData = userProfileSnapshot.data();
         this.getOrgs();
-        this.predefineVals(this.userData);
+        this.getSponsorCodes();
+        this.userSponsorCodes = [...new Set(this.userData.sponsorCodes)];
       }
       this.utils.dismissLoading();
     }).catch((err) => {
@@ -136,7 +233,10 @@ export class EditProfilePage implements OnInit {
   predefineVals(user) {
     this.submitForm.controls.phone.setValue(user.phone.number);
     this.division = this.userData.division;
-    this.project = this.userData.project;
+    this.project = this.projects.find(obj => {
+      return obj.name === this.userData.project
+    });
+    this.clearanceLevel = this.userData.clearance;
     this.submitForm.setValue({
       name: user.fullName,
       email: user.email,
@@ -144,7 +244,7 @@ export class EditProfilePage implements OnInit {
   }
 
 
-  async submitApplication() {
+  async saveUserData() {
     let formData = this.submitForm.value;
     try {
       const regName = /^[a-zA-Z]+ [a-zA-Z]+$/;
@@ -159,7 +259,10 @@ export class EditProfilePage implements OnInit {
         phone: (formData.phone),
         division: this.division,
         project: this.project.name,
-        projectId: this.project.projectId
+        projectId: this.project.projectId,
+        orgId: this.organization.orgId,
+        clearance: this.clearanceLevel,
+        sponsorCodes: this.userSponsorCodes
       };
 
       if (regName.test(data.fullName) && regEmail.test(formData.email)) {

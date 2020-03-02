@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button slot="start" ion-button icon-only (click)="closeModal()" class="back-btn">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-button>
+    <ion-title>Add Sponsor Code</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <form #f="ngForm" [formGroup]="createForm" class="ion-padding">
+
+    <ion-item class="mb-2">
+      <ion-label>Sponsor Code: </ion-label>
+      <ion-input minlength="10" type="text" placeholder="Code..." name="sponsorCode"></ion-input>
+    </ion-item>
+
+    <ion-item class="mb-2">
+      <ion-label>Clearance Level: </ion-label>
+      <ion-input type="number" placeholder="Clearance Level" name="clearance"></ion-input>
+    </ion-item>
+
+    <ion-item class="mb-2">
+      <ion-label>Organization: </ion-label>
+      <ion-select value="Select" formControlName="org" okText="Select" cancelText="Dismiss"
+        (ionChange)="onOrganizationChange()">
+        <ion-select-option class="input" *ngFor="let o of organizations" [value]="o.name">{{o.name}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item *ngIf="organization" class="mb-2">
+      <ion-label>Division: </ion-label>
+      <ion-select value="Select" formControlName="division" okText="Select" cancelText="Dismiss"
+        (ionChange)="onDivChange()">
+        <ion-select-option class="input" *ngFor="let d of organization?.divisions" [value]="d">{{d}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item *ngIf="division" class="mb-2">
+      <ion-label>Project: </ion-label>
+      <ion-select value="Select" formControlName="project" okText="Select" cancelText="Dismiss"
+        (ionChange)="onProjChange()">
+        <ion-select-option class="input" *ngFor="let p of projects; index as i" [value]="p">{{p?.name}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    
+    <ion-button (click)="addSponsorCode()" expand="block" color="primary">
+      Add Sponsor Code
+    </ion-button>
+  </form>
+  
+
+</ion-content>

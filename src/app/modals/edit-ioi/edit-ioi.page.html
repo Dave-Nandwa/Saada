@@ -12,51 +12,13 @@
     <ion-segment-button checked value="form">
       <ion-label>Form</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="location">
-      <ion-label>Location</ion-label>
-    </ion-segment-button>
   </ion-segment>
-  
-  <div *ngIf="segment === 'location'">
-    <ion-list>
-      <!--       <ion-item *ngFor="let item of physicalAddr | keyvalue">
-          <ion-label>{{item.key}}</ion-label>
-          <ion-input type="text" *ngIf="item.value.length !== 0" placeholder="0"></ion-input>
-          <ion-input type="text" *ngIf="item.value.length === 0" placeholder="Fill In..."></ion-input>
-        </ion-item> -->
-      <ion-item>
-        <ion-label>Address:</ion-label>
-        <ion-input type="text" [(ngModel)]="physicalAddr.Address" placeholder="Fill In..."></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>State:</ion-label>
-        <ion-input type="text" [(ngModel)]="physicalAddr.State" placeholder="Fill In..."></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>City:</ion-label>
-        <ion-input type="text" [(ngModel)]="physicalAddr.City" placeholder="Fill In..."></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>District:</ion-label>
-        <ion-input type="text" [(ngModel)]="physicalAddr.District" placeholder="Fill In..."></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>Zip:</ion-label>
-        <ion-input type="text" [(ngModel)]="physicalAddr.postalCode" placeholder="Fill In..."></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>Latitude:</ion-label>
-        <ion-input type="text" [(ngModel)]="physicalAddr.Lat" placeholder="Fill In..."></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>Longitude:</ion-label>
-        <ion-input type="text" [(ngModel)]="physicalAddr.Lng" placeholder="Fill In..."></ion-input>
-      </ion-item>
-    </ion-list>
-  </div>
 
-  <div class="hide" [class.show]="segment === 'form'">
-    <ion-input type="text" name="formName" [value]="selectedForm?.formName"></ion-input>
+  <div>
+    <ion-item>
+      <ion-label>Edit Name: </ion-label>
+      <ion-input type="text" name="formName" [value]="selectedForm?.formName"></ion-input>
+    </ion-item>
     <ion-list>
       <ion-reorder-group (ionItemReorder)="onReorderItems($event)" disabled="false">
         <!-- Sliding item with expandable options on both sides -->
@@ -89,8 +51,6 @@
     </form>
     <form class="ion-padding" #myDiv></form>
   </div>
-
-
 
   <ion-list text-center>
     <ion-button (click)="updateForm()">

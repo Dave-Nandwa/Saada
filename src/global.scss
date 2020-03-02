@@ -61,6 +61,14 @@
 // @include font('Arvo-Bold', '/htdocs/lib/fonts/Arvo-Bold');
 
 
+
+input::first-letter, 
+textarea::first-letter, 
+ion-input::first-letter,
+ion-textarea::first-letter {
+  text-transform: capitalize;
+}
+
 ion-back-button {
   --color: #4F65F6 !important;
 }
@@ -78,4 +86,38 @@ ion-back-button {
 .toast-error {
   --background: rgba(230, 36, 29, 0.925);
   --color: #fff;
+}
+
+ion-alert .alert-radio-label {
+  white-space: normal!important
+}
+
+// Applies a text wrap on ion options
+.alert-tappable.alert-radio {
+  height: auto;
+  contain: content;
+}
+
+.alert-radio-label.sc-ion-alert-md,
+.alert-radio-label.sc-ion-alert-ios {
+  white-space: normal;
+}
+
+.sc-ion-label-md-h.sc-ion-label-md-s.md,
+.sc-ion-label-ios-h.sc-ion-label-ios {
+  white-space: normal;
+}
+
+.item.sc-ion-label-md-h, .item .sc-ion-label-md-h{
+  white-space: normal !important;
+}
+
+//or just 
+
+.sc-ion-label-md-h{
+  white-space: normal !important;
+}
+
+:host(.ion-text-wrap) .selected-text {
+  white-space: normal !important;
 }

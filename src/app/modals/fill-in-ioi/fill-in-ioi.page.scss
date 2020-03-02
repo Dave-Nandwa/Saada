@@ -36,6 +36,7 @@ ion-content {
     --color: #fff !important;
     color: #fff;
     outline: none;
+    border: none;
     background: rgb(19, 175, 123);
     --background: rgb(19, 175, 123);
     margin-bottom: 10px;
@@ -104,3 +105,15 @@ form {
 .hide {
     visibility: hidden;
 }
+
+ion-label, ion-label:before, ion-label:focus, ion-label:after {
+    word-wrap: break-word!important;
+    overflow-wrap: break-word!important;
+}
+
+ion-item {
+    word-wrap: break-word!important;
+    overflow-wrap: break-word!important;
+}
+
+form label:after { content: ":"!important; }

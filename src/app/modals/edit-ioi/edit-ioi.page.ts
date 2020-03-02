@@ -71,7 +71,7 @@ export class EditIoiPage implements OnInit {
   inputOptions: any = ["Text", "Checkbox", "Textarea", "Dropdown", "Radio"];
   opt: any;
 
-  publicIOI: boolean = false;
+  sioi: boolean = false;
   segment: any = 'form';
 
 
@@ -89,7 +89,7 @@ export class EditIoiPage implements OnInit {
   ngOnInit() {
     this.fields = < FormlyFieldConfig[] > JSON.parse(this.selectedForm.nakedForm);
     console.log(this.selectedForm);
-    this.publicIOI = this.selectedForm.public;
+    this.sioi = this.selectedForm.public;
     console.log(this.fields);
     console.log(this.lat);
   }
@@ -99,8 +99,8 @@ export class EditIoiPage implements OnInit {
   }
 
   toggleCheckbox() {
-    this.publicIOI = this.publicIOI === false ? true : false;
-    console.log(this.publicIOI);
+    this.sioi = this.sioi === false ? true : false;
+    console.log(this.sioi);
   }
 
   onTypeChange() {
@@ -157,9 +157,9 @@ export class EditIoiPage implements OnInit {
     this.formService.updateNakedForm({
       nakedForm: JSON.stringify(this.fields),
       formName: ( < HTMLInputElement > document.querySelector('ion-textarea[name=formName]')).value,
-      address: {
+/*       address: {
         ...this.physicalAddr
-      },
+      }, */
       when: dateTime
     }, this.selectedForm.formId).then(() => {
       this.utils.presentAlert('Success!', '', 'IOI Updated Successfully.').then(() => {
@@ -211,8 +211,7 @@ export class EditIoiPage implements OnInit {
       type: 'input',
       templateOptions: {
         label: label,
-        placeholder: placeholder,
-        required: true,
+        placeholder: placeholder
       }
     });
     this.formView.nativeElement.innerHTML = "";
@@ -247,8 +246,7 @@ export class EditIoiPage implements OnInit {
       type: 'textarea',
       templateOptions: {
         label: label,
-        placeholder: placeholder,
-        required: true,
+        placeholder: placeholder
       }
     });
     this.formView.nativeElement.innerHTML = "";
@@ -344,17 +342,11 @@ export class EditIoiPage implements OnInit {
       templateOptions: {
         label: label,
         placeholder: placeholder,
-        required: true,
         options: opts
       }
     });
     this.utils.presentToast('Added Dropdown Successfully.', 'toast-success');
   }
-
-
-
-
-
 
 
   /* -------------------------------- Radio -------------------------------- */
@@ -417,7 +409,6 @@ export class EditIoiPage implements OnInit {
       templateOptions: {
         label: label,
         placeholder: placeholder,
-        required: true,
         options: opts
       }
     });

@@ -1,0 +1,124 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button color="warning" slot="start" (click)="closeModal()">
+      <ion-icon slot="icon-only" src="assets/profile/chevron-back.svg"></ion-icon>
+    </ion-button>
+    <ion-title>Edit Form - {{selectedForm.formName}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-segment (ionChange)="segmentChanged($event)">
+    <ion-segment-button checked value="form">
+      <ion-label>Form</ion-label>
+    </ion-segment-button>
+<!--     <ion-segment-button value="location">
+      <ion-label>Location</ion-label>
+    </ion-segment-button> -->
+  </ion-segment>
+  
+<!--  
+   <div *ngIf="segment === 'location'">
+    <ion-list>
+      <ion-item>
+        <ion-label>Address:</ion-label>
+        <ion-input type="text" [(ngModel)]="physicalAddr.Address" placeholder="Fill In..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>State:</ion-label>
+        <ion-input type="text" [(ngModel)]="physicalAddr.State" placeholder="Fill In..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>City:</ion-label>
+        <ion-input type="text" [(ngModel)]="physicalAddr.City" placeholder="Fill In..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Country:</ion-label>
+        <ion-input type="text" [(ngModel)]="physicalAddr.District" placeholder="Fill In..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Zip:</ion-label>
+        <ion-input type="text" [(ngModel)]="physicalAddr.postalCode" placeholder="Fill In..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Latitude:</ion-label>
+        <ion-input type="text" [(ngModel)]="physicalAddr.Lat" placeholder="Fill In..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Longitude:</ion-label>
+        <ion-input type="text" [(ngModel)]="physicalAddr.Lng" placeholder="Fill In..."></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-button (click)="locationSelectModal()" expand="block" fill="clear" shape="round">
+      Select on Map
+    </ion-button>
+  </div> 
+-->
+
+  <div>
+    <ion-item>
+      <ion-label>Edit Form Name: </ion-label>
+      <ion-input type="text" name="formName" [value]="selectedForm?.formName"></ion-input>
+    </ion-item>
+    <ion-list>
+      <ion-item color="primary" *ngIf="tabsArray.length > 0">
+        <ion-label>Active Tab: </ion-label>
+        <ion-select (ionChange)="onTabChange($event)" [placeholder]="currentTab">
+          <ion-select-option *ngFor="let t of tabsArray" [value]="t">{{t}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-reorder-group (ionItemReorder)="onReorderItems($event)" disabled="false">
+        <!-- Sliding item with expandable options on both sides -->
+        <ion-item-sliding *ngFor="let f of currentTabObject?.fields">
+
+          <ion-item>
+            <ion-label *ngIf="f?.type !== 'input'">{{f.key}} - {{f.type}}</ion-label>
+            <ion-label *ngIf="f?.type === 'input'">{{f.key}} - text</ion-label>
+            <ion-reorder></ion-reorder>
+          </ion-item>
+
+          <ion-item-options side="end">
+            <ion-item-option (click)="deleteField(f.key)" color="danger" expandable>
+              Delete
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-reorder-group>
+    </ion-list>
+
+    <ion-list class="add-tab-list ion-padding">
+      <ion-item  class="add-tab">
+        <ion-label>Tab Name: </ion-label>
+        <ion-input type="text" placeholder="Enter Tab Name..." name="tab_name"></ion-input>
+      </ion-item>
+      <button class="add-btn" (click)="addTab()">Add Tab</button>
+      <button *ngIf="currentTabObject" class="delete-btn" (click)="deleteTab()">Delete Tab</button>
+  
+    </ion-list>
+
+    <form [formGroup]="createForm" class="ion-padding">
+      <ion-item>
+        <ion-label>Add Input Type: </ion-label>
+        <ion-select [(ngModel)]="opt" [value]="opt" formControlName="type" (ionChange)="onTypeChange()"
+          placeholder="Select Input">
+          <ion-select-option *ngFor="let opt of inputOptions" [value]="opt">{{opt}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </form>
+    <form class="ion-padding" #myDiv></form>
+  </div>
+
+
+
+  <ion-list text-center>
+    <ion-button expand="block" color="primary" (click)="updateForm()">
+      Save Form
+    </ion-button>
+  </ion-list>
+  <ion-list text-center>
+    <ion-button expand="block" color="danger" (click)="deleteForm()">
+      Delete Form
+    </ion-button>
+  </ion-list>
+
+</ion-content>

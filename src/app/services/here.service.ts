@@ -81,4 +81,10 @@ export class HereService {
     return this.http.get(url);
   }
 
+  searchByAddress(query) {
+    var apiKey = "0_27jhcFxJCyHS-mvu_oIrA4lcBpr57XfhOSCZ1wGbg";
+    var url = `https://geocoder.ls.hereapi.com/6.2/geocode.json?apiKey=${apiKey}&searchtext=${query}`;
+    return this.http.get(url);
+  }
+
 }

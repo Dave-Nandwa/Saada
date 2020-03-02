@@ -26,9 +26,12 @@ import {
 })
 export class StatusPage implements OnInit {
   segment: any = 'personal';
-  personalStatus: any = "I'm Okay";
   statusLabels: any;
   statusNotes: any = 'N/A';
+  userData: any = {
+    status: 'none'
+  };
+  personalStatus: any = 'n/a';
   constructor(
     private userService: UserService,
     private authService: AuthService,
@@ -36,14 +39,31 @@ export class StatusPage implements OnInit {
     private utils: UtilitiesService,
     private alertController: AlertController) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewDidEnter() {
     this.getLabels();
+    this.getUserData();
   }
 
-
+  async getUserData() {
+    this.utils.presentLoading('Please wait...');
+    this.userService.getUserProfile().then((userProfileSnapshot: any) => {
+      this.utils.dismissLoading();
+      if (userProfileSnapshot.data()) {
+        this.userData = userProfileSnapshot.data();
+        this.personalStatus = userProfileSnapshot.data().status;
+      }
+      this.utils.dismissLoading();
+    }).catch((err) => {
+      this.utils.dismissLoading();
+      this.utils.handleError(err);
+    });
+  }
   radioChange(event) {
     console.log("rd change", event.detail);
-    this.personalStatus = event.detail.value;
+    this.personalStatus = event.detail.value ? event.detail.value : this.userData.status;
+    console.log(this.personalStatus);
   }
 
   async savePersonalStatus() {
@@ -65,7 +85,8 @@ export class StatusPage implements OnInit {
       this.statusLabels = snap.data();
       this.utils.dismissLoading();
     }).catch((err) => {
-      this.utils.handleError(err)
+      this.utils.handleError(err);
+      this.utils.dismissLoading();
     });
   }
 

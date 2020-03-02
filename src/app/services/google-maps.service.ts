@@ -1,12 +1,15 @@
-
 import {
   Injectable
 } from '@angular/core';
 
-import { ConnectivityService } from './connectivity.service';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
+import {
+  ConnectivityService
+} from './connectivity.service';
+import {
+  Geolocation
+} from '@ionic-native/geolocation/ngx';
 
-declare var google; 
+declare var google;
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +23,9 @@ export class GoogleMapsService {
   mapLoaded: any;
   mapLoadedObserver: any;
   currentMarker: any;
+
+  /* ------------- Replace this Google Cloud Api Key with your own ------------ */
+
   apiKey: string = "AIzaSyCFezNn8kiBBKtxocwxYN3JbAaPw4lPTO8";
 
   constructor(public connectivityService: ConnectivityService, public geolocation: Geolocation) {

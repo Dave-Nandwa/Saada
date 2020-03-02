@@ -1,4 +1,5 @@
 
+
 import {
   NgModule
 } from '@angular/core';
@@ -11,6 +12,8 @@ import {
 } from './tabs.page';
 import { AuthGuard } from './../guards/auth.guard';
 import { redirectUnauthorizedTo, canActivate } from '@angular/fire/auth-guard';
+import { VerifiedGuard } from '../guards/verified.guard';
+
 const redirectToLogin = redirectUnauthorizedTo(['login']);
 
 const routes: Routes = [{
@@ -20,9 +23,13 @@ const routes: Routes = [{
         path: 'home',
         children: [{
           path: '',
-          loadChildren: () =>
-            import('../pages/home/home.module').then(m => m.HomePageModule)
+          loadChildren: () => import('../pages/home/home.module').then(m => m.HomePageModule),
+          //Need to re enable this for production
+          // canActivate: [VerifiedGuard],
         }],
+        //Native Method
+        
+        //Angular Fire Method
         ...canActivate(redirectToLogin)
       },
       {

@@ -36,6 +36,7 @@ import {
   FillInIoiPage
 } from 'src/app/modals/fill-in-ioi/fill-in-ioi.page';
 import { EditIoiPage } from 'src/app/modals/edit-ioi/edit-ioi.page';
+import { EditTabsIoiPage } from 'src/app/modals/edit-tabs-ioi/edit-tabs-ioi.page';
 
 
 @Component({
@@ -105,6 +106,7 @@ export class MyFormsPage implements OnInit {
 
 
   getForms() {
+    this.forms = [];
     let formSub = this.formService.getAllForms(this.userData.project).subscribe((data) => {
       this.forms = (data);
       console.log(data);
@@ -150,7 +152,8 @@ export class MyFormsPage implements OnInit {
     });
 
     const modal = await this.modalController.create({
-      component: EditIoiPage,
+      // component: EditIoiPage,
+      component: EditTabsIoiPage,
       componentProps: {
         selectedForm: this.selectedForm,
         userData: this.userData,
@@ -165,6 +168,7 @@ export class MyFormsPage implements OnInit {
       if (resp.data) {
         console.log(resp);
       }
+      this.getForms();
     });
 
     return await modal.present();

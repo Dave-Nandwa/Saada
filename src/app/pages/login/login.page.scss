@@ -93,7 +93,51 @@ ion-img {
     } */
 }
 
+.google-btn {
+    width: 100%;
+    padding: 10px 10px;
+    background: rgb(246, 98, 79);
+    --background: rgb(246, 98, 79);
+    --box-shadow: none;
+    border-radius: 6px;
+    font-size: 1em;
+    text-align: center;
+    text-transform: uppercase;
+    --color: #fff !important;
+    color: #fff;
+    outline: none;
+    margin-bottom:5px;
+    // margin-bottom:1px;
+    /*    ion-icon {
+        font-size: 1.5em;
+        margin:0;
+        padding:0;
+        display: inline-block;
+    } */
+}
 
+.facebook-btn {
+    width: 100%;
+    padding: 10px 10px;
+    background: #4367B2;
+    --background: #4367B2;
+    --box-shadow: none;
+    border-radius: 6px;
+    font-size: 1em;
+    text-align: center;
+    text-transform: uppercase;
+    --color: #fff !important;
+    color: #fff;
+    outline: none;
+    margin-bottom:10px;
+    // margin-bottom:1px;
+    /*    ion-icon {
+        font-size: 1.5em;
+        margin:0;
+        padding:0;
+        display: inline-block;
+    } */
+}
 
 .sign-up-btn {
     width: 100%;
@@ -108,7 +152,7 @@ ion-img {
     --color: #fff !important;
     color: #fff;
     outline: none;
-   
+   margin-bottom: 20px;
     // margin-bottom:1px;
     /*    ion-icon {
         font-size: 1.5em;
@@ -136,4 +180,11 @@ ion-img {
 .phoneInput {
     width:100%!important;
     margin:0 auto!important;
+}
+
+input, 
+textarea, 
+ion-input,
+ion-textarea {
+  text-transform: none!important;
 }

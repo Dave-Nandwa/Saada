@@ -1,29 +1,52 @@
 <ion-header>
   <ion-toolbar>
+    <ion-button slot="start" ion-button icon-only (click)="closeModal()" class="back-btn">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-button>
     <ion-title>Create: {{selectedForm.formName}} </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <ion-segment (ionChange)="segmentChanged($event)">
     <ion-segment-button checked value="required">
-      <ion-label>Required</ion-label>
+      <ion-label>What</ion-label>
     </ion-segment-button>
     <ion-segment-button value="form">
       <ion-label>{{selectedForm.formName}}</ion-label>
     </ion-segment-button>
     <ion-segment-button value="location">
-      <ion-label>Location</ion-label>
+      <ion-label>Where</ion-label>
     </ion-segment-button>
   </ion-segment>
 
 
 
   <div *ngIf="segment === 'form'">
-    <form class="ion-padding" [formGroup]="form" (ngSubmit)="submit()">
+<!--     <form class="ion-padding" [formGroup]="form" (ngSubmit)="submit()">
       <formly-form [form]="form" [fields]="fields" [model]="formModel"></formly-form>
       <button type="submit" class="btn btn-default">Submit</button>
+    </form> -->
+    <form [formGroup]="form" novalidate (ngSubmit)="submit()">
+      <mat-horizontal-stepper (selectionChange)="tabChange($event)" (click)="triggerClick()">
+        <mat-step *ngFor="let step of dynamicForm; let index = index; let last = last;">
+          <ng-template matStepLabel>{{ step?.label }} </ng-template>
+          
+          <formly-form [form]="form.at(index)" [model]="model" [fields]="step.fields" [options]="options[index]">
+          </formly-form>
+  
+          <div>
+            <button *ngIf="index !== 0" matStepperPrevious class="btn btn-primary" type="button"
+              (click)="prevStep(index)">Back</button>
+            <button *ngIf="!last" matStepperNext class="btn btn-primary" type="button"
+              (click)="nextStep(index)">Next</button> 
+            <button class="btn btn-primary" type="submit">Submit</button>
+          </div>
+        </mat-step>
+      </mat-horizontal-stepper>
     </form>
     <button class="ion-padding" (click)="closeModal()" class="btn-danger">Cancel</button>
   </div>
@@ -44,7 +67,7 @@
     <ion-item>
       <ion-label>Select Previous Name: </ion-label>
       <ion-select (ionChange)="nameChanged($event)" placeholder="Select Name">
-        <ion-select-option *ngFor="let inc of previousForms" [value]="inc?.reportName">{{inc?.reportName}}
+        <ion-select-option *ngFor="let inc of previousForms" [value]="inc?.name">{{inc?.name}}
         </ion-select-option>
       </ion-select>
     </ion-item>
@@ -76,17 +99,17 @@
       <ion-item>
         <ion-label>Select Previous Location:</ion-label>
         <ion-select (ionChange)="nameChanged($event)" placeholder="Select IOI">
-          <ion-select-option *ngFor="let inc of previousForms" [value]="inc?.reportName">{{inc?.reportName}}
+          <ion-select-option *ngFor="let inc of previousForms" [value]="inc?.name">{{inc?.name}}
           </ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item>
         <ion-label>Address: </ion-label>
-        <ion-input type="text" placeholder="Address" [value]="physicalAddr?.Address"></ion-input>
+        <ion-input type="text" name="address" placeholder="Address" [value]="physicalAddr?.Address"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>Address 2: </ion-label>
-        <ion-input type="text" placeholder="N/A"></ion-input>
+        <ion-input type="text" placeholder="N/A" [value]="physicalAddr?.Street"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>City: </ion-label>
@@ -102,15 +125,21 @@
       </ion-item>
       <ion-item>
         <ion-label>Latitude: </ion-label>
-        <ion-input type="text" placeholder="N/A" [value]="lat"></ion-input>
+        <ion-input type="text" name="lat" placeholder="N/A" [value]="physicalAddr?.Lat"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>Longitude: </ion-label>
-        <ion-input type="text" placeholder="N/A" [value]="lng"></ion-input>
+        <ion-input type="text" name="lng" placeholder="N/A" [value]="physicalAddr?.Lng"></ion-input>
       </ion-item>
     </ion-list>
     <ion-button (click)="locationSelectModal()" expand="block" fill="clear" shape="round">
-      Select on Map
+      Locate on Map
+    </ion-button>
+    <ion-button (click)="searchByAddressHereAPI()" expand="block" fill="clear" shape="round">
+      Locate By Address Field
+    </ion-button>
+    <ion-button (click)="searchByLatLngHereAPI()" expand="block" fill="clear" shape="round">
+      Locate By Lat/Lng Fields
     </ion-button>
   </div>
 

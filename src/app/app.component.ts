@@ -73,7 +73,7 @@ export class AppComponent {
     this.platform.ready().then(() => {
 
       /* ------------------------------ Init Firebase ----------------------------- */
-      firebase.initializeApp(environment.firebase);
+      // firebase.initializeApp(environment.firebase);
 
       /* -------------------------- Splash and Status Bar ------------------------- */
 

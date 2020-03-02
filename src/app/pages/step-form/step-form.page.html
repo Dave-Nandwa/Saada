@@ -1,0 +1,95 @@
+<ion-header no-border>
+  <ion-toolbar transparent>
+    <ion-icon class="ion-padding" slot="start" src="assets/navigation/back.svg" [routerLink]="['/tabs/profile']">
+    </ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+
+  <h1>Create an IOI</h1>
+
+  <form [formGroup]="createForm" class="ion-padding">
+    <ion-item>
+      <ion-label>Form Name: </ion-label>
+      <ion-input type="text" placeholder="Enter Form Name..." name="form_name"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Tab Name: </ion-label>
+      <ion-input type="text" placeholder="Enter Tab Name..." name="tab_name"></ion-input>
+    </ion-item>
+    <button class="add-btn" (click)="addTab()">Add Tab</button>
+    <button *ngIf="currentTabObject" class="delete-btn" (click)="confirmDeleteTab()">Delete Tab</button>
+    <!--     
+      <ion-item>
+      <ion-label>Create as SIOI: </ion-label>
+      <ion-checkbox (ionChange)="toggleCheckbox()"></ion-checkbox>
+    </ion-item> -->
+  </form>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <mat-horizontal-stepper (selectionChange)="tabChange($event)" (click)="triggerClick()">
+      <mat-step *ngFor="let step of dynamicForm; let index = index; let last = last;">
+        <ng-template matStepLabel>{{ step.label }}</ng-template>
+<!--         
+        <formly-form [form]="form.at(index)" [model]="model" [fields]="step.fields" [options]="options[index]">
+        </formly-form>
+
+        <div>
+          <button *ngIf="index !== 0" matStepperPrevious class="btn btn-primary" type="button"
+            (click)="prevStep(index)">Back</button>
+          <button *ngIf="!last" matStepperNext class="btn btn-primary" type="button" [disabled]="!form.at(index).valid"
+            (click)="nextStep(index)">Next</button> 
+          <button *ngIf="last" class="btn btn-primary" [class.hide]="!form.valid" type="submit">Submit</button>
+        </div> -->
+      </mat-step>
+    </mat-horizontal-stepper>
+  </form>
+
+  <ion-list *ngIf="currentTabObject?.fields?.length > 0">
+    <ion-list-header color="secondary">
+      <ion-label>Draft Fields: </ion-label>
+    </ion-list-header>
+    <ion-item-divider>
+      <ion-label>{{currentTabObject?.label}}</ion-label>
+    </ion-item-divider>
+
+    <ion-reorder-group id="items" disabled="true">
+      <ion-item-sliding *ngFor="let f of currentTabObject?.fields">
+        <ion-item>
+          <ion-reorder slot="start"></ion-reorder>
+          <ion-label *ngIf="f?.type !== 'input'">{{f.key}} - {{f.type}}</ion-label>
+          <ion-label *ngIf="f?.type === 'input'">{{f.key}} - text</ion-label>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="danger" expandable>Delete</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-reorder-group>
+
+  </ion-list>
+
+  <form [formGroup]="createForm" class="ion-padding">
+    <ion-item *ngIf="currentTab">
+      <ion-label>Add Input Type: </ion-label>
+      <ion-select [(ngModel)]="opt" [value]="opt" formControlName="type" (ionChange)="onTypeChange()"
+        [placeholder]="opt">
+        <ion-select-option *ngFor="let opt of inputOptions" [value]="opt">{{opt}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </form>
+  <form class="ion-padding" #myDiv></form>
+  <button *ngIf="currentTabObject?.fields?.length > 1" (click)="toggleReorder()">Edit Order</button>
+  <button *ngIf="currentTabObject?.fields?.length > 0" type="submit" (click)="uploadForm()"
+    class="btn btn-default">Upload Form</button>
+
+  <!-- </div> -->
+
+  <!-- ---------------------------------- - ---------------------------------- -->
+
+
+
+
+
+
+</ion-content>

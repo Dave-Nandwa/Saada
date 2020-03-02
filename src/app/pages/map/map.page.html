@@ -22,7 +22,7 @@
 
     <!-- ----------------------------- User Markers ----------------------------- -->
 
-    <agm-marker [latitude]="lat" [longitude]="lng" [label]="You" [iconUrl]="mapIcon"></agm-marker>
+    <agm-marker [latitude]="lat" [longitude]="lng" label="You" [iconUrl]="mapIcon"></agm-marker>
 
     <!-- Display User Markers + An Info Window-->
     <agm-marker *ngFor="let user of users; trackBy: trackByFn" [latitude]="user.position.geopoint.latitude"
@@ -63,7 +63,7 @@
             <ion-label class="ion-text-wrap"><b>Name:</b> {{point.name}}</ion-label>
           </ion-item>
           <ion-item>
-            <ion-label class="ion-text-wrap"><b>Description:</b> {{point.description}}</ion-label>
+            <ion-label class="ion-text-wrap"><b>Instruction:</b> {{point.description}}</ion-label>
           </ion-item>
           <ion-item>
             <ion-label class="ion-text-wrap"><b>Status:</b> {{point.status}}</ion-label>

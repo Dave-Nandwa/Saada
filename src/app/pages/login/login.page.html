@@ -23,7 +23,7 @@
     </ion-card-content>
 
   
-    <button expand="block" class="ion-padding btn" (click)="submit()">
+    <button expand="block" class="ion-padding btn" (click)="logIn()">
       Log In
       <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
       <ion-ripple-effect></ion-ripple-effect>
@@ -34,7 +34,19 @@
       <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
       <ion-ripple-effect></ion-ripple-effect>
     </button>
-    <ion-button (click)="forgotPassword()" color="danger">
+    <button expand="block" class="ion-padding google-btn" (click)="googleLogIn()">
+      Google Sign In
+      <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
+      <ion-ripple-effect></ion-ripple-effect>
+    </button>
+
+    <button expand="block" class="ion-padding facebook-btn" (click)="facebookLogIn()">
+      Facebook Sign In
+      <!-- Call Responder <ion-icon src="assets/eIcons/911.svg"></ion-icon> -->
+      <ion-ripple-effect></ion-ripple-effect>
+    </button>
+
+    <ion-button size="small" (click)="forgotPasswordPrompt()" color="danger">
       Forgot Password
     </ion-button>
   </ion-card>

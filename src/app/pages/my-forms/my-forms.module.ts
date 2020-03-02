@@ -1,3 +1,4 @@
+import { EditTabsIoiPageModule } from './../../modals/edit-tabs-ioi/edit-tabs-ioi.module';
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -19,7 +20,8 @@ import { EditIoiPageModule } from './../../modals/edit-ioi/edit-ioi.module';
     IonicModule,
     MyFormsPageRoutingModule,
     FillInIoiPageModule,
-    EditIoiPageModule
+    EditIoiPageModule,
+    EditTabsIoiPageModule
   ],
   declarations: [MyFormsPage]
 })

@@ -281,15 +281,15 @@ export class FormService {
   }
 
   
-  addProject(orgId, data) {
-    const id = this.afs.createId();
-    data.projectId = id;
-    return this.afs.doc(`organizations/${orgId}/projects/${id}`).set(data, {
+
+
+  updateProject(orgId, projectId, data) {
+    return this.afs.doc(`organizations/${orgId}/projects/${projectId}`).set(data, {
       merge: true
     });
   }
 
-  updateProject(orgId, projectId, data) {
+  addShortcuts(orgId, projectId, data) {
     return this.afs.doc(`organizations/${orgId}/projects/${projectId}`).set(data, {
       merge: true
     });
@@ -352,6 +352,10 @@ export class FormService {
     }
   }
 
+
+  deleteIoi(id) {
+    return this.afs.doc(`naked_forms/${id}`).delete();
+  }
 
 
 }

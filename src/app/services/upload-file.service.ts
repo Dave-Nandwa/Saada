@@ -12,7 +12,7 @@ export class UploadFileService {
   myPlans: any;
   mediaFiles: any;
   constructor(private utils: UtilitiesService, private afs: AngularFirestore) {
-    this.myPlans = firebase.storage().ref('/my_plans');
+    this.myPlans = firebase.storage().ref('/plans');
     this.mediaFiles = firebase.storage().ref('/media_files');
   }
 
@@ -62,7 +62,7 @@ export class UploadFileService {
 
   }
 
-  async addFileToStorage(doc, name, folder, userId, file: any): Promise<void> {
+  async addFileToStorage(doc, name, folder, orgId, file: any): Promise<void> {
     this.utils.presentLoading('Saving...');
     this.myPlans.child(file.filename)
       //Saves the file to storage
@@ -81,7 +81,7 @@ export class UploadFileService {
             url: url,
             opened: 0
           });
-          return this.afs.doc(`users/${userId}/my_plans/${folder}`).set(doc, {
+          return this.afs.doc(`organizations/${orgId}/plans/${folder}`).set(doc, {
             merge: true
           }).then(() => {
             this.utils.dismissLoading();
@@ -104,8 +104,8 @@ export class UploadFileService {
     });
   }
 
-  async updateCounter(userId, docs, folder) {
-    return this.afs.doc(`users/${userId}/my_plans/${folder}`).set({
+  async updateCounter(orgId, docs, folder) {
+    return this.afs.doc(`organizations/${orgId}/plans/${folder}`).set({
       files: docs
     }, { merge: true})
   }

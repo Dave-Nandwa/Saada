@@ -1,15 +1,22 @@
-import { LocationSelectPage } from 'src/app/modals/location-select/location-select.page';
-import { ModalController } from '@ionic/angular';
+import {
+  LocationSelectPage
+} from 'src/app/modals/location-select/location-select.page';
+import {
+  ModalController
+} from '@ionic/angular';
 import {
   Component,
-  OnInit
+  OnInit,
+  ChangeDetectorRef
 } from '@angular/core';
 import {
+  FormlyFormOptions,
   FormlyFieldConfig
 } from '@ngx-formly/core';
 import {
   FormGroup,
   FormControl,
+  FormArray,
   Validators
 } from '@angular/forms';
 import {
@@ -31,11 +38,22 @@ import {
 } from '@ionic-native/native-geocoder/ngx';
 
 
+
 import * as firebaseApp from 'firebase/app';
 import * as geofirex from 'geofirex';
-import { AddMediaPage } from '../add-media/add-media.page';
-import { HereService } from 'src/app/services/here.service';
+import {
+  AddMediaPage
+} from '../add-media/add-media.page';
+import {
+  HereService
+} from 'src/app/services/here.service';
 
+
+
+export interface StepType {
+  label: string;
+  fields: FormlyFieldConfig[];
+}
 
 @Component({
   selector: 'app-fill-in-ioi',
@@ -47,10 +65,14 @@ export class FillInIoiPage implements OnInit {
   userData;
   lat;
   lng;
-  form = new FormGroup({});
+  form: any = new FormGroup({});
   formModel: any = {};
-  fields: FormlyFieldConfig[] = [];
-  
+  fields: Array < FormlyFieldConfig > = [];
+
+  dynamicForm: StepType[] = [];
+  activeStep = 0;
+
+
   physicalAddr: any = {
     Address: 'N/A',
     City: 'N/A',
@@ -65,7 +87,7 @@ export class FillInIoiPage implements OnInit {
   additionalData: any;
   geo = geofirex.init(firebaseApp);
 
-  mediaFile: any = 'None'; 
+  mediaFile: any = ['None'];
   mediaNotes: any = 'N/A';
 
   options: NativeGeocoderOptions = {
@@ -78,16 +100,23 @@ export class FillInIoiPage implements OnInit {
   incidentTypes: any = [];
 
   incidentNames: any = [];
-  what: any;
+  what: any = 'N/A';
   previousName: any = 'N/A';
   status: any = 'N/A';
-  segment: any = 'required'; 
+  segment: any = 'required';
   incidentStatuses: any = [];
   selectedIOI: any = [];
   currentAddress: any = {};
   geocodedData: any;
   repName: string = '';
-  sioi: any;
+  sioi: boolean = false;
+
+  tabs: any = [];
+  currentTabObject: any;
+  selectedTabIndex: any = 0;
+  model: any = {};
+
+ 
 
   constructor(
     private formService: FormService,
@@ -96,12 +125,50 @@ export class FillInIoiPage implements OnInit {
     private geolocation: Geolocation,
     private nativeGeocoder: NativeGeocoder,
     private modalCtrl: ModalController,
-    private here: HereService) {}
+    private here: HereService,
+    private _changeDetectionRef: ChangeDetectorRef) {}
 
-  ngOnInit() {
-    this.fields = < FormlyFieldConfig[] > JSON.parse(this.selectedForm.nakedForm)
+  ngOnInit() {}
+
+  ionViewDidEnter() {
+    // this.fields = < FormlyFieldConfig[] > JSON.parse(this.selectedForm.nakedForm);
+    this.dynamicForm = < StepType[] > JSON.parse(this.selectedForm.nakedForm);
+    this.form = new FormArray(this.dynamicForm.map(() => new FormGroup({})));
+    this._changeDetectionRef.detectChanges();
+    this.tabs = this.selectedForm.tabs;
     this.getNeededData();
     console.log('inited');
+  }
+
+  async doRefresh(event) {
+    await this.getNeededData();
+    event.target.complete();
+  }
+
+  prevStep(step) {
+    this.activeStep = step - 1;
+  }
+
+  nextStep(step) {
+    this.activeStep = step + 1;
+  }
+
+
+  // Change Tab Object on this event
+  tabChange(event) {
+    console.log('Tab Changed!');
+    console.log(event);
+    console.log(this.currentTabObject);
+    this.selectedTabIndex = event.selectedIndex;
+    this.currentTabObject = this.dynamicForm.find((obj: any) => {
+      return obj.label === this.tabs[parseInt(this.selectedTabIndex)];
+    });
+    console.log(this.currentTabObject);
+  }
+
+  //Debug Function
+  triggerClick() {
+    console.log(`Selected tab index: ${this.selectedTabIndex}`);
   }
 
   async getNeededData() {
@@ -118,6 +185,77 @@ export class FillInIoiPage implements OnInit {
     console.log(this.sioi);
   }
 
+  /* -------------------------------------------------------------------------- */
+  /*                           Search by Address Field                          */
+  /* -------------------------------------------------------------------------- */
+
+  searchByAddressHereAPI() {
+    this.utils.presentLoading('');
+    let addr = ( < HTMLInputElement > document.querySelector('ion-input[name=address]')).value;
+    if (addr.length > 1) {
+      this.here.searchByAddress(addr).subscribe((res: any) => {
+        if (res.Response.View[0].Result.length > 0) {
+          this.geocodedData = res.Response.View[0].Result;
+          let pa = res.Response.View[0].Result[0].Location.Address;
+          this.physicalAddr = {
+            Address: pa.Label,
+            City: pa.City ? pa.City : 'N/A',
+            State: pa.State ? pa.State : 'N/A',
+            District: pa.District ? pa.District : 'N/A',
+            Country: pa.AdditionalData[0].value,
+            Lat: res.Response.View[0].Result[0].Location.DisplayPosition.Latitude,
+            Lng: res.Response.View[0].Result[0].Location.DisplayPosition.Longitude,
+            postalCode: pa.PostalCode ? pa.PostalCode : 'N/A',
+            Street: pa.Street ? pa.Street : 'N/A'
+          }
+        }
+        this.utils.dismissLoading();
+      }, (err) => {
+        this.utils.dismissLoading();
+        this.utils.handleError(err);
+      });
+    } else {
+      this.utils.presentToast('You cannot search with an empty address field.', 'toast-error');
+    }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                   Search by latitude and longitude fields                  */
+  /* -------------------------------------------------------------------------- */
+
+  searchByLatLngHereAPI() {
+    this.utils.presentLoading('');
+    let lat = ( < HTMLInputElement > document.querySelector('ion-input[name=lat]')).value;
+    let lng = ( < HTMLInputElement > document.querySelector('ion-input[name=lng]')).value;;
+    let coords = lat + "," + lng;
+    console.log(coords);
+    let geoSub = this.here.revGeo(coords).subscribe((res: any) => {
+      if ((res.Response.View[0].Result.length > 0)) {
+        this.geocodedData = res.Response.View[0].Result;
+        let pa = res.Response.View[0].Result[0].Location.Address;
+        this.physicalAddr = {
+          Address: pa.Label,
+          City: pa.City ? pa.City : 'N/A',
+          State: pa.State ? pa.State : 'N/A',
+          District: pa.District ? pa.District : 'N/A',
+          Country: pa.AdditionalData[0].value,
+          Lat: res.Response.View[0].Result[0].Location.DisplayPosition.Latitude,
+          Lng: res.Response.View[0].Result[0].Location.DisplayPosition.Longitude,
+          postalCode: pa.PostalCode ? pa.PostalCode : 'N/A',
+          Street: pa.Street ? pa.Street : 'N/A'
+        }
+        console.log(res.Response.View[0].Result);
+        this.utils.dismissLoading();
+      } else {
+        this.utils.presentToast('UNEXPECTED ERROR: Cannot determine your location.', 'toast-error');
+      }
+      geoSub.unsubscribe();
+    }, (err) => {
+      this.utils.dismissLoading();
+      this.utils.handleError(err);
+    });
+  }
+
   getPhysicalAddressHereAPI() {
     if (this.lat && this.lng) {
       console.log(JSON.stringify(this.lat) + "," + JSON.stringify(this.lng))
@@ -127,22 +265,23 @@ export class FillInIoiPage implements OnInit {
           let pa = res.Response.View[0].Result[0].Location.Address;
           this.physicalAddr = {
             Address: pa.Label,
-            City: pa.City,
-            State: pa.State,
-            District: pa.District,
+            City: pa.City ? pa.City : 'N/A',
+            State: pa.State ? pa.State : 'N/A',
+            District: pa.District ? pa.District : 'N/A',
             Country: pa.AdditionalData[0].value,
             Lat: this.lat,
             Lng: this.lng,
-            postalCode: pa.PostalCode ? pa.PostalCode : 'N/A'
+            postalCode: pa.PostalCode ? pa.PostalCode : 'N/A',
+            Street: pa.Street ? pa.Street : 'N/A'
           }
           console.log(res.Response.View[0].Result);
         } else {
-          this.utils.presentToast('UNEXPECTED ERROR: Cannot determine your location.', 'toast-danger');
+          this.utils.presentToast('UNEXPECTED ERROR: Cannot determine your location.', 'toast-error');
         }
         geoSub.unsubscribe();
       });
     } else {
-      this.utils.presentToast('Latitude and Longitude not Received. Cannot Geocode.', 'toast-danger');
+      this.utils.presentToast('Latitude and Longitude not Received. Cannot Geocode.', 'toast-error');
     }
   }
 
@@ -157,7 +296,7 @@ export class FillInIoiPage implements OnInit {
 
     modal.onDidDismiss().then((resp: any) => {
       if (resp.data.mediaFile.length > 0) {
-        this.mediaFile = resp.data.mediaFile;
+        this.mediaFile.push(resp.data.mediaFile);
         this.mediaNotes = resp.data.notes
       } else {
         console.log('Modal Dismissed.')
@@ -189,21 +328,20 @@ export class FillInIoiPage implements OnInit {
 
     return await modal.present();
   }
-  
+
   getPreviousForms() {
     let dSub = this.formService.getPreviousForms(this.userData.organization).subscribe((data) => {
-      this.previousForms = this.removeDuplicateReports(data, 'reportName');
+      this.previousForms = this.removeDuplicateReports(data, 'name');
       console.log(data);
       dSub.unsubscribe();
-      console.log('D1');
     });
   }
 
   removeDuplicateReports(myArr, prop) {
     return myArr.filter((obj, pos, arr) => {
-        return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos
+      return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos
     })
-}
+  }
 
   getPreviousStatuses() {
     let dSub = this.formService.getSRStatuses(this.userData.organization).subscribe((data) => {
@@ -224,12 +362,14 @@ export class FillInIoiPage implements OnInit {
 
   whatChanged(ev: any) {
     this.what = ev.detail.value;
-  } 
+    console.log(ev.detail.value);
+  }
 
   async nameChanged(ev: any) {
     this.previousName = ev.detail.value;
     this.repName = ev.detail.value;
-    const index = this.previousForms.findIndex(item => item.formName === this.previousName);
+    const index = this.previousForms.findIndex(item => item.name === this.previousName);
+    console.log(index);
     //Assign Selected IOI to var
     this.selectedIOI = await this.previousForms[index];
     //Change Variable
@@ -245,11 +385,12 @@ export class FillInIoiPage implements OnInit {
 
   segmentChanged(e) {
     this.segment = (e.detail.value);
+    this._changeDetectionRef.detectChanges();
   }
 
 
   async submit() {
-    this.utils.presentLoading('Uploading Report...');
+    this.utils.presentLoading('Uploading IOI...');
     try {
       var dateTime = new Date().toLocaleString();
       const position = this.geo.point(this.lat, this.lng);
@@ -271,10 +412,10 @@ export class FillInIoiPage implements OnInit {
         status: this.status,
         mediaFile: this.mediaFile,
         mediaNotes: this.mediaNotes,
-        name: this.repName,
+        name: this.repName.length > 1 ? this.repName : 'N/A',
         sioi: this.sioi
       }
-      if (this.form.valid) {
+      if (this.what !== 'N/A' && this.repName !== 'N/A') {
         let sendToDb = {
           formData: {
             ...this.formModel
@@ -284,12 +425,13 @@ export class FillInIoiPage implements OnInit {
         this.formService.uploadNakedFormReport(sendToDb).then(() => {
           this.utils.dismissLoading();
           this.modalCtrl.dismiss();
-          this.utils.presentAlert('Success', '', 'IOI Report submitted successfully.');
+          this.utils.presentAlert('Success', '', 'IOI submitted successfully.');
         }).catch((err) => {
           this.utils.handleError(err);
         });
       } else {
-        console.log('Form Not Valid.')
+        console.log('Form Not Valid.');
+        this.utils.presentAlert('ERROR', '', 'Kindly Fill in All Required Fields First.')
       }
     } catch (err) {
       this.utils.dismissLoading();

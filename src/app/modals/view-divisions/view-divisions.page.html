@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button slot="start" ion-button icon-only (click)="closeModal()" class="back-btn">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-button>
+    <ion-title>View Divisions</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-button  color="primary"  (click)="save()" expand="block">
+    Save
+  </ion-button>
+  <ion-list>
+    <ion-list-header color="secondary">
+      <ion-label>Divisions</ion-label>
+    </ion-list-header>
+    <ion-list>
+      <ion-item-sliding *ngFor="let d of divisions; let index = index">
+        <ion-item>
+          <ion-label>{{d}}</ion-label>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option  color="danger"  (click)="delete(index)">Delete</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </ion-list>
+
+</ion-content>

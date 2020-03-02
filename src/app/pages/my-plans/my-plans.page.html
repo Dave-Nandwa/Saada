@@ -4,7 +4,7 @@
       <ion-icon slot="icon-only" src="assets/profile/chevron-back.svg"></ion-icon>
     </ion-button>
     <ion-title>My Plans</ion-title>
-    <ion-button *ngIf="userData?.clearance > 2" color="primary" slot="end" (click)="addFolderName()">
+    <ion-button *ngIf="userData?.clearance >= 2" color="primary" slot="end" (click)="addFolderName()">
       <ion-icon slot="icon-only" icon="add"></ion-icon>
     </ion-button>
   </ion-toolbar>

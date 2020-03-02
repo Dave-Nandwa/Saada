@@ -8,6 +8,8 @@ import {
 } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { redirectUnauthorizedTo, canActivate } from '@angular/fire/auth-guard';
+import { VerifiedGuard } from './guards/verified.guard';
+// import { VerifiedGuard } from './guards/verified.guard';
 const redirectToLogin = redirectUnauthorizedTo(['login']);
 
 const routes: Routes = [{
@@ -16,8 +18,7 @@ const routes: Routes = [{
   },
   {
     path: 'home',
-    loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule),
-
+    loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule)
   },
   {
     path: 'map',
@@ -111,6 +112,34 @@ const routes: Routes = [{
   {
     path: 'add-ioi-status',
     loadChildren: () => import('./modals/add-ioi-status/add-ioi-status.module').then( m => m.AddIoiStatusPageModule)
+  },
+  {
+    path: 'step-form',
+    loadChildren: () => import('./pages/step-form/step-form.module').then( m => m.StepFormPageModule)
+  },
+  {
+    path: 'edit-tabs-ioi',
+    loadChildren: () => import('./modals/edit-tabs-ioi/edit-tabs-ioi.module').then( m => m.EditTabsIoiPageModule)
+  },
+  {
+    path: 'verify-email',
+    loadChildren: () => import('./pages/verify-email/verify-email.module').then( m => m.VerifyEmailPageModule)
+  },
+  {
+    path: 'add-shortcuts',
+    loadChildren: () => import('./modals/add-shortcuts/add-shortcuts.module').then( m => m.AddShortcutsPageModule)
+  },
+  {
+    path: 'create-sponsor-code',
+    loadChildren: () => import('./modals/create-sponsor-code/create-sponsor-code.module').then( m => m.CreateSponsorCodePageModule)
+  },
+  {
+    path: 'view-orgs',
+    loadChildren: () => import('./modals/view-orgs/view-orgs.module').then( m => m.ViewOrgsPageModule)
+  },
+  {
+    path: 'view-divisions',
+    loadChildren: () => import('./modals/view-divisions/view-divisions.module').then( m => m.ViewDivisionsPageModule)
   }
 ];
 @NgModule({

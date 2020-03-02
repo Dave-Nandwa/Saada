@@ -60,6 +60,7 @@ export class LandingPage implements OnInit {
     phone: new FormControl('', [Validators.required]),
     cCode: new FormControl('', [Validators.required]),
     org: new FormControl(undefined, [Validators.required]),
+    sponsor: new FormControl(undefined, [Validators.required]),
     division: new FormControl(undefined, [Validators.required]),
     project: new FormControl(undefined, [Validators.required]),
   });
@@ -67,17 +68,68 @@ export class LandingPage implements OnInit {
   lat: any = 0;
   lng: any = 0;
 
-  organization: any;
-  division: any;
-  project: any;
+  organization: any = {name: 'N/A'};
+  division: any = 'N/A';
+  project: any = 'N/A';
   projects: any = [];
   organizations: any = [];
-
+  sponsorCodes: any = [];
+  sponsorObject: any = {};
+  clearanceLevel: any = 1;
   constructor(private uServ: UserService, private authService: AuthService, private geo: Geolocation, private ns: NativeStorage, private utils: UtilitiesService, private router: Router) {}
 
   ngOnInit() {
-    this.getLatLng();
-    this.getOrgs();
+    this.fetchPreliminaries()
+  }
+
+  async fetchPreliminaries() {
+    this.utils.presentLoading('');
+    await this.getLatLng();
+    await this.getOrgs();
+    await this.getSponsorCodes();
+    this.utils.dismissLoading();
+  }
+
+
+
+  async getSponsorCodes() {
+    let sponserSub = this.uServ.getSponsorCodes().subscribe((res) => {
+      this.sponsorCodes = res;
+      sponserSub.unsubscribe();
+    });
+  }
+
+  async populateFields() {
+    let sponsorCode = ( < HTMLInputElement > document.querySelector('input[name=sponsorCode]')).value.substr(0,10);
+
+    this.sponsorObject = this.sponsorCodes.find(obj => {
+      return obj.sponsorCode === sponsorCode
+    });
+    if (this.sponsorObject) {
+      this.organization = this.organizations.find(obj => {
+        return obj.name === this.sponsorObject.organization
+      });
+      // Get Projects then continue
+      this.utils.presentLoading('Please wait...');
+      this.uServ.getProjects(this.organization.orgId).subscribe((data) => {
+        this.projects = data;
+        this.division = this.sponsorObject.division;
+        this.project = this.projects.find(obj => {
+          return obj.name === this.sponsorObject.project
+        });
+        console.log(this.projects);
+        this.clearanceLevel = parseInt(this.sponsorObject.clearanceLevel);
+        console.log(this.sponsorObject, this.project);
+        // ( < HTMLInputElement > document.querySelector('input[name=sponsorCode]')).disabled = true;
+        this.utils.presentToast('Sponsor Code Validated Successfully', 'toast-success');
+        this.utils.dismissLoading();
+      }, err => {
+        this.utils.handleError(err);
+        this.utils.dismissLoading();
+      });
+    } else {
+      this.utils.presentToast('Invalid Sponsor Code!', 'toast-error');
+    }
   }
 
   async getLatLng() {
@@ -101,20 +153,15 @@ export class LandingPage implements OnInit {
       return obj.name === cat
     });
     // Very VERY Hackish but it works for mapped projects under organzizations!
-/*     Object.keys(this.organization).map((key, index) => {
-      if (typeof(this.organization[key]) === 'object') {
-        ind = index === 0 ? 1 : index-1;
-        this.projects.push(this.organization['projects'][`project${ind}`]);
-      }
-    });  */
-    this.utils.presentLoading('');
-    this.uServ.getProjects(this.organization.orgId).subscribe((data)=> {
-      this.projects = data;
-      this.utils.dismissLoading();
-    }, err => {
-      this.utils.handleError(err);
-    });
+    /*     Object.keys(this.organization).map((key, index) => {
+          if (typeof(this.organization[key]) === 'object') {
+            ind = index === 0 ? 1 : index-1;
+            this.projects.push(this.organization['projects'][`project${ind}`]);
+          }
+        });  */
   }
+
+  
 
   flattenObject(ob, prefix) {
     const toReturn = {};
@@ -132,7 +179,7 @@ export class LandingPage implements OnInit {
     }
     return toReturn;
   }
- 
+
   onDivChange(): void {
     let div = this.loginForm.get('division').value;
     this.division = div;
@@ -141,7 +188,9 @@ export class LandingPage implements OnInit {
 
   onProjChange(): void {
     let proj = this.loginForm.get('project').value;
-    this.project = proj;
+    this.project = this.projects.find(obj => {
+      return obj.name === proj
+    });
     console.log(this.project);
   }
 
@@ -154,7 +203,7 @@ export class LandingPage implements OnInit {
 
   submit() {
     const regName = /^[a-zA-Z]+ [a-zA-Z]+$/;
-    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const emailRegex = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
 
     const regNumber = /^0[0-9].*$/;
     const form = this.loginForm.value;
@@ -170,27 +219,30 @@ export class LandingPage implements OnInit {
         form.project = this.project.name;
         form.projectId = this.project.projectId;
         form.division = this.division;
-        if (form.cCode === '') {
-          // Low-Level User
-          form.clearance = 1
-        } else if (form.cCode === '211') {
-          // Division Admin
-          form.clearance = 2
-        } else if (form.cCode === '311') {
-          //Project Admin
-          form.clearance = 3
-        } else if (form.cCode === '411') {
-          //Org Admin
-          form.clearance = 4
-        } else if (form.cCode === '511') {
-          //James and Ernie
-          form.clearance = 5
-        }
+        form.clearance = this.clearanceLevel;
+        form.sponsorCodes = [this.sponsorObject.sponsorCode];
+        // if (form.cCode === '') {
+        //   // Low-Level User
+        //   form.clearance = 1
+        // } else if (form.cCode === '211') {
+        //   // Division Admin
+        //   form.clearance = 2
+        // } else if (form.cCode === '311') {
+        //   //Project Admin
+        //   form.clearance = 3 
+        // } else if (form.cCode === '411') {
+        //   //Org Admin
+        //   form.clearance = 4
+        // } else if (form.cCode === '511') {
+        //   //James and Ernie
+        //   form.clearance = 5
+        // }
         this.utils.presentLoading('Creating Account...');
         this.authService.signup(form).then(() => {
           this.utils.dismissLoading();
-          this.utils.presentToast('Account Created Successfully.', 'toast-success');
-          this.router.navigate(['login']);
+          this.utils.presentToast('Account Created Successfully. Kindly check your email to verify your account.', 'toast-success');
+          this.authService.sendEmailVerification();
+          this.router.navigate(['/login']);
           // this.setUserInfo(form);
         }).catch((err) => {
           this.utils.dismissLoading();
@@ -198,7 +250,9 @@ export class LandingPage implements OnInit {
           this.utils.handleError(err);
         });
         console.log(form);
-      };
+      } else {
+        this.utils.presentAlert('FORM ERROR', '', 'Please check all your input values and try again.');
+      }
     }
     return true;
   }

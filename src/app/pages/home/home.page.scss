@@ -49,7 +49,7 @@ ion-col.active {
 .btn {
     width: 100%;
     padding: 15px 20px;
-    margin-top: 40px;
+    margin-top: 10px;
     --box-shadow: none;
     border-radius: 4px;
     font-size: 1.5em;
@@ -74,4 +74,27 @@ ion-col.active {
 .btn:nth-child(even) {
     background: rgb(24, 203, 209);
     --background: rgb(24, 203, 209);
+}
+
+.btn-form {
+    width: 100%;
+    padding: 15px 20px;
+    margin-top: 40px;
+    --box-shadow: none;
+    border-radius: 4px;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-transform: uppercase;
+    --color: #111 !important;
+    background: rgb(243, 243, 243);
+    --background: rgb(243, 243, 243);
+    color: #111 !important;
+    outline: none;
+
+    /*    ion-icon {
+        font-size: 1.5em;
+        margin:0;
+        padding:0;
+        display: inline-block;
+    } */
 }

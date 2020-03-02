@@ -78,7 +78,7 @@ export class UserService {
     }
   }
 
-  
+
   getProject(orgId, projId) {
     const query = this.afs.doc(`organizations/${orgId}/projects/${projId}`);
     if (query) {
@@ -150,11 +150,11 @@ export class UserService {
   }
 
 
-  async addFolder(data, uid, id) {
+  async addFolder(data, orgId, id) {
     try {
       id = id === '' ? this.afs.createId() : id;
       data.docId = id;
-      return this.afs.doc(`users/${uid}/my_plans/${id}`).set(data, {
+      return this.afs.doc(`organizations/${orgId}/plans/${id}`).set(data, {
         merge: true
       });
     } catch (err) {
@@ -162,10 +162,10 @@ export class UserService {
     }
   }
 
-  async addFile(data, uid, docId) {
+  async addFile(data, orgId, docId) {
     console.log(data);
     try {
-      return this.afs.doc(`users/${uid}/my_plans/${docId}`).set(data, {
+      return this.afs.doc(`organizations/${orgId}/plans/${docId}`).set(data, {
         merge: true
       });
     } catch (err) {
@@ -173,10 +173,22 @@ export class UserService {
     }
   }
 
-  getUserPlans(uid) {
+  getUserPlans(orgId) {
     try {
-      let labels = firebase.firestore().collection(`users/${uid}/my_plans`);
+      let labels = firebase.firestore().collection(`organizations/${orgId}/plans`);
       return labels.get();
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  getSponsorCodes() {
+    try {
+      const query = this.afs.collection(`sponsor_codes`);
+      if (query) {
+        const querySub = query.valueChanges();
+        return querySub;
+      }
     } catch (err) {
       throw new Error(err);
     }

@@ -11,10 +11,16 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <button class="btn" (click)="addIoiModal()">Manage IOI Types</button>
-  <button class="btn" (click)="addIoiStatusModal()">Manage Status</button>
+  <!-- <button class="btn"  *ngIf="userData?.clearance > 2" (click)="presentNakedFormOptions()">Edit Form</button> -->
+  <button class="btn" *ngIf="userData?.clearance >= 4" (click)="addIoiTypeModal()">Manage IOI Types</button>
+  <button class="btn" *ngIf="userData?.clearance >= 4" (click)="addIoiStatusModal()">Manage Status</button>
   <!-- <button class="btn" (click)="addIncidentWhat()">Add IOI What Field</button> -->
   <button class="btn" *ngIf="userData?.clearance > 4" (click)="addProject()">Create New Project</button>
-  <button class="btn" *ngIf="userData?.clearance > 4" (click)="changeButtons()">Enable Home Buttons</button>
+  <button class="btn" *ngIf="userData?.clearance >= 4" (click)="addOrganization()">Create New Organization</button>
+  <button class="btn" *ngIf="userData?.clearance >= 4" (click)="viewOrgsModal()">View Organizations</button>
+  <button class="btn" *ngIf="userData?.clearance >= 4" (click)="addDivision()">Add Division to Organization</button>
+  <button class="btn" *ngIf="userData?.clearance >= 4" (click)="changeButtons()">Enable Home Buttons</button>
   <button class="btn" *ngIf="userData?.clearance > 4" (click)="changeHomeLabels()">Label Home Buttons</button>
+  <button class="btn" (click)="openAddIoiButtonsModal()">Add Home Buttons</button>
+  <button class="btn" (click)="openSponsorModal()">Add Sponsor Code</button>
 </ion-content>

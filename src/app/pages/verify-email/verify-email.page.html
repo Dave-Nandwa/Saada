@@ -1,0 +1,14 @@
+<ion-content class="ion-text-center" fullscreen>
+  <ion-img class="ion-padding" src="assets/email.svg"></ion-img>
+  <h1>Verifying Email.</h1>
+  <h4>Hi.  
+    In order to access your account, you must first verify using the email we sent you.  
+    Before clicking any buttons below, please check your email, including the spam folder.  Then return here.</h4>
+
+  <ion-button (click)="checkVerified()" expand="block" color="secondary">
+    Log In After Email is Verified
+  </ion-button>
+  <ion-button (click)="sendVerificationEmail()" expand="block" color="warning">
+    Resend Email
+  </ion-button>
+</ion-content>

@@ -105,6 +105,15 @@ export class HomePage implements OnInit {
 
     return await modal.present();
   }
+  
+
+  async getSpecificForm(formName) {
+    console.log(formName);
+    let specificForm = await this.forms.find((form) => {
+      return form.name === formName
+    });
+    this.openIoiModal(JSON.parse(specificForm.value));
+  }
 
   async presentNakedFormOptions() {
     const alert = await this.alertController.create({
@@ -129,6 +138,7 @@ export class HomePage implements OnInit {
   }
 
   getForms() {
+    this.forms = [];
     this.utils.presentLoading('Fetching Forms...');
     const forms = firebaseApp.firestore().collection('naked_forms').where('project', '==', this.userData.project);
     forms.get().then((querySnapshot) => {
@@ -244,6 +254,7 @@ export class HomePage implements OnInit {
   getUserProject(orgId, projId) {
     this.uServ.getProject(orgId, projId).subscribe((res) => {
       this.project = res;
+      console.log(res);
     }, (err) => {
       this.utils.handleError(err);
     });

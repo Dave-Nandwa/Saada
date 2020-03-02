@@ -127,14 +127,14 @@ export class MapPage implements OnInit {
 
   /* -------------------------- Directions Variables -------------------------- */
 
-  private origin: any;
-  private destination: any;
-  private travelMode: string = 'DRIVING';
+  public origin: any;
+  public destination: any;
+  public travelMode: string = 'DRIVING';
   public spotReports: any;
-  private forms: any = [];
-  private nakedReports: Observable < any > ;
-  private showMedia: boolean = false;
-  private users: any = [];
+  public forms: any = [];
+  public nakedReports: Observable < any > ;
+  public showMedia: boolean = false;
+  public users: any = [];
 
   openedWindow: string = ''; // alternative: array of numbers
 
@@ -143,11 +143,11 @@ export class MapPage implements OnInit {
 
   userData: any;
   constructor(
-    private formService: FormService,
-    private utils: UtilitiesService,
-    private uServ: UserService,
-    private callNumber: CallNumber,
-    private geolocation: Geolocation,
+    public formService: FormService,
+    public utils: UtilitiesService,
+    public uServ: UserService,
+    public callNumber: CallNumber,
+    public geolocation: Geolocation,
     public alertController: AlertController,
     public modalController: ModalController) {}
 
@@ -439,7 +439,7 @@ export class MapPage implements OnInit {
     this.geoQuery = this.geo.query(reports)
     this.nakedReports = this.radius.pipe(
       switchMap(r => {
-        return this.geoQuery.within(center, r * 100000, field, {
+        return this.geoQuery.within(center, r * 1609.344, field, {
           log: true
         });
       }),

@@ -6,8 +6,10 @@
 </ion-header>
 
 <ion-content fullscreen>
-
-  <h1>Edit Profile</h1>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <h1>My Profile</h1>
 
   <form #f="ngForm" [formGroup]="submitForm" class="ion-padding">
 
@@ -39,64 +41,97 @@
       formControlName="phone">
     </ngx-intl-tel-input>
 
+    <ion-item class="mb-2 ion-text-wrap">
+      <ion-label>My Sponsor Codes </ion-label>
+      <ion-select class="ion-text-wrap" placeholder="Select" formControlName="code" okText="Select" cancelText="Dismiss"
+        (ionChange)="onCodeChange()">
+        <ion-select-option class="input ion-text-wrap" *ngFor="let code of userSponsorCodes" [value]="code">
+          {{code}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
     <ion-item lines="none">
-      <ion-label>Clearance Level: </ion-label>
-      <ion-input disabled type="number" [value]="userData?.clearance" placeholder="0">
+      <ion-label>Sponsor Code: </ion-label>
+      <ion-input type="text" name="sponsorCode" placeholder="Enter Sponsor Code">
       </ion-input>
     </ion-item>
 
-    
-    <ion-item lines="none">
-      <ion-label>Your Status: </ion-label>
-      <ion-input disabled type="text" [value]="userData?.status" placeholder="N/A">
-      </ion-input>
-    </ion-item>
-
-    
-    <ion-item lines="none">
-      <ion-label>Status Notes: </ion-label>
-      <ion-input disabled type="text" [value]="userData?.statusNotes" placeholder="N/A">
-      </ion-input>
-    </ion-item>
-
-
-    <ion-item lines="none">
-      <ion-label>Area Of Interest (m): </ion-label>
-      <ion-input type="text" formControlName="aoi" [value]="userData?.areaOfInterest" placeholder="2000">
-      </ion-input>
-    </ion-item>
-
+    <button expand="block" class="ion-padding populate-btn" (click)="populateFields('')">
+      Verify Sponsor Code
+      <ion-ripple-effect></ion-ripple-effect>
+    </button>
+<!-- 
     <ion-item *ngIf="userData?.clearance === 1 || userData?.clearance === 2 || userData?.clearance === 3" class="mb-2">
       <ion-label>Organization: </ion-label>
-      <ion-select disabled [value]="userData?.organization" formControlName="org" okText="Select" cancelText="Dismiss"
+      <ion-select class="ion-text-wrap" [value]="organization?.name"
+        formControlName="org" okText="Select" cancelText="Dismiss" (ionChange)="onOrganizationChange()">
+        <ion-select-option class="input" [value]="organization?.name">{{organization?.name}}</ion-select-option>
+      </ion-select>
+    </ion-item> -->
+
+    <ion-item class="mb-2">
+      <ion-label>Organization: </ion-label>
+      <ion-select class="ion-text-wrap" [placeholder]="organization?.name"
+        [value]="organization?.name" formControlName="org" okText="Select" cancelText="Dismiss"
         (ionChange)="onOrganizationChange()">
-        <ion-select-option class="input" [value]="userData?.organization">{{userData?.organization}}</ion-select-option>
+        <!-- <ion-select-option class="input" *ngFor="let o of organizations" [value]="o?.name">{{organization?.name}} </ion-select-option> -->
+        <ion-select-option class="input" [value]="organization?.name">{{organization?.name}}</ion-select-option>
       </ion-select>
     </ion-item>
 
-    <ion-item *ngIf="userData?.clearance > 3" class="mb-2">
-      <ion-label>Organization: </ion-label>
-      <ion-select [value]="userData?.organization" formControlName="org" okText="Select" cancelText="Dismiss"
-        (ionChange)="onOrganizationChange()">
-        <ion-select-option class="input" *ngFor="let o of organizations" [value]="o?.name">{{userData?.organization}}</ion-select-option>
-      </ion-select>
-    </ion-item>
-    
+
+
     <ion-item *ngIf="organization" class="mb-2">
       <ion-label>Division: </ion-label>
-      <ion-select [value]="userData?.division" formControlName="div" okText="Select" cancelText="Dismiss"
-        (ionChange)="onDivChange()">
-        <ion-select-option class="input" *ngFor="let d of organization?.divisions" [value]="d">{{d}}</ion-select-option>
+      <ion-select [value]="division" formControlName="div" okText="Select"
+        cancelText="Dismiss" (ionChange)="onDivChange()">
+        <!-- <ion-select-option class="input" *ngFor="let d of organization?.divisions" [value]="d">{{d}}</ion-select-option> -->
+        <ion-select-option class="input" [value]="division">{{division}}</ion-select-option>
+      
       </ion-select>
     </ion-item>
 
     <ion-item *ngIf="organization && projects" class="mb-2">
       <ion-label>Project: </ion-label>
-      <ion-select [value]="userData?.project" [placeholder]="userData?.project" formControlName="proj" okText="Select" cancelText="Dismiss"
-        (ionChange)="onProjChange()">
-        <ion-select-option class="input" *ngFor="let p of projects" [value]="p.name">{{p.name}}</ion-select-option>
+      <ion-select [value]="project?.name" [placeholder]="project?.name"
+        formControlName="proj" okText="Select" cancelText="Dismiss" (ionChange)="onProjChange()">
+        <ion-select-option class="input" [value]="project?.name">{{project?.name}}</ion-select-option>
       </ion-select>
     </ion-item>
+
+    <ion-item lines="none">
+      <ion-label>Clearance Level: </ion-label>
+      <ion-input [style.pointerEvents]="'none'" type="number" [value]="clearanceLevel" placeholder="0">
+      </ion-input>
+    </ion-item>
+
+
+    <ion-item lines="none">
+      <ion-label>Your Status: </ion-label>
+      <ion-input [style.pointerEvents]="'none'" type="text" [value]="userData?.status" placeholder="N/A">
+      </ion-input>
+    </ion-item>
+
+
+    <ion-item lines="none">
+      <ion-label>Status Notes: </ion-label>
+      <ion-input [style.pointerEvents]="'none'" type="text" [value]="userData?.statusNotes" placeholder="N/A">
+      </ion-input>
+    </ion-item>
+
+
+    <ion-item lines="none">
+      <ion-label>Area Of Interest (mi): </ion-label>
+      <ion-input type="text" formControlName="aoi" [value]="userData?.areaOfInterest" placeholder="2000">
+      </ion-input>
+    </ion-item>
+    <button expand="block" class="ion-padding populate-btn" (click)="saveUserData()">
+      Save
+      <ion-ripple-effect></ion-ripple-effect>
+    </button>
+
   </form>
+
 
 </ion-content>

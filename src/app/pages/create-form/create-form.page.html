@@ -7,7 +7,7 @@
 
 <ion-content fullscreen>
 
-  <h1>Create an IOI</h1>
+  <h1>Build a Form</h1>
 
   <!--   <ion-segment (ionChange)="segmentChanged($event)">
     <ion-segment-button checked value="form">
@@ -36,7 +36,7 @@
         <ion-input type="text" [(ngModel)]="physicalAddr.City" placeholder="Fill In..."></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label>District:</ion-label>
+        <ion-label>Country:</ion-label>
         <ion-input type="text" [(ngModel)]="physicalAddr.District" placeholder="Fill In..."></ion-input>
       </ion-item>
       <ion-item>
@@ -62,9 +62,10 @@
   <!-- <div class="hide" [class.show]="segment === 'form'"> -->
   <ion-list *ngIf="fields?.length > 0">
 
-    <ion-reorder-group (ionItemReorder)="onRenderItems($event)" disabled="true">
+    <ion-reorder-group id="items" disabled="true">
       <ion-item-sliding *ngFor="let f of fields">
         <ion-item>
+          <ion-reorder slot="start"></ion-reorder>
           <ion-label>{{f.templateOptions.label}} - {{f.type}}</ion-label>
         </ion-item>
         <ion-item-options side="end">
@@ -72,7 +73,7 @@
         </ion-item-options>
       </ion-item-sliding>
     </ion-reorder-group>
-
+    <button (click)="toggleReorder()">Edit Order</button>
   </ion-list>
 
   <!-- <form class="ion-padding" [formGroup]="form" (ngSubmit)="submit(model)">
@@ -109,7 +110,7 @@
     </ion-item> -->
     <ion-item>
       <ion-label>Add Input Type: </ion-label>
-      <ion-select [compareWith]="compareWith" [(ngModel)]="opt" [value]="opt" formControlName="type"
+      <ion-select [(ngModel)]="opt" [value]="opt" formControlName="type"
         (ionChange)="onTypeChange()" placeholder="Select Input">
         <ion-select-option *ngFor="let opt of inputOptions" [value]="opt">{{opt}}</ion-select-option>
       </ion-select>

@@ -34,9 +34,7 @@ import {
 import {
   HereService
 } from 'src/app/services/here.service';
-import {
-  ModalController
-} from '@ionic/angular';
+
 
 
 @Component({
@@ -64,7 +62,7 @@ export class CreateFormPage implements OnInit {
   opt: any;
 
 
-  publicIOI: boolean = false;
+  sioi: boolean = false;
 
   userData: any;
   segment: any = 'form';
@@ -94,25 +92,24 @@ export class CreateFormPage implements OnInit {
     private userService: UserService,
     private router: Router,
     private geolocation: Geolocation,
-    private here: HereService,
-    private modalCtrl: ModalController) {}
+    private here: HereService) {}
 
   ngOnInit() {
     this.getUserData();
     this.getLatLng();
   }
 
-  compareWithFn = (o1, o2) => {
-    console.log(o1, o2);
-    console.log(o1 && o2 ? o1.id === o2.id : o1 === o2);
-    return o1 && o2 ? o1.id === o2.id : o1 === o2;
-  };
+  // compareWithFn = (o1, o2) => {
+  //   console.log(o1, o2);
+  //   console.log(o1 && o2 ? o1.id === o2.id : o1 === o2);
+  //   return o1 && o2 ? o1.id === o2.id : o1 === o2;
+  // };
 
-  compareWith = this.compareWithFn;
+  // compareWith = this.compareWithFn;
 
   toggleCheckbox() {
-    this.publicIOI = this.publicIOI === false ? true : false;
-    console.log(this.publicIOI);
+    this.sioi = this.sioi === false ? true : false;
+    console.log(this.sioi);
   }
 
 
@@ -196,6 +193,18 @@ export class CreateFormPage implements OnInit {
   /* -------------------------------------------------------------------------- */
   /*                      When Items in List are Reordered                      */
   /* -------------------------------------------------------------------------- */
+
+  //Toggle Reorder Capability after they are enough fields
+  toggleReorder() {
+    console.log('Toggled!');
+    const reorderGroup: any = document.getElementById('items');
+    reorderGroup.disabled = !reorderGroup.disabled;
+    reorderGroup.addEventListener('ionItemReorder', (e) => {
+      console.log(e);
+      this.onReorderItems(e);
+    });
+  }
+
 
   onReorderItems(event) {
     console.log(`Moving item from ${event.detail.from} to ${event.detail.to}`);
@@ -315,6 +324,11 @@ export class CreateFormPage implements OnInit {
 
   createCheckbox() {
     this.formView.nativeElement.innerHTML = `
+    <ion-item>
+    <ion-label>Label: </ion-label>
+    <ion-input type="text" placeholder="Enter Checkbox Top Label Here" name="label" >
+    </ion-input>
+    </ion-item>
     <ion-item lines="none">
     <ion-label>Number of Checkboxes: </ion-label>
     <ion-input type="number" placeholder="Enter Here" name="num" >
@@ -326,6 +340,7 @@ export class CreateFormPage implements OnInit {
   }
 
   addInputsForCheckbox() {
+    let label = ( < HTMLInputElement > document.querySelector('input[name=label]')).value;
     let numOfOptions = ( < HTMLInputElement > document.querySelector('input[name=num]')).value;
     this.formView.nativeElement.innerHTML = ``;
     for (let i = 0; i < parseInt(numOfOptions); i++) {
@@ -338,29 +353,41 @@ export class CreateFormPage implements OnInit {
       console.log('Added.')
     }
     this.formView.nativeElement.innerHTML += (`<ion-button type="submit" class="ion-padding save">Save</ion-button>`);
-    this.elRef.nativeElement.querySelector('.save').addEventListener('click', this.addCheckboxesToSchema.bind(this, numOfOptions));
+    this.elRef.nativeElement.querySelector('.save').addEventListener('click', this.addCheckboxesToSchema.bind(this, numOfOptions, label));
   }
 
-  addCheckboxesToSchema(numOfOptions) {
+  addCheckboxesToSchema(numOfOptions, label) {
     let opts = [];
     for (let i = 0; i < parseInt(numOfOptions); i++) {
       let opt = ( < HTMLInputElement > document.querySelector(`input[name=label${i+1}]`)).value;
       opts.push({
-        label: opt,
+        key: opt,
+        value: this.capitalize(opt),
       });
     }
 
     /* -------------------------- Add it to the Schema -------------------------- */
-    opts.map((opt) => {
-      this.fields.push({
-        key: this.capitalize(opt.label.toLowerCase().trim()),
-        type: 'checkbox',
-        templateOptions: {
-          label: opt.label,
-        }
-      })
+    this.fields.push({
+      "type": "multicheckbox",
+      "key": this.capitalize(label).trim(),
+      "templateOptions": {
+        "options": opts,
+        "label": label
+      }
     });
-    this.utils.presentToast('Added Checkboxes Successfully.', 'toast-success');
+
+
+    // opts.map((opt) => {
+    //   this.fields.push({
+    //     key: this.capitalize(opt.label.toLowerCase().trim()),
+    //     type: 'checkbox',
+    //     templateOptions: {
+    //       label: opt.label,
+    //     }
+    //   })
+    // });
+    this.formView.nativeElement.innerHTML = "";
+    this.utils.presentToast('Added Checkbox Successfully.', 'toast-success');
   }
 
   /* 
@@ -454,6 +481,7 @@ export class CreateFormPage implements OnInit {
         options: opts
       }
     });
+    this.formView.nativeElement.innerHTML = "";
     this.utils.presentToast('Added Dropdown Successfully.', 'toast-success');
   }
 
@@ -527,6 +555,7 @@ export class CreateFormPage implements OnInit {
         options: opts
       }
     });
+    this.formView.nativeElement.innerHTML = "";
     this.utils.presentToast('Added Radios Successfully.', 'toast-success');
   }
 
@@ -543,7 +572,7 @@ export class CreateFormPage implements OnInit {
       division: this.userData.division,
       project: this.userData.project,
       orgId: this.userData.orgId,
-      sioi: this.publicIOI,
+      sioi: this.sioi,
       status: 'ok',
       address: {
         ...this.physicalAddr
@@ -556,25 +585,25 @@ export class CreateFormPage implements OnInit {
     });
   }
 
-  async launchLocationPage() {
+  /*   async launchLocationPage() {
 
-    const modal = await this.modalCtrl.create({
-      component: LocationSelectPage,
+      const modal = await this.modalCtrl.create({
+        component: LocationSelectPage,
 
-    });
+      });
 
-    modal.onDidDismiss().then((resp: any) => {
-      if (resp.data !== 'None') {
-        console.log(resp.data);
-      } else {
-        console.log('Modal Dismissed.')
-      }
-    });
+      modal.onDidDismiss().then((resp: any) => {
+        if (resp.data !== 'None') {
+          console.log(resp.data);
+        } else {
+          console.log('Modal Dismissed.')
+        }
+      });
 
-    return await modal.present();
+      return await modal.present();
 
-  }
-
+    }
+   */
 
   /* ---------------------------- Utility Functions --------------------------- */
 

@@ -74,6 +74,8 @@ import {
   InAppBrowser
 } from '@ionic-native/in-app-browser/ngx';
 
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
+
 /* -------------------------------------------------------------------------- */
 /*                                 AngularFire                                */
 /* -------------------------------------------------------------------------- */
@@ -187,6 +189,7 @@ import { AdminService } from './services/admin.service';
     Crop,
     InAppBrowser,
     Network,
+    GooglePlus,
     /* ----------------------------- Custom Services ---------------------------- */
     LocalNotificationService,
     LocationService,

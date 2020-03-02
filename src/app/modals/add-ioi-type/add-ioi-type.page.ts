@@ -93,7 +93,10 @@ export class AddIoiTypePage implements OnInit {
   }
 
   deleteIoiType(id) {
-    this.afs.doc(`incident_types/${id}`).delete();
+    this.afs.doc(`incident_types/${id}`).delete().then(() => {
+      this.utils.presentToast('Item deleted Successfully!', 'toast-success');
+      this.getIncidentTypes();
+    });
   }
 
 

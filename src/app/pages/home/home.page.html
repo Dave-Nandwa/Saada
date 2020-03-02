@@ -19,7 +19,8 @@
     </ion-row>
   </ion-grid> -->
   <div *ngIf="org">
-    <button expand="block" *ngIf="homeLabels?.myStatusEnabled === true" class="ion-padding btn" (click)="changeStatus()">
+    <button expand="block" *ngIf="homeLabels?.myStatusEnabled === true" class="ion-padding btn"
+      (click)="changeStatus()">
       {{homeLabels?.myStatus}}
       <ion-ripple-effect></ion-ripple-effect>
     </button>
@@ -29,12 +30,14 @@
       <ion-ripple-effect></ion-ripple-effect>
     </button> -->
 
-    <button expand="block" *ngIf="homeLabels?.createIoiEnabled === true" class="ion-padding btn" (click)="presentNakedFormOptions()">
+    <button expand="block" *ngIf="homeLabels?.createIoiEnabled === true" class="ion-padding btn"
+      (click)="presentNakedFormOptions()">
       {{homeLabels?.createIoi}}
       <ion-ripple-effect></ion-ripple-effect>
     </button>
 
-    <button expand="block" *ngIf="homeLabels?.myIoiEnabled === true" class="ion-padding btn" [routerLink]="['/my-forms']">
+    <button expand="block" *ngIf="homeLabels?.myIoiEnabled === true" class="ion-padding btn"
+      [routerLink]="['/my-forms']">
       {{homeLabels?.myIoi}}
       <ion-ripple-effect></ion-ripple-effect>
     </button>
@@ -44,10 +47,15 @@
       {{homeLabels?.myPlans}}
       <ion-ripple-effect></ion-ripple-effect>
     </button>
+    <button *ngFor="let f of project?.shortcutLinks" expand="block" class="ion-padding btn-form"
+      (click)="getSpecificForm(f.formName)">
+      {{f?.buttonName}} <ion-icon src="assets/form.svg" name="add"></ion-icon>
+      <ion-ripple-effect></ion-ripple-effect>
+    </button>
   </div>
   <ion-img *ngIf="!org" class="ion-padding" src="assets/no_data.svg"></ion-img>
 
- 
+
 
 
 </ion-content>

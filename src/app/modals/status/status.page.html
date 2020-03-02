@@ -22,22 +22,26 @@
 
       <ion-item>
         <ion-label>{{statusLabels?.ok}}</ion-label>
-        <ion-radio color="success" slot="start" [value]="statusLabels?.ok"></ion-radio>
+        <ion-radio color="success" slot="start" [value]="statusLabels?.ok" checked *ngIf="statusLabels?.ok === userData?.status"></ion-radio>
+        <ion-radio color="success" slot="start" [value]="statusLabels?.ok" *ngIf="statusLabels?.ok !== userData?.status"></ion-radio>
       </ion-item>
 
       <ion-item>
         <ion-label>{{statusLabels?.noStatus}}</ion-label>
-        <ion-radio slot="start" [value]="statusLabels?.noStatus" checked></ion-radio>
+        <ion-radio slot="start" [value]="statusLabels?.noStatus" checked *ngIf="statusLabels?.noStatus === userData?.status"></ion-radio>
+        <ion-radio slot="start" [value]="statusLabels?.noStatus" *ngIf="statusLabels?.noStatus !== userData?.status"></ion-radio>
       </ion-item>
 
       <ion-item>
         <ion-label>{{statusLabels?.limited}}</ion-label>
-        <ion-radio color="warning" slot="start" [value]="statusLabels?.limited"></ion-radio>
+        <ion-radio color="warning" slot="start" [value]="statusLabels?.limited" checked *ngIf="statusLabels?.limited === userData?.status"></ion-radio>
+        <ion-radio color="warning" slot="start" [value]="statusLabels?.limited" *ngIf="statusLabels?.limited !== userData?.status"></ion-radio>
       </ion-item>
 
       <ion-item>
         <ion-label>{{statusLabels?.closed}}</ion-label>
-        <ion-radio color="danger" slot="start" [value]="statusLabels?.closed"></ion-radio>
+        <ion-radio color="danger" slot="start" [value]="statusLabels?.closed" checked *ngIf="statusLabels?.closed === userData?.status"></ion-radio>
+        <ion-radio color="danger" slot="start" [value]="statusLabels?.closed" *ngIf="statusLabels?.closed !== userData?.status"></ion-radio>
       </ion-item>
     </ion-radio-group>
   </ion-list>

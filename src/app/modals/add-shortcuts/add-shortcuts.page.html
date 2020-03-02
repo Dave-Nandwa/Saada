@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add Home Buttons</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-button (click)="addShortcutLinks()" expand="block" color="success" shape="round">
+    Save
+  </ion-button>
+  <ion-list>
+     <!-- ------------------------------- Added IOI ------------------------------- -->
+    <ion-list>
+      <ion-list-header color="primary">
+        <ion-label>Added to Home: </ion-label>
+      </ion-list-header>
+      <ion-reorder-group (ionItemReorder)="onReorder($event)">
+        <ion-item-sliding *ngFor="let link of userProject?.shortcutLinks">
+          <ion-item>
+            <ion-label>{{link?.formName}}</ion-label>
+            <!-- <ion-reorder></ion-reorder> -->
+          </ion-item>
+          <ion-item-options side="end">
+            <ion-item-option color="danger" (click)="deleteShortcut(link?.formName)">Delete</ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-reorder-group>
+    </ion-list>
+
+    <!-- ------------------------------- All IOI ------------------------------- -->
+    <ion-list>
+      <ion-list-header color="primary">
+        <ion-label>All IOI: </ion-label>
+      </ion-list-header>
+      <!-- <ion-searchbar placeholder="Search For IOI" type="text" (ionChange)="onSearchChange($event)" [debounce]="250" showCancelButton="250"></ion-searchbar> -->
+      <ion-toolbar>
+        <ion-searchbar placeholder="Search For IOI" (ionChange)="filterList($event)" [debounce]="250"></ion-searchbar>
+      </ion-toolbar>
+      <ion-item-sliding *ngFor="let form of formList; let index = index">
+        <ion-item>
+          <ion-label> <b>{{index+1}}.</b> {{form?.formName}}</ion-label>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="success" (click)="getButtonName(form?.formId, form?.formName)">Add to Home</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </ion-list>
+</ion-content>

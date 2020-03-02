@@ -1,3 +1,4 @@
+import { AuthService } from './../../services/auth.service';
 import {
   Component,
   OnInit
@@ -36,6 +37,7 @@ import {
 
 /* -------------------------------- Firebase -------------------------------- */
 import * as firebase from 'firebase/app';
+import { AlertController } from '@ionic/angular';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -53,15 +55,56 @@ export class LoginPage implements OnInit {
     password: new FormControl(undefined, Validators.minLength(6))
   });
 
-  constructor(private uServ: UserService, private ns: NativeStorage, private utils: UtilitiesService, private router: Router) {}
+  constructor(
+    private uServ: UserService, 
+    private ns: NativeStorage, 
+    private utils: UtilitiesService, 
+    private router: Router,
+    private authService: AuthService,
+    private alertController: AlertController) {}
 
   ngOnInit() {}
+
+  async forgotPasswordPrompt() {
+    const alert = await this.alertController.create({
+      header: 'To which email?',
+      inputs: [
+        {
+          name: 'email',
+          type: 'text',
+          placeholder: 'Email'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Ok',
+          handler: (data) => {
+            this.forgotPassword(data.email);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+
+  forgotPassword(email) {
+    this.authService.sendPasswordResetEmail(email)
+  }
 
   changePreferredCountries() {
     this.preferredCountries = [CountryISO.UnitedStates, CountryISO.Canada, CountryISO.SouthAfrica ];
   }
 
-  submit() {
+  logIn() {
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const form = this.loginForm.value;
     if (!emailRegex.test(form.email)) {
@@ -106,6 +149,21 @@ export class LoginPage implements OnInit {
             }); */
       };
     }
+  }
+
+  googleLogIn() {
+    this.authService.googleSignIn();
+  }
+
+  facebookLogIn() {
+    this.authService.loginWithFacebook().then((res) => {
+      console.log(res);
+      this.utils.presentToast('Facebook Sign In Successful.', 'toast-success');
+      this.router.navigate(['/tabs/home']);
+    }).catch((err) => {
+      this.utils.handleError(err);
+      console.log(err);
+    })
   }
 
   setuserInfo(data) {

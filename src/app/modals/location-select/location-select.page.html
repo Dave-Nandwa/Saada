@@ -20,7 +20,7 @@
 
   <agm-map (mapClick)="placeMarker($event)" [styles]="mapStyles" [zoom]="zoomLevel" [disableDefaultUI]="true"
     [zoomControl]="false" [latitude]="lat" [longitude]="lng">
-    <agm-marker [latitude]="lat" [longitude]="lng" [label]="You" [iconUrl]="mapIcon"></agm-marker>
+    <agm-marker [latitude]="lat" [longitude]="lng" label="You" [iconUrl]="mapIcon"></agm-marker>
   </agm-map>
 
 </ion-content>

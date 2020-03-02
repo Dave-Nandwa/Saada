@@ -99,7 +99,7 @@ export class MyPlansPage implements OnInit {
 
   getFolders() {
     this.utils.presentLoading('');
-    this.uServ.getUserPlans(this.userId).then((snap) => {
+    this.uServ.getUserPlans(this.userData.orgId).then((snap) => {
       snap.docs.map(doc => {
         this.items.push(doc.data());
       });
@@ -130,7 +130,7 @@ export class MyPlansPage implements OnInit {
       folderName: this.folderName,
       expanded: false,
       files: []
-    }, this.userId, '').then(() => {
+    }, this.userData.orgId, '').then(() => {
       this.utils.presentToast('Folder Added Successfully', 'toast-success');
       this.getUserData();
     }).catch((err) => {
@@ -241,7 +241,7 @@ export class MyPlansPage implements OnInit {
             opened: 0
           });
           console.log(doc, folder);
-          this.uServ.addFile(doc, this.userId, folder).then(() => {
+          this.uServ.addFile(doc, this.userData.orgId, folder).then(() => {
             this.utils.presentToast('File Added Successfully', 'toast-success');
             this.getUserData();
           }).catch((err) => {
@@ -301,7 +301,7 @@ export class MyPlansPage implements OnInit {
               fileext: fileext,
               filename: filename
             }
-            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userId, file).then((res) => {
+            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userData.orgId, file).then((res) => {
               console.log(res);
             });
           })
@@ -315,7 +315,7 @@ export class MyPlansPage implements OnInit {
               fileext: fileext,
               filename: filename
             }
-            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userId, file).then((res) => {
+            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userData.orgId, file).then((res) => {
               console.log(res);
             });
           })
@@ -329,7 +329,7 @@ export class MyPlansPage implements OnInit {
               fileext: fileext,
               filename: filename
             }
-            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userId, file).then((res) => {
+            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userData.orgId, file).then((res) => {
               console.log(res);
             });
           })
@@ -343,7 +343,7 @@ export class MyPlansPage implements OnInit {
               fileext: fileext,
               filename: filename
             }
-            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userId, file).then((res) => {
+            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userData.orgId, file).then((res) => {
               console.log(res);
             });
           })
@@ -356,7 +356,7 @@ export class MyPlansPage implements OnInit {
               fileext: fileext,
               filename: filename
             }
-            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userId, file).then((res) => {
+            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userData.orgId, file).then((res) => {
               console.log(res);
             });
           });
@@ -369,7 +369,7 @@ export class MyPlansPage implements OnInit {
               fileext: fileext,
               filename: filename
             }
-            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userId, file).then((res) => {
+            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userData.orgId, file).then((res) => {
               console.log(res);
             });
           });
@@ -382,7 +382,7 @@ export class MyPlansPage implements OnInit {
               fileext: fileext,
               filename: filename
             }
-            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userId, file).then((res) => {
+            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userData.orgId, file).then((res) => {
               console.log(res);
             });
           })
@@ -395,7 +395,7 @@ export class MyPlansPage implements OnInit {
               fileext: fileext,
               filename: filename
             }
-            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userId, file).then((res) => {
+            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userData.orgId, file).then((res) => {
               console.log(res);
             });
           })
@@ -408,7 +408,7 @@ export class MyPlansPage implements OnInit {
               fileext: fileext,
               filename: filename
             }
-            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userId, file).then((res) => {
+            this.uploadFilesService.addFileToStorage(doc, this.fileName, folder, this.userData.orgId, file).then((res) => {
               console.log(res);
             });
           })
@@ -466,7 +466,7 @@ export class MyPlansPage implements OnInit {
     let folderIndex = (this.items.findIndex(isFolder));
     //Find the File in the folder and update it
     this.items[folderIndex].files[fileIndex] = file;
-    this.uploadFilesService.updateCounter(this.userId, this.items[folderIndex].files, folder);
+    this.uploadFilesService.updateCounter(this.userData.orgId, this.items[folderIndex].files, folder);
 
 
     var link = file.link;

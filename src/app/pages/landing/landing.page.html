@@ -33,12 +33,17 @@
             [phoneValidation]="true" [separateDialCode]="separateDialCode" name="phone" formControlName="phone">
           </ngx-intl-tel-input>
         </div>
+
         <div class="mb-2">
-          <input class="input" type="text" placeholder="Clearance Code (optional)" formControlName="cCode" />
+          <input class="input" type="text" placeholder="Sponsor Code" name="sponsorCode" />
         </div>
+        <button expand="block" class="ion-padding btn" (click)="populateFields()">
+          Verify Sponsor Code
+          <ion-ripple-effect></ion-ripple-effect>
+        </button>
         <ion-item class="mb-2">
           <ion-label>Organization: </ion-label>
-          <ion-select value="Select" formControlName="org" okText="Select" cancelText="Dismiss"
+          <ion-select [style.pointerEvents]="'none'" [placeholder]="organization?.name" formControlName="org" okText="Select" cancelText="Dismiss"
             (ionChange)="onOrganizationChange()">
             <ion-select-option class="input" *ngFor="let o of organizations" [value]="o.name">{{o.name}}
             </ion-select-option>
@@ -47,7 +52,7 @@
 
         <ion-item *ngIf="organization" class="mb-2">
           <ion-label>Division: </ion-label>
-          <ion-select value="Select" formControlName="division" okText="Select" cancelText="Dismiss"
+          <ion-select [style.pointerEvents]="'none'" [placeholder]="division" formControlName="division" okText="Select" cancelText="Dismiss"
             (ionChange)="onDivChange()">
             <ion-select-option class="input" *ngFor="let d of organization?.divisions" [value]="d">{{d}}
             </ion-select-option>
@@ -56,7 +61,7 @@
 
         <ion-item *ngIf="division" class="mb-2">
           <ion-label>Project: </ion-label>
-          <ion-select value="Select" formControlName="project" okText="Select" cancelText="Dismiss"
+          <ion-select [style.pointerEvents]="'none'" [placeholder]="project?.name" formControlName="project" okText="Select" cancelText="Dismiss"
             (ionChange)="onProjChange()">
             <ion-select-option class="input" *ngFor="let p of projects; index as i" [value]="p">{{p?.name}}
             </ion-select-option>
@@ -65,7 +70,7 @@
 
       </form>
     </ion-card-content>
-    <button expand="block" class="ion-padding btn" (click)="submit()">
+    <button expand="block" [disabled]="project?.name === 'N/A'" class="ion-padding btn" (click)="submit()">
       Create Account
       <ion-ripple-effect></ion-ripple-effect>
     </button>

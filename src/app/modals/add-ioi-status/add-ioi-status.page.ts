@@ -108,8 +108,11 @@ export class AddIoiStatusPage implements OnInit {
     });
   }
 
-  deleteIoiType(id) {
-    this.afs.doc(`incident_statuses/${id}`).delete();
+  deleteIoiStatus(id) {
+    this.afs.doc(`incident_statuses/${id}`).delete().then(() => {
+      this.utils.presentToast('Item deleted Successfully!', 'toast-success');
+      this.getIncidentStatuses();
+    });
   }
 
 }

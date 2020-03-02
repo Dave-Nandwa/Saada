@@ -22,9 +22,31 @@ ion-content {
     align-items: center;
     text-align: center;
 
-    
+
 }
 
+.populate-btn {
+    width: 100%;
+    padding: 10px 10px;
+    background: #4F65F6;
+    --background: #4F65F6;
+    --box-shadow: none;
+    border-radius: 6px;
+    font-size: 1em;
+    text-align: center;
+    text-transform: uppercase;
+    --color: #fff !important;
+    color: #fff;
+    outline: none;
+    margin-bottom: 10px;
+    // margin-bottom:1px;
+    /*    ion-icon {
+        font-size: 1.5em;
+        margin:0;
+        padding:0;
+        display: inline-block;
+    } */
+}
 
 h1 {
     text-shadow: 0 14px 26px rgba(0, 0, 0, 0.171);
@@ -48,6 +70,7 @@ form {
             font-family: 'Poppins', sans-serif;
             font-weight: 800;
             font-size: 1em;
+            white-space: pre-line!important;
         }
 
         ion-select {
@@ -57,10 +80,13 @@ form {
             font-family: 'Nunito', sans-serif;
             font-weight: 800;
             color: #000 !important;
+            white-space: pre-line!important;
             ion-select-option {
                 text-transform: capitalize !important;
+                white-space: pre-line!important;
             }
         }
+
 
         ion-input,
         ion-textarea {
@@ -73,10 +99,11 @@ form {
 
     .alert-wrapper {
         text-transform: capitalize !important;
+        
     }
 }
 
-button {
+.button {
     --background: #ffffff !important;
     background: #ffffff !important;
     box-shadow: 0px 13px 10px -7px rgba(0, 0, 0, 0.144);
@@ -93,4 +120,10 @@ button {
     text-transform: uppercase;
     letter-spacing: 2px;
     width: 100% !important
+}
+
+ion-label,
+ion-select,
+ion-select-option {
+    white-space: normal !important;
 }
